@@ -71,6 +71,7 @@ def create_scholarship(
             mutually_exclusive_ids=scholarship_in.mutually_exclusive_ids,
             allowed_batches_new=scholarship_in.allowed_batches_new,
             allowed_batches_renewal=scholarship_in.allowed_batches_renewal,
+            required_profile_fields=scholarship_in.required_profile_fields,
             is_renewable=scholarship_in.is_renewable or False,
             is_active=True
         )
@@ -165,6 +166,7 @@ def update_scholarship(
     scholarship.mutually_exclusive_ids = scholarship_in.mutually_exclusive_ids
     scholarship.allowed_batches_new = scholarship_in.allowed_batches_new
     scholarship.allowed_batches_renewal = scholarship_in.allowed_batches_renewal
+    scholarship.required_profile_fields = scholarship_in.required_profile_fields
     scholarship.is_renewable = scholarship_in.is_renewable or False
     
     # Update requirements: Delete old and add new (Simple approach)

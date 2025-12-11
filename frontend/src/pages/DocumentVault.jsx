@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import DocumentUploader from '../components/DocumentUploader';
+import Toast from '../components/Toast';
 
 const DocumentVault = () => {
     const [docTypes, setDocTypes] = useState([]);
     const [myDocs, setMyDocs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState(null);
+
+    const showToast = (message, type = 'success') => {
+        setToast({ message, type });
+    };
 
     useEffect(() => {
         fetchData();
@@ -21,6 +27,7 @@ const DocumentVault = () => {
             setMyDocs(docsRes.data);
         } catch (e) {
             console.error(e);
+            showToast('Failed to load documents.', 'error');
         } finally {
             setLoading(false);
         }
@@ -28,6 +35,7 @@ const DocumentVault = () => {
 
     const handleUploadSuccess = () => {
         fetchData(); // Refresh list
+        showToast('Document uploaded successfully!', 'success');
     };
 
     if (loading) return (
@@ -73,7 +81,7 @@ const DocumentVault = () => {
                             {uploadedDoc ? (
                                 <div className="space-y-3">
                                     <a
-                                        href={`http://localhost:8000/media/${uploadedDoc.file_path}`}
+                                        href={`http://localhost:8000/media/${uploadedDoc.file_path.replace(/^\/+/, '')}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="flex items-center justify-center gap-2 w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg text-sm font-medium transition-colors border border-slate-200"
@@ -89,6 +97,7 @@ const DocumentVault = () => {
                                             documentType={type.name}
                                             documentFormatId={type.id}
                                             onUploadSuccess={handleUploadSuccess}
+                                            showToast={showToast}
                                         />
                                     </div>
                                 </div>
@@ -98,6 +107,7 @@ const DocumentVault = () => {
                                         documentType={type.name}
                                         documentFormatId={type.id}
                                         onUploadSuccess={handleUploadSuccess}
+                                        showToast={showToast}
                                     />
                                 </div>
                             )}
@@ -105,6 +115,13 @@ const DocumentVault = () => {
                     );
                 })}
             </div>
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 };

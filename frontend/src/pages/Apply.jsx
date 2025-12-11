@@ -6,41 +6,42 @@ import MergedPDFButton from '../components/MergedPDFButton';
 import Toast from '../components/Toast';
 
 // All possible profile fields with labels
+// All possible profile fields with labels and types
 const ALL_PROFILE_FIELDS = [
-    { key: 'enrollment_no', label: 'Enrollment Number' },
-    { key: 'department', label: 'Department' },
-    { key: 'mobile_number', label: 'Mobile Number' },
-    { key: 'date_of_birth', label: 'Date of Birth' },
-    { key: 'gender', label: 'Gender' },
-    { key: 'father_name', label: "Father's Name" },
-    { key: 'mother_name', label: "Mother's Name" },
-    { key: 'category', label: 'Category' },
-    { key: 'minority_status', label: 'Minority Status' },
-    { key: 'disability', label: 'Disability' },
-    { key: 'permanent_address', label: 'Permanent Address' },
-    { key: 'state', label: 'State' },
-    { key: 'district', label: 'District' },
-    { key: 'pincode', label: 'Pincode' },
-    { key: 'current_address', label: 'Current Address' },
-    { key: 'annual_family_income', label: 'Annual Family Income' },
-    { key: 'income_certificate_number', label: 'Income Certificate Number' },
-    { key: 'issuing_authority', label: 'Issuing Authority' },
-    { key: 'income_certificate_validity_date', label: 'Income Certificate Validity' },
-    { key: 'account_holder_name', label: 'Account Holder Name' },
-    { key: 'bank_name', label: 'Bank Name' },
-    { key: 'account_number', label: 'Account Number' },
-    { key: 'ifsc_code', label: 'IFSC Code' },
-    { key: 'branch_name', label: 'Branch Name' },
-    { key: 'current_year_or_semester', label: 'Current Year/Semester' },
-    { key: 'previous_exam_percentage', label: 'Previous Exam %' },
-    { key: 'backlogs', label: 'Backlogs' },
-    { key: 'gap_year', label: 'Gap Year' },
-    { key: 'father_occupation', label: "Father's Occupation" },
-    { key: 'mother_occupation', label: "Mother's Occupation" },
-    { key: 'guardian_annual_income', label: "Guardian's Annual Income" },
-    { key: 'parents_govt_job', label: 'Parents Govt Job' },
-    { key: 'parent_contact_number', label: 'Parent Contact Number' },
-    { key: 'residential_status', label: 'Residential Status' },
+    { key: 'enrollment_no', label: 'Enrollment Number', type: 'text' },
+    { key: 'department', label: 'Department', type: 'select', options: [] }, // Options populated dynamically
+    { key: 'mobile_number', label: 'Mobile Number', type: 'text' },
+    { key: 'date_of_birth', label: 'Date of Birth', type: 'date' },
+    { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female'] },
+    { key: 'father_name', label: "Father's Name", type: 'text' },
+    { key: 'mother_name', label: "Mother's Name", type: 'text' },
+    { key: 'category', label: 'Category', type: 'select', options: ['General', 'OBC', 'SC', 'ST', 'Gen-EWS', 'Other'] },
+    { key: 'minority_status', label: 'Minority Status', type: 'select', options: ['Yes', 'No'] },
+    { key: 'disability', label: 'Disability', type: 'boolean' },
+    { key: 'permanent_address', label: 'Permanent Address', type: 'textarea' },
+    { key: 'state', label: 'State', type: 'text' },
+    { key: 'district', label: 'District', type: 'text' },
+    { key: 'pincode', label: 'Pincode', type: 'text' },
+    { key: 'current_address', label: 'Current Address', type: 'textarea' },
+    { key: 'annual_family_income', label: 'Annual Family Income', type: 'number' },
+    { key: 'income_certificate_number', label: 'Income Certificate Number', type: 'text' },
+    { key: 'issuing_authority', label: 'Issuing Authority', type: 'text' },
+    { key: 'income_certificate_validity_date', label: 'Income Certificate Validity', type: 'date' },
+    { key: 'account_holder_name', label: 'Account Holder Name', type: 'text' },
+    { key: 'bank_name', label: 'Bank Name', type: 'text' },
+    { key: 'account_number', label: 'Account Number', type: 'text' },
+    { key: 'ifsc_code', label: 'IFSC Code', type: 'text' },
+    { key: 'branch_name', label: 'Branch Name', type: 'text' },
+    { key: 'current_year_or_semester', label: 'Current Year/Semester', type: 'text' },
+    { key: 'previous_exam_percentage', label: 'Previous Exam %', type: 'number' },
+    { key: 'backlogs', label: 'Backlogs', type: 'number' },
+    { key: 'gap_year', label: 'Gap Year', type: 'boolean' },
+    { key: 'father_occupation', label: "Father's Occupation", type: 'text' },
+    { key: 'mother_occupation', label: "Mother's Occupation", type: 'text' },
+    { key: 'guardian_annual_income', label: "Guardian's Annual Income", type: 'number' },
+    { key: 'parents_govt_job', label: 'Parents Govt Job', type: 'boolean' },
+    { key: 'parent_contact_number', label: 'Parent Contact Number', type: 'text' },
+    { key: 'residential_status', label: 'Residential Status', type: 'select', options: ['Hosteler', 'Day Scholar'] },
 ];
 
 // Helper function to extract actual name (remove enrollment if present)
@@ -74,6 +75,7 @@ const Apply = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [departments, setDepartments] = useState([]);
     const [toast, setToast] = useState(null);
+    const [docDecisions, setDocDecisions] = useState({}); // Track user decision for each doc: 'confirmed' or 'replacing'
 
     const showToast = (message, type = 'success') => {
         setToast({ message, type });
@@ -81,22 +83,39 @@ const Apply = () => {
     };
 
     // Get required profile fields from scholarship, or use defaults
+    // Get required profile fields from scholarship
     const requiredProfileFields = useMemo(() => {
-        const requiredKeys = scholarship?.required_profile_fields;
-        if (requiredKeys && requiredKeys.length > 0) {
+        if (!scholarship) return [];
+
+        const requiredKeys = scholarship.required_profile_fields;
+        console.log('🎓 Scholarship Config:', {
+            id: scholarship.id,
+            name: scholarship.name,
+            requiredKeys: requiredKeys,
+            type: typeof requiredKeys
+        });
+
+        if (Array.isArray(requiredKeys) && requiredKeys.length > 0) {
             // Filter ALL_PROFILE_FIELDS to only include the ones required by this scholarship
-            return ALL_PROFILE_FIELDS.filter(f => requiredKeys.includes(f.key));
+            // Also log any keys that were required but not found in our definitions
+            const foundFields = ALL_PROFILE_FIELDS.filter(f => requiredKeys.includes(f.key));
+            if (foundFields.length < requiredKeys.length) {
+                console.warn('⚠️ Some required fields were not found in definitions:',
+                    requiredKeys.filter(k => !ALL_PROFILE_FIELDS.find(f => f.key === k))
+                );
+            }
+            return foundFields;
         }
-        // Fallback: if no fields specified, use some basic defaults
-        return ALL_PROFILE_FIELDS.filter(f => [
-            'roll_number', 'enrollment_no', 'department', 'mobile_number',
-            'date_of_birth', 'gender', 'father_name', 'mother_name', 'category'
-        ].includes(f.key));
+
+        // No hardcoded fallback - strictly use backend configuration
+        return [];
     }, [scholarship]);
 
     useEffect(() => {
         fetchData();
     }, [id]);
+
+    const [isEditing, setIsEditing] = useState(false);
 
     // Recompute missing fields when scholarship, profile, or profileDraft changes
     // Only update profileMissing when the SAVED profile changes, or scholarship requirements change.
@@ -120,6 +139,19 @@ const Apply = () => {
             const value = data[key];
             return value === null || value === undefined || value === '';
         });
+    };
+
+    const handleEditClick = () => {
+        // Pre-fill draft with current profile data so inputs aren't empty
+        if (profile) {
+            setProfileDraft({ ...profile });
+        }
+        setIsEditing(true);
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setProfileDraft(profile ? { ...profile } : null); // Revert draft to saved profile state
     };
 
     const fetchData = async () => {
@@ -224,8 +256,8 @@ const Apply = () => {
                     if (['annual_family_income', 'previous_exam_percentage', 'disability_percentage', 'guardian_annual_income', 'backlogs'].includes(key)) {
                         profileData[key] = value === '' ? null : (parseFloat(value) || null);
                     } else if (['minority_status', 'disability', 'gap_year', 'parents_govt_job'].includes(key)) {
-                        // Boolean fields
-                        profileData[key] = value === true || value === 'true' || value === 'True' || value === 1;
+                        // Boolean fields - handle Yes/No or direct boolean
+                        profileData[key] = value === true || value === 'true' || value === 'True' || value === 'Yes' || value === 1;
                     } else {
                         // String fields - include even empty strings
                         profileData[key] = value === '' ? null : value;
@@ -264,11 +296,31 @@ const Apply = () => {
         setSavingProfile(true);
         try {
             console.log('📤 Sending profile data:', profileDraft);
-            const res = await api.put('/profile/me', profileDraft);
+
+            const profileData = {};
+            // Copy all fields from draft, ensuring proper type conversion
+            Object.keys(profileDraft).forEach(key => {
+                const value = profileDraft[key];
+                if (value !== null && value !== undefined) {
+                    // Convert string numbers to actual numbers
+                    if (['annual_family_income', 'previous_exam_percentage', 'disability_percentage', 'guardian_annual_income', 'backlogs'].includes(key)) {
+                        profileData[key] = value === '' ? null : (parseFloat(value) || null);
+                    } else if (['minority_status', 'disability', 'gap_year', 'parents_govt_job'].includes(key)) {
+                        // Boolean fields - handle Yes/No or direct boolean
+                        profileData[key] = value === true || value === 'true' || value === 'True' || value === 'Yes' || value === 1;
+                    } else {
+                        // String fields - include even empty strings
+                        profileData[key] = value === '' ? null : value;
+                    }
+                }
+            });
+
+            const res = await api.put('/profile/me', profileData);
             console.log('✅ Profile saved successfully:', res.data);
             setProfile(res.data);
             setProfileDraft(res.data);
             setProfileMissing(computeMissing(res.data, requiredProfileFields));
+            setIsEditing(false);
             showToast('Profile updated successfully!', 'success');
         } catch (e) {
             console.error('❌ Profile update error:', e);
@@ -552,7 +604,9 @@ const Apply = () => {
                             <div className="space-y-6">
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-lg font-semibold text-slate-800">Required Profile Fields</h3>
+                                        <div className="flex items-center gap-4">
+                                            <h3 className="text-lg font-semibold text-slate-800">Required Profile Fields</h3>
+                                        </div>
                                         <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">
                                             {requiredProfileFields.length - profileMissing.length}/{requiredProfileFields.length} Completed
                                         </span>
@@ -603,30 +657,35 @@ const Apply = () => {
                                     })}
                                 </div>
 
-                                {profileMissing.length > 0 && (
-                                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-6 md:p-8 shadow-sm space-y-6 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-3 opacity-10">
-                                            <svg className="w-24 h-24 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
+                                <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-6 md:p-8 shadow-sm space-y-6 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10">
+                                        <svg className="w-24 h-24 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                                        <div>
+                                            <h3 className="text-xl font-bold text-slate-800">Review & Update Details</h3>
+                                            <p className="text-slate-600 mt-1">
+                                                Please review your details for this application and update if necessary.
+                                            </p>
                                         </div>
+                                    </div>
 
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-                                            <div>
-                                                <h3 className="text-xl font-bold text-slate-800">Complete Missing Fields</h3>
-                                                <p className="text-slate-600 mt-1">Please provide the invalid or missing information below to proceed.</p>
-                                            </div>
-                                            <span className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100/50 text-amber-800 rounded-lg border border-amber-200 text-sm font-bold shadow-sm whitespace-nowrap">
-                                                <span className="flex h-2 w-2 relative">
-                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                                                </span>
-                                                {profileMissing.length} Fields Left
-                                            </span>
-                                        </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 relative z-10">
+                                        {requiredProfileFields.map(({ key, label }) => {
+                                            const fieldConfig = ALL_PROFILE_FIELDS.find(f => f.key === key) || { type: 'text' };
+                                            let { type, options } = fieldConfig;
 
+                                            // Dynamic options for department
+                                            if (key === 'department') {
+                                                options = departments.map(d => d.name);
+                                            }
 
-
-                                        {profileMissing.map(({ key, label }) => {
-                                            const inputValue = (profileDraft && profileDraft[key]) ? String(profileDraft[key]) : '';
+                                            const inputValue = (profileDraft && profileDraft[key] !== undefined)
+                                                ? String(profileDraft[key])
+                                                : (profile && profile[key] !== undefined && profile[key] !== null)
+                                                    ? String(profile[key])
+                                                    : '';
 
                                             return (
                                                 <div key={`input-${key}`}>
@@ -637,7 +696,7 @@ const Apply = () => {
                                                         {label} <span className="text-rose-500">*</span>
                                                     </label>
 
-                                                    {key === 'department' ? (
+                                                    {type === 'select' ? (
                                                         <div className="relative">
                                                             <select
                                                                 id={`field-${key}`}
@@ -645,65 +704,35 @@ const Apply = () => {
                                                                 onChange={(e) => handleProfileChange(key, e.target.value)}
                                                                 className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium transition-all outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-500/10 appearance-none cursor-pointer"
                                                             >
-                                                                <option value="">Select Department</option>
-                                                                {departments.map(dept => (
-                                                                    <option key={dept.id} value={dept.name}>
-                                                                        {dept.name} {dept.code ? `(${dept.code})` : ''}
-                                                                    </option>
-                                                                ))}
+                                                                <option value="">Select {label}</option>
+                                                                {key === 'department' ? (
+                                                                    departments.map(dept => (
+                                                                        <option key={dept.id} value={dept.name}>
+                                                                            {dept.name} {dept.code ? `(${dept.code})` : ''}
+                                                                        </option>
+                                                                    ))
+                                                                ) : (
+                                                                    options && options.map(opt => (
+                                                                        <option key={opt} value={opt}>{opt}</option>
+                                                                    ))
+                                                                )}
                                                             </select>
                                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                                                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                                             </div>
                                                         </div>
-                                                    ) : key === 'gender' ? (
-                                                        <div className="relative">
-                                                            <select
-                                                                id={`field-${key}`}
-                                                                value={inputValue}
-                                                                onChange={(e) => handleProfileChange(key, e.target.value)}
-                                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium transition-all outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-500/10 appearance-none cursor-pointer"
-                                                            >
-                                                                <option value="">Select Gender</option>
-                                                                <option value="Male">Male</option>
-                                                                <option value="Female">Female</option>
-                                                            </select>
-                                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                                            </div>
-                                                        </div>
-                                                    ) : key === 'category' ? (
-                                                        <div className="relative">
-                                                            <select
-                                                                id={`field-${key}`}
-                                                                value={inputValue}
-                                                                onChange={(e) => handleProfileChange(key, e.target.value)}
-                                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium transition-all outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-500/10 appearance-none cursor-pointer"
-                                                            >
-                                                                <option value="">Select Category</option>
-                                                                <option value="General">General</option>
-                                                                <option value="OBC">OBC</option>
-                                                                <option value="SC">SC</option>
-                                                                <option value="ST">ST</option>
-                                                                <option value="Gen-EWS">Gen-EWS</option>
-                                                                <option value="Other">Other</option>
-                                                            </select>
-                                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                                            </div>
-                                                        </div>
-                                                    ) : key.toLowerCase().includes('date') ? (
-                                                        <input
+                                                    ) : type === 'textarea' ? (
+                                                        <textarea
                                                             id={`field-${key}`}
-                                                            type="date"
                                                             value={inputValue}
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
                                                             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium transition-all outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-500/10"
+                                                            rows={3}
                                                         />
                                                     ) : (
                                                         <input
                                                             id={`field-${key}`}
-                                                            type={key.includes('income') || key.includes('percentage') || key === 'backlogs' ? 'number' : 'text'}
+                                                            type={type === 'date' ? 'date' : (type === 'number' ? 'number' : 'text')}
                                                             value={inputValue}
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
                                                             placeholder={`Enter ${label.toLowerCase()}`}
@@ -714,37 +743,38 @@ const Apply = () => {
                                                 </div>
                                             );
                                         })}
+                                    </div>
 
-                                        <div className="pt-6 flex justify-end">
-                                            <button
-                                                onClick={saveProfile}
-                                                disabled={savingProfile}
-                                                className={`
+                                    <div className="pt-6 flex justify-end gap-4">
+                                        <button
+                                            onClick={saveProfile}
+                                            disabled={savingProfile}
+                                            className={`
                                                     inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-white font-bold shadow-lg transition-all transform active:scale-[0.98]
                                                     ${savingProfile
-                                                        ? 'bg-slate-400 cursor-not-allowed shadow-none'
-                                                        : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-500/30 hover:shadow-blue-600/40'
-                                                    }
+                                                    ? 'bg-slate-400 cursor-not-allowed shadow-none'
+                                                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-500/30 hover:shadow-blue-600/40'
+                                                }
                                                 `}
-                                            >
-                                                {savingProfile ? (
-                                                    <>
-                                                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                        </svg>
-                                                        Saving...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        Save & Continue
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
+                                        >
+                                            {savingProfile ? (
+                                                <>
+                                                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Saving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Save & Continue
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                                </>
+                                            )}
+                                        </button>
                                     </div>
-                                )}
+                                </div>
+
                             </div>
                         )}
                     </div>
@@ -800,8 +830,10 @@ const Apply = () => {
                             {requirements.map(req => {
                                 const docFormat = req.document_format || {};
                                 const uploadedDoc = myDocs.find(d => d.document_format_id === req.document_format_id);
+                                const decision = docDecisions[req.document_format_id];
+
                                 return (
-                                    <div key={req.id} className={`p-5 rounded-xl border transition-all ${uploadedDoc ? 'border-green-200 bg-green-50/30' : 'border-slate-200 bg-white hover:border-primary-200'}`}>
+                                    <div key={req.id} className={`p-5 rounded-xl border transition-all ${uploadedDoc && decision === 'confirmed' ? 'border-green-200 bg-green-50/30' : 'border-slate-200 bg-white hover:border-primary-200'}`}>
                                         <div className="flex justify-between items-start mb-3">
                                             <div>
                                                 <div className="flex items-center gap-2">
@@ -810,22 +842,97 @@ const Apply = () => {
                                                 </div>
                                                 {docFormat.description && <p className="text-sm text-slate-500 mt-1">{docFormat.description}</p>}
                                             </div>
-                                            {uploadedDoc ? (
+
+                                            {/* Status Badge */}
+                                            {uploadedDoc && decision === 'confirmed' ? (
                                                 <span className="flex items-center gap-1.5 text-xs bg-green-100 text-green-700 px-3 py-1.5 rounded-full font-bold border border-green-200">
                                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                                     Ready
                                                 </span>
-                                            ) : (
+                                            ) : !uploadedDoc ? (
                                                 <span className="text-xs bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full font-medium border border-slate-200">Missing</span>
-                                            )}
+                                            ) : null}
                                         </div>
 
-                                        {!uploadedDoc && (
+                                        {/* Logic for Existing Document */}
+                                        {uploadedDoc ? (
+                                            <div className="mt-3">
+                                                {!decision ? (
+                                                    // State 0: Ask User
+                                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="p-2 bg-amber-100 rounded text-amber-600">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <p className="font-semibold text-slate-800 text-sm">Document found in Vault</p>
+                                                                <p className="text-xs text-slate-600 mt-1">
+                                                                    Exists as <span className="font-medium underline">{uploadedDoc.file_path.split('/').pop()}</span><br />
+                                                                    Uploaded: {new Date(uploadedDoc.uploaded_at).toLocaleDateString()}
+                                                                </p>
+                                                                <div className="flex gap-3 mt-3">
+                                                                    <button
+                                                                        onClick={() => setDocDecisions(prev => ({ ...prev, [req.document_format_id]: 'confirmed' }))}
+                                                                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow-sm transition-colors"
+                                                                    >
+                                                                        Use from Vault
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => setDocDecisions(prev => ({ ...prev, [req.document_format_id]: 'replacing' }))}
+                                                                        className="px-3 py-1.5 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold rounded transition-colors"
+                                                                    >
+                                                                        Upload New
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : decision === 'confirmed' ? (
+                                                    // State 1: Confirmed (Green)
+                                                    <div className="text-xs text-slate-500 pl-1 flex items-center justify-between">
+                                                        <span>Using <strong>{uploadedDoc.file_path.split('/').pop()}</strong> from vault.</span>
+                                                        <button
+                                                            onClick={() => setDocDecisions(prev => ({ ...prev, [req.document_format_id]: undefined }))}
+                                                            className="text-primary-600 hover:underline ml-2"
+                                                        >
+                                                            Change
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    // State 2: Replacing (Show Uploader)
+                                                    <div className="mt-4 pt-4 border-t border-slate-100 relative">
+                                                        <button
+                                                            onClick={() => setDocDecisions(prev => ({ ...prev, [req.document_format_id]: undefined }))}
+                                                            className="absolute top-4 right-0 text-xs text-rose-500 hover:underline font-medium z-10"
+                                                        >
+                                                            Cancel Replace
+                                                        </button>
+                                                        <DocumentUploader
+                                                            documentType={docFormat.name || 'Document'}
+                                                            documentFormatId={req.document_format_id}
+                                                            onUploadSuccess={() => {
+                                                                handleUploadSuccess();
+                                                                // After upload, auto-confirm the new doc
+                                                                setDocDecisions(prev => ({ ...prev, [req.document_format_id]: 'confirmed' }));
+                                                                showToast('Document updated successfully', 'success');
+                                                            }}
+                                                            showToast={showToast}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            // No Document Exists - Show Uploader
                                             <div className="mt-4 pt-4 border-t border-slate-100">
                                                 <DocumentUploader
                                                     documentType={docFormat.name || 'Document'}
                                                     documentFormatId={req.document_format_id}
-                                                    onUploadSuccess={handleUploadSuccess}
+                                                    onUploadSuccess={() => {
+                                                        handleUploadSuccess();
+                                                        // After upload, auto-confirm
+                                                        setDocDecisions(prev => ({ ...prev, [req.document_format_id]: 'confirmed' }));
+                                                    }}
+                                                    showToast={showToast}
                                                 />
                                             </div>
                                         )}

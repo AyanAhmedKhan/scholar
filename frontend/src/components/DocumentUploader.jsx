@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 
-const DocumentUploader = ({ documentType, documentFormatId, onUploadSuccess }) => {
+const DocumentUploader = ({ documentType, documentFormatId, onUploadSuccess, showToast }) => {
     const [uploading, setUploading] = useState(false);
     const [file, setFile] = useState(null);
 
@@ -24,13 +24,25 @@ const DocumentUploader = ({ documentType, documentFormatId, onUploadSuccess }) =
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            alert('Document uploaded successfully');
+            // Success handled by parent via onUploadSuccess (which calls showToast)
+            // But we can also show here if detached. 
+            // Parent DocumentVault handles showToast on success callback.
+            // Let's NOT call showToast here for success to avoid double toast, 
+            // OR let parent handle it completely.
+            // In DocumentVault: 
+            // const handleUploadSuccess = () => { fetchData(); showToast(...) }
+
             setFile(null);
             e.target.reset();
             if (onUploadSuccess) onUploadSuccess();
         } catch (error) {
             console.error('Upload failed:', error);
-            alert(error.response?.data?.detail || 'Failed to upload document');
+            const errorMsg = error.response?.data?.detail || 'Failed to upload document';
+            if (showToast) {
+                showToast(errorMsg, 'error');
+            } else {
+                alert(errorMsg);
+            }
         } finally {
             setUploading(false);
         }

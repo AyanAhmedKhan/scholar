@@ -370,12 +370,14 @@ def get_application_pdf(
         logger.info(f"Application {application_id} has {len(docs) if docs else 0} documents")
         
         if not docs:
+            logger.warning(f"Application {application_id} has no documents linked. Returning 400.")
             raise HTTPException(status_code=400, detail="No documents uploaded for this application. Please upload required documents first.")
         
         file_paths = [doc.file_path for doc in docs if doc.file_path]
         logger.info(f"Valid file paths: {file_paths}")
         
         if not file_paths:
+            logger.warning(f"Application {application_id} has documents but no valid file paths. Returning 400.")
             raise HTTPException(status_code=400, detail="No valid document paths found. Please check your uploaded documents.")
             
         # Trigger Celery Task
@@ -404,5 +406,22 @@ def get_application_pdf(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error generating PDF for application {application_id}: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
+        logger.warning(f"Celery task failed/timed out, attempting synchronous generation: {e}")
+        try:
+            # Fallback: Run synchronously
+            # We call the function directly (not .delay)
+            # Note: merge_pdfs_task is decorated with @shared_task, so calling it directly works in recent Celery versions
+            # but usually it's better to extract the logic. 
+            # However, for this fix, we will try direct call or rely on "always eager" config if possible.
+            # Let's try direct call since @shared_task usually preserves the original function as .run() or just callable.
+            # Safe bet: call the logic directly. Use .run if available or just the function.
+            # Calling a celery task object directly acts as applying it locally.
+            pdf_content = merge_pdfs_task(file_paths)
+            
+            if isinstance(pdf_content, str) and pdf_content.startswith("Error"):
+                 raise Exception(pdf_content)
+                 
+            return Response(content=pdf_content, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename=application_{application_id}.pdf"})
+        except Exception as sync_e:
+            logger.error(f"Synchronous PDF generation also failed: {sync_e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Error generating PDF (Sync): {str(sync_e)}")

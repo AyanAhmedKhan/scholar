@@ -23,20 +23,30 @@ def merge_pdfs_task(file_paths: list[str]):
     try:
         for path in file_paths:
             # Construct full path
-            full_path = os.path.join(settings.MEDIA_DIR, path)
+            # Remove leading slash so os.path.join doesn't treat it as absolute
+            clean_path = path.lstrip("/").lstrip("\\")
+            full_path = os.path.join(settings.MEDIA_DIR, clean_path)
             logger.info(f"Attempting to merge: {full_path}")
             
             if os.path.exists(full_path):
+                # Check for PDF extension
+                if not path.lower().endswith('.pdf'):
+                    logger.warning(f"Skipping non-PDF file: {full_path}")
+                    # Optional: Add a placeholder page saying "File not included" could go here
+                    continue
+
                 try:
                     merger.append(full_path)
                     merged_count += 1
                     logger.info(f"Successfully added: {full_path}")
                 except Exception as e:
                     logger.error(f"Failed to merge {full_path}: {str(e)}")
-                    return f"Error merging {path}: {str(e)}"
+                    # Continue merging other files instead of failing completely
+                    continue
             else:
                 logger.warning(f"File not found: {full_path}")
-                return f"Error: File not found - {path}"
+                # Continue instead of failing
+                continue
         
         if merged_count == 0:
             logger.error("No PDFs were successfully merged")

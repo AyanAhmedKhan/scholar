@@ -129,9 +129,13 @@ def copy_file(
         # Try as absolute path first
         source_abs_path = Path(clean_path).resolve()
         
-        # Fallback: try relative to current working directory
+        # Fallback 1: try relative to current working directory
         if not source_abs_path.exists():
             source_abs_path = Path(os.getcwd()) / clean_path
+            
+        # Fallback 2: try relative to MEDIA_DIR (CRITICAL FIX)
+        if not source_abs_path.exists():
+             source_abs_path = Path(os.getcwd()) / settings.MEDIA_DIR / clean_path
          
     if not source_abs_path.exists():
         raise FileNotFoundError(f"Source file not found: {source_path_str} (resolved to: {source_abs_path})")
