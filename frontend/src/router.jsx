@@ -19,6 +19,7 @@ import GeneralOfficeDashboard from './pages/GeneralOfficeDashboard';
 import DeptHeadDashboard from './pages/DeptHeadDashboard';
 import ScholarshipManagement from './pages/ScholarshipManagement';
 import VaultManagement from './pages/VaultManagement';
+import ManageNotices from './pages/ManageNotices';
 import LandingPage from './pages/LandingPage';
 
 import Layout from './components/Layout';
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
                     { path: "/goffice-dashboard", element: <GeneralOfficeDashboard /> },
                     { path: "/scholarship-management", element: <ScholarshipManagement /> },
                     { path: "/vault-management", element: <VaultManagement /> },
+                    { path: "/manage-notices", element: <ManageNotices /> },
                 ]
             },
         ]

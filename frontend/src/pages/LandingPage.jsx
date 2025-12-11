@@ -1,8 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Award, Users, Shield, Globe, ChevronRight } from 'lucide-react';
+import { ArrowRight, BookOpen, Award, Users, Shield, Globe, ChevronRight, Bell } from 'lucide-react';
+import api from '../services/api';
 
 const LandingPage = () => {
+    const [scholarships, setScholarships] = useState([]);
+    const [notices, setNotices] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const schRes = await api.get('/scholarships/public').catch(e => ({ data: [] }));
+                setScholarships(schRes.data || []);
+            } catch (e) { console.error("Sch fetch failed", e); }
+
+            try {
+                const noticeRes = await api.get('/notices/public').catch(e => ({ data: [] }));
+                setNotices(noticeRes.data || []);
+            } catch (e) { console.error("Notice fetch failed", e); }
+            
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
+
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900">
             {/* Top Bar / Header matching the reference image */}
@@ -10,7 +33,7 @@ const LandingPage = () => {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row items-center justify-between py-2 md:py-4 gap-4 md:gap-0">
                         {/* Logo Section */}
-                        <div className="flex items-center gap-4">
+                        <Link to="/" className="flex items-center gap-4">
                             <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-16 w-auto object-contain" />
                             <div className="flex flex-col items-start">
                                 <h1 className="text-xl md:text-2xl font-bold text-blue-700 leading-tight">
@@ -23,7 +46,7 @@ const LandingPage = () => {
                                     Deemed University
                                 </p>
                             </div>
-                        </div>
+                        </Link>
 
                         {/* Navigation Links */}
                         <nav className="flex items-center gap-6 text-sm font-medium">
@@ -38,6 +61,27 @@ const LandingPage = () => {
                     </div>
                 </div>
             </header>
+
+            {/* Notices Marquee */}
+            {notices.length > 0 && (
+                <div className="bg-yellow-50 border-b border-yellow-100 overflow-hidden">
+                    <div className="container mx-auto px-4 py-2 flex items-center gap-2">
+                        <span className="flex-shrink-0 bg-yellow-200 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wide">
+                            Notice
+                        </span>
+                        <div className="flex-1 overflow-hidden relative h-6">
+                            <div className="animate-marquee whitespace-nowrap absolute top-0 left-0 flex gap-8 items-center h-full">
+                                {notices.map((notice) => (
+                                    <span key={notice.id} className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                        <Bell className="w-3 h-3 text-yellow-600" />
+                                        {notice.title}: {notice.content && notice.content.substring(0, 100)}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Hero Section */}
             <section className="relative bg-gradient-to-br from-blue-50 via-white to-slate-50 py-20 md:py-32 overflow-hidden">
@@ -62,8 +106,8 @@ const LandingPage = () => {
                                 Get Started
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </Link>
-                            <a href="#features" className="w-full sm:w-auto px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold text-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-300">
-                                Learn More
+                            <a href="#scholarships" className="w-full sm:w-auto px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold text-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-300">
+                                View Scholarships
                             </a>
                         </div>
                     </div>
@@ -74,8 +118,59 @@ const LandingPage = () => {
                 <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 w-[500px] h-[500px] bg-indigo-200/30 rounded-full blur-3xl -z-10"></div>
             </section>
 
+            {/* Active Scholarships Section */}
+            <section id="scholarships" className="py-20 bg-white">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Available Scholarships</h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            Browse currently active scholarships. Login to apply.
+                        </p>
+                    </div>
+
+                    {loading ? (
+                        <div className="text-center py-12">
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+                            <p className="mt-2 text-slate-500">Loading scholarships...</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {scholarships.length > 0 ? (
+                                scholarships.map((sch) => (
+                                    <div key={sch.id} className="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col">
+                                        <div className="p-6 flex-1">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
+                                                    {sch.category}
+                                                </span>
+                                                <span className="text-sm text-slate-500 font-medium">
+                                                    Due: {sch.last_date ? new Date(sch.last_date).toLocaleDateString() : 'Open'}
+                                                </span>
+                                            </div>
+                                            <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2">{sch.name}</h3>
+                                            <p className="text-slate-600 text-sm line-clamp-3 mb-4">
+                                                {sch.description || 'No description available.'}
+                                            </p>
+                                        </div>
+                                        <div className="p-6 bg-white border-t border-slate-100 mt-auto">
+                                            <Link to="/login" className="block w-full text-center bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-bold py-2 rounded-xl transition-colors">
+                                                Apply Now
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="col-span-full text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                    <p className="text-slate-500 font-medium">No active scholarships at the moment.</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </section>
+
             {/* Features Section */}
-            <section id="features" className="py-20 bg-white">
+            <section id="features" className="py-20 bg-slate-50/50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why MITS Scholar?</h2>

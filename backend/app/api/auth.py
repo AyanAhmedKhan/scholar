@@ -125,8 +125,11 @@ def login_google(
         idinfo = id_token.verify_oauth2_token(
             payload.token, requests.Request(), settings.GOOGLE_CLIENT_ID
         )
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid Google Token")
+    except ValueError as e:
+        logger.error(f"Google Token Verification Failed: {str(e)}")
+        # Log the received token and expected client ID for debugging (be careful with logs in prod)
+        # logger.error(f"Expected Client ID: {settings.GOOGLE_CLIENT_ID}")
+        raise HTTPException(status_code=400, detail=f"Invalid Google Token: {str(e)}")
 
     email = idinfo.get("email")
     google_id = idinfo.get("sub")

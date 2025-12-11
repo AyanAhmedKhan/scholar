@@ -248,3 +248,23 @@ class ApplicationResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+# --- Notice Schemas ---
+class NoticeBase(BaseModel):
+    title: str
+    content: Optional[str] = None
+    is_active: bool = True
+
+class NoticeCreate(NoticeBase):
+    pass
+
+class NoticeUpdate(NoticeBase):
+    pass
+
+class NoticeResponse(NoticeBase):
+    id: int
+    created_at: datetime
+    created_by: int
+
+    class Config:
+        from_attributes = True

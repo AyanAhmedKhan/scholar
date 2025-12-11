@@ -35,10 +35,16 @@ def create_user_profile(
     """
     Create user profile
     """
-    # Check if profile already exists
+    # Check if profile already exists for this user
     existing_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
     if existing_profile:
-        raise HTTPException(status_code=400, detail="Profile already exists")
+        raise HTTPException(status_code=400, detail="Profile already exists for this user")
+
+    # Check if enrollment number is already used by another user
+    if profile_in.enrollment_no:
+        existing_enrollment = db.query(StudentProfile).filter(StudentProfile.enrollment_no == profile_in.enrollment_no).first()
+        if existing_enrollment:
+             raise HTTPException(status_code=400, detail="Enrollment number already registered")
     
     try:
         # Filter out None values to avoid setting NULL explicitly where not needed
@@ -56,6 +62,9 @@ def create_user_profile(
     except Exception as e:
         logger.error(f"Error creating profile for user {current_user.id}: {e}", exc_info=True)
         db.rollback()
+        # Check for integrity error in string if specific exception catching is hard without import
+        if "Duplicate entry" in str(e):
+             raise HTTPException(status_code=400, detail="Duplicate data entry (e.g., enrollment number or email)")
         raise HTTPException(status_code=500, detail=f"Failed to create profile: {str(e)}")
 
 @router.put("/me", response_model=schemas.StudentProfileResponse)

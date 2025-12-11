@@ -65,7 +65,7 @@ const Login = () => {
 
                 <div className="relative z-10">
                     <div className="flex items-center gap-4 mb-8">
-                        <img src="/mits-logo.png" alt="MITS Logo" className="h-16 w-auto object-contain bg-white/10 rounded-lg p-1" />
+                        <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-16 w-auto object-contain bg-white/10 rounded-lg p-1" />
                         <div className="flex flex-col">
                             <span className="text-2xl font-bold tracking-tight leading-none">MITS Scholar</span>
                             <span className="text-sm text-blue-200 font-medium">Madhav Institute of Technology & Science</span>

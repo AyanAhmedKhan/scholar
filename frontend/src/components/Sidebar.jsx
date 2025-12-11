@@ -30,11 +30,9 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         <div className="flex flex-col h-full bg-white border-r border-slate-200">
             {/* Logo */}
             <div className="p-6 flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center text-white font-display font-bold text-xl shadow-sm">
-                    S
-                </div>
-                <span className="font-display font-bold text-xl tracking-tight text-slate-800">
-                    Scholarship<span className="text-primary-600">Portal</span>
+                <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-10 w-auto object-contain" />
+                <span className="font-display font-bold text-lg tracking-tight text-slate-800">
+                    MITS <span className="text-primary-600">Scholar</span>
                 </span>
             </div>
 

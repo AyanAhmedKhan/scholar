@@ -21,6 +21,18 @@ def read_scholarships(
     scholarships = db.query(Scholarship).filter(Scholarship.is_active == True).offset(skip).limit(limit).all()
     return scholarships
 
+@router.get("/public", response_model=List[schemas.ScholarshipResponse])
+def read_public_scholarships(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+) -> Any:
+    """
+    Retrieve public active scholarships (No Auth)
+    """
+    scholarships = db.query(Scholarship).filter(Scholarship.is_active == True).offset(skip).limit(limit).all()
+    return scholarships
+
 from app.core.eligibility import check_eligibility
 from app.models.student import StudentProfile
 

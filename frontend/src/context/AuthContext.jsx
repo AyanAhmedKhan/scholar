@@ -37,14 +37,20 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        let token = null;
+        try {
+            token = localStorage.getItem('token');
+        } catch (e) {
+            console.warn("Storage access denied", e);
+        }
+
         if (token) {
             try {
                 const decoded = jwtDecode(token);
                 // We need the role. I will update the backend to include it in the token.
                 setUser({ id: decoded.sub, role: decoded.role, email: decoded.sub });
             } catch (e) {
-                localStorage.removeItem('token');
+                try { localStorage.removeItem('token'); } catch (err) { }
             }
         }
         setLoading(false);
@@ -59,7 +65,10 @@ export const AuthProvider = ({ children }) => {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         const { access_token } = response.data;
-        localStorage.setItem('token', access_token);
+        try {
+            localStorage.setItem('token', access_token);
+        } catch (e) { console.warn("Storage save failed", e); }
+
         const decoded = jwtDecode(access_token);
         setUser({ id: decoded.sub, role: decoded.role, email: email }); // Ensure backend sends role
         return decoded;
@@ -68,14 +77,18 @@ export const AuthProvider = ({ children }) => {
     const googleLogin = async (token) => {
         const response = await api.post('/auth/login/google', { token });
         const { access_token } = response.data;
-        localStorage.setItem('token', access_token);
+        try {
+            localStorage.setItem('token', access_token);
+        } catch (e) { console.warn("Storage save failed", e); }
         const decoded = jwtDecode(access_token);
         setUser({ id: decoded.sub, role: decoded.role });
         return decoded;
     }
 
     const logout = () => {
-        localStorage.removeItem('token');
+        try {
+            localStorage.removeItem('token');
+        } catch (e) { console.warn("Storage clear failed", e); }
         setUser(null);
         window.location.href = '/login';
     };
