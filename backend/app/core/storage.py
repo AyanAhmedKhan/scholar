@@ -154,7 +154,12 @@ def copy_file(
         filename = f"{stem}_{timestamp}{suffix}"
         dest_file_path = destination_dir / filename
         
-    shutil.copy2(source_abs_path, dest_file_path)
+    # Try to hard link first (saves space, keeps same inode)
+    try:
+        os.link(source_abs_path, dest_file_path)
+    except OSError:
+        # Fallback to copy if hard link fails (e.g. cross-device)
+        shutil.copy2(source_abs_path, dest_file_path)
     
     # Calculate relative path from MEDIA_DIR
     try:
@@ -168,3 +173,37 @@ def copy_file(
         except ValueError:
             # Fallback: return absolute path converted to forward slashes
             return f"/{dest_file_path.as_posix().replace(os.sep, '/')}"
+
+def delete_file(path_str: str) -> bool:
+    """
+    Delete a file from the filesystem.
+    
+    Args:
+        path_str: Relative path stored in DB
+        
+    Returns:
+        bool: True if deleted, False if not found/error
+    """
+    if not path_str:
+        return False
+        
+    try:
+        # Resolve path similar to copy_file
+        clean_path = path_str.lstrip("/")
+        
+        if clean_path.startswith(settings.MEDIA_DIR + "/") or clean_path.startswith(settings.MEDIA_DIR + "\\"):
+            abs_path = Path(os.getcwd()) / clean_path
+        else:
+            abs_path = Path(clean_path).resolve()
+            if not abs_path.exists():
+                abs_path = Path(os.getcwd()) / clean_path
+            if not abs_path.exists():
+                abs_path = Path(os.getcwd()) / settings.MEDIA_DIR / clean_path
+                
+        if abs_path.exists() and abs_path.is_file():
+            os.remove(abs_path)
+            return True
+        return False
+    except Exception as e:
+        print(f"Error deleting file {path_str}: {e}")
+        return False

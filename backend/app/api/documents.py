@@ -80,7 +80,7 @@ async def upload_document(
     # In real app, check file.content_type and size against DocumentFormat if format_id provided
     
     # Save File
-    from app.core.storage import get_storage_path, save_upload_file
+    from app.core.storage import get_storage_path, save_upload_file, delete_file
     
     # Determine document type name for folder structure
     if document_format_id:
@@ -107,6 +107,8 @@ async def upload_document(
         ).all()
         for doc in old_docs:
             doc.is_active = False
+            # Physical deletion
+            delete_file(doc.file_path)
     else:
         # Fallback to string type versioning
         old_docs = db.query(StudentDocument).filter(
@@ -116,6 +118,8 @@ async def upload_document(
         ).all()
         for doc in old_docs:
             doc.is_active = False
+            # Physical deletion
+            delete_file(doc.file_path)
 
     # Create DB Entry
     db_doc = StudentDocument(
