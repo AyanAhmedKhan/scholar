@@ -77,8 +77,24 @@ async def upload_document(
     If same type exists, it deactivates old one (Versioning).
     """
     # Validate File
-    # In real app, check file.content_type and size against DocumentFormat if format_id provided
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+        
+    # Check size (e.g. 5MB hard limit for now, or use DocumentFormat.max_size_mb)
+    file_size = 0
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    file.file.seek(0)
     
+    max_mb = 5 
+    if document_format_id:
+        fmt = db.query(DocumentFormat).filter(DocumentFormat.id == document_format_id).first()
+        if fmt and fmt.max_size_mb:
+            max_mb = fmt.max_size_mb
+            
+    if file_size > max_mb * 1024 * 1024:
+        raise HTTPException(status_code=400, detail=f"File too large. Maximum size is {max_mb}MB")
+
     # Save File
     from app.core.storage import get_storage_path, save_upload_file, delete_file
     
@@ -97,6 +113,8 @@ async def upload_document(
     
     saved_path = save_upload_file(file, destination_dir)
         
+    files_to_delete = []
+
     # Handle Versioning
     if document_format_id:
         # Deactivate old docs of same format
@@ -107,8 +125,7 @@ async def upload_document(
         ).all()
         for doc in old_docs:
             doc.is_active = False
-            # Physical deletion
-            delete_file(doc.file_path)
+            files_to_delete.append(doc.file_path)
     else:
         # Fallback to string type versioning
         old_docs = db.query(StudentDocument).filter(
@@ -118,8 +135,7 @@ async def upload_document(
         ).all()
         for doc in old_docs:
             doc.is_active = False
-            # Physical deletion
-            delete_file(doc.file_path)
+            files_to_delete.append(doc.file_path)
 
     # Create DB Entry
     db_doc = StudentDocument(
@@ -132,6 +148,11 @@ async def upload_document(
     db.add(db_doc)
     db.commit()
     db.refresh(db_doc)
+    
+    # Safe to delete physical files now that DB is consistent
+    for f_path in files_to_delete:
+        delete_file(f_path)
+        
     return db_doc
 
 @router.get("/", response_model=List[schemas.StudentDocumentResponse])
