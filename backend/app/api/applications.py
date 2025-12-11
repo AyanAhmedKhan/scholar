@@ -264,16 +264,17 @@ def get_renewable_scholarships(
         Application.status == ApplicationStatus.APPROVED
     ).all()
     
-    renewable_scholarships = []
+    renewable_scholarships_dict = {}
     for app in approved_apps:
-        scholarship = db.query(Scholarship).filter(Scholarship.id == app.scholarship_id).first()
-        if scholarship and scholarship.is_renewable:
-            # Check if user's batch can renew (based on batch if configured)
-            # For now, if scholarship is renewable, allow renewal
-            # TODO: Add batch checking when student profile has batch/session info
-            renewable_scholarships.append(scholarship)
+        if app.scholarship_id not in renewable_scholarships_dict:
+            scholarship = db.query(Scholarship).filter(Scholarship.id == app.scholarship_id).first()
+            if scholarship and scholarship.is_renewable:
+                # Check if user's batch can renew (based on batch if configured)
+                # For now, if scholarship is renewable, allow renewal
+                # TODO: Add batch checking when student profile has batch/session info
+                renewable_scholarships_dict[app.scholarship_id] = scholarship
     
-    return renewable_scholarships
+    return list(renewable_scholarships_dict.values())
 
 class RenewalCreate(BaseModel):
     scholarship_id: int
