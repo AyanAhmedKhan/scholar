@@ -108,6 +108,7 @@ const ScholarshipManagement = () => {
                 allowed_batches_renewal: formData.allowed_batches_renewal.map(id => parseInt(id)),
             };
 
+            console.log("Submitting Payload:", payload); // Debugging
             if (editing) {
                 await api.put(`/scholarships/${editing.id}`, payload);
                 showToast("Scholarship updated successfully!");
@@ -129,7 +130,9 @@ const ScholarshipManagement = () => {
             mutually_exclusive_ids: [], required_documents: [], required_profile_fields: [],
             min_12th_percentage: '', min_cgpa: '', max_family_income: '', govt_job_allowed: true,
             allowed_categories: [], notify_students: true,
-            allowed_batches_new: [], allowed_batches_renewal: [], is_renewable: false
+            allowed_categories: [], notify_students: true,
+            allowed_batches_new: [], allowed_batches_renewal: [], is_renewable: false,
+            application_link: ''
         });
     };
 
@@ -186,7 +189,8 @@ const ScholarshipManagement = () => {
             notify_students: true,
             allowed_batches_new: sch.allowed_batches_new || [],
             allowed_batches_renewal: sch.allowed_batches_renewal || [],
-            is_renewable: sch.is_renewable || false
+            is_renewable: sch.is_renewable || false,
+            application_link: sch.application_link || ''
         });
         setActiveTab('form');
     };
@@ -298,8 +302,8 @@ const ScholarshipManagement = () => {
                         <button
                             onClick={() => setActiveTab('list')}
                             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'list'
-                                    ? 'border-primary-600 text-primary-600'
-                                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                                ? 'border-primary-600 text-primary-600'
+                                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
                                 }`}
                         >
                             📋 All Scholarships
@@ -307,8 +311,8 @@ const ScholarshipManagement = () => {
                         <button
                             onClick={() => setActiveTab('form')}
                             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'form'
-                                    ? 'border-primary-600 text-primary-600'
-                                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                                ? 'border-primary-600 text-primary-600'
+                                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
                                 }`}
                         >
                             {editing ? '✏️ Edit Scholarship' : '➕ Create Scholarship'}
@@ -627,8 +631,8 @@ const ScholarshipManagement = () => {
                                                 type="button"
                                                 onClick={() => toggleCategory(cat)}
                                                 className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${formData.allowed_categories?.includes(cat)
-                                                        ? 'bg-primary-100 text-primary-700 border-primary-200'
-                                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                                                    ? 'bg-primary-100 text-primary-700 border-primary-200'
+                                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                                                     }`}
                                             >
                                                 {cat}

@@ -73,6 +73,7 @@ def create_scholarship(
             allowed_batches_renewal=scholarship_in.allowed_batches_renewal,
             required_profile_fields=scholarship_in.required_profile_fields,
             is_renewable=scholarship_in.is_renewable or False,
+            application_link=scholarship_in.application_link,
             is_active=True
         )
         db.add(scholarship)
@@ -168,6 +169,7 @@ def update_scholarship(
     scholarship.allowed_batches_renewal = scholarship_in.allowed_batches_renewal
     scholarship.required_profile_fields = scholarship_in.required_profile_fields
     scholarship.is_renewable = scholarship_in.is_renewable or False
+    scholarship.application_link = scholarship_in.application_link
     
     # Update requirements: Delete old and add new (Simple approach)
     db.query(ScholarshipDocumentRequirement).filter(ScholarshipDocumentRequirement.scholarship_id == scholarship.id).delete()
