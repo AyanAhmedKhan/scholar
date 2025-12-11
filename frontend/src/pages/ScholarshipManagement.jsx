@@ -334,7 +334,10 @@ const ScholarshipManagement = () => {
                                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-2">
-                                                    <h3 className="text-xl font-bold text-slate-800">{sch.name}</h3>
+                                                    <h3 className="text-xl font-bold text-slate-800">
+                                                        <span className="text-slate-400 font-mono mr-2">#{sch.id}</span>
+                                                        {sch.name}
+                                                    </h3>
                                                     {sch.is_renewable && (
                                                         <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                                                             🔄 Renewable
