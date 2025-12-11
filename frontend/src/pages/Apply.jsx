@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import DocumentUploader from '../components/DocumentUploader';
 import MergedPDFButton from '../components/MergedPDFButton';
@@ -61,6 +61,7 @@ const extractActualName = (fullName, enrollmentNo) => {
 const Apply = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const [scholarship, setScholarship] = useState(null);
     const [myDocs, setMyDocs] = useState([]);
     const [profile, setProfile] = useState(null);
@@ -75,7 +76,10 @@ const Apply = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [departments, setDepartments] = useState([]);
     const [toast, setToast] = useState(null);
+
     const [docDecisions, setDocDecisions] = useState({}); // Track user decision for each doc: 'confirmed' or 'replacing'
+    const [correctionMode, setCorrectionMode] = useState(location.state?.correctionMode || false);
+    const [adminRemarks, setAdminRemarks] = useState(location.state?.adminRemarks || '');
 
     const showToast = (message, type = 'success') => {
         setToast({ message, type });
@@ -177,12 +181,13 @@ const Apply = () => {
                 throw new Error("Invalid scholarship ID");
             }
 
-            const [schRes, docsRes, profileRes, userRes, deptRes] = await Promise.all([
+            const [schRes, docsRes, profileRes, userRes, deptRes, appsRes] = await Promise.all([
                 api.get(`/scholarships/${scholarshipId}`),
                 api.get('/documents/'),
                 profilePromise,
                 userInfoPromise,
                 api.get('/university/departments').catch(() => ({ data: [] })),
+                api.get('/applications/').catch(() => ({ data: [] })),
             ]);
 
             setDepartments(deptRes.data || []);
@@ -194,6 +199,32 @@ const Apply = () => {
             setScholarship(schRes.data);
             setMyDocs(docsRes.data || []);
             setUserInfo(userRes.data);
+
+            // Check for existing application
+            const existingApp = appsRes.data?.find(app => app.scholarship_id === scholarshipId);
+            if (existingApp) {
+                setApplicationId(existingApp.id);
+
+                if (existingApp.status === 'docs_required') {
+                    // Enable Correction Mode
+                    setCorrectionMode(true);
+                    setAdminRemarks(existingApp.remarks || ''); // Actually remarks field on app is usually student's remarks? 
+                    // Wait, looking at ApplicationStatus.jsx: application.remarks is used for Admin Remarks?
+                    // Let's check backend model. remarks = Column(Text, nullable=True).
+                    // Usually this is "Student Remarks". Admin remarks might be separate?
+                    // Re-checking Application model: remarks is typically student remarks.
+                    // But ApplicationStatus.jsx says: <strong>Remarks:</strong> {application.remarks} inside status box.
+                    // If G-Office sets generic remarks, it ends up in same column unless there's a separate one.
+                    // The backend `update_application_status` usually sets `remarks` if provided.
+                    // If backend updates `remarks` with admin message, then we show it.
+                    setAdminRemarks(existingApp.remarks);
+                    showToast('Action Required: Please correct your application.', 'warning');
+                } else if (existingApp.status !== 'rejected') {
+                    // Redirect to status page if already applied (and not rejected/correction)
+                    navigate(`/application-status/${existingApp.id}`);
+                    return;
+                }
+            }
 
             if (profileRes.data) {
                 setProfile(profileRes.data);
@@ -333,38 +364,45 @@ const Apply = () => {
     };
 
     const handleSubmit = async (isDraft = false) => {
-        if (!id || !scholarship) {
-            showToast("Scholarship information is missing. Please try again.", "error");
-            return;
-        }
-
-        const scholarshipId = parseInt(id);
-        if (isNaN(scholarshipId)) {
-            showToast("Invalid scholarship ID. Please try again.", "error");
-            return;
-        }
-
+        setLoading(true);
         try {
-            const res = await api.post('/applications/apply', {
-                scholarship_id: scholarshipId,
-                remarks: remarks || null,
-                is_draft: isDraft
-            });
-            setApplicationId(res.data?.id);
-            setSubmissionMessage(isDraft ? 'Draft saved. You can continue later.' : 'Application submitted successfully.');
-            setStep(3);
+            if (correctionMode) {
+                // UPDATE existing application
+                const res = await api.put(`/applications/${applicationId}`, {
+                    remarks: remarks || null
+                });
+                // setSubmissionMessage('Application corrected and resubmitted successfully.');
+                navigate('/dashboard', {
+                    state: {
+                        message: 'Application corrected and resubmitted successfully.',
+                        type: 'success'
+                    }
+                });
+            } else {
+                // CREATE new application
+                const res = await api.post('/applications/apply', {
+                    scholarship_id: scholarship.id,
+                    remarks: remarks || null,
+                    is_draft: isDraft
+                });
+                setApplicationId(res.data?.id);
+                // setSubmissionMessage(isDraft ? 'Draft saved. You can continue later.' : 'Application submitted successfully.');
+                navigate('/dashboard', {
+                    state: {
+                        message: isDraft ? 'Application draft saved successfully.' : 'Application submitted successfully!',
+                        type: 'success'
+                    }
+                });
+            }
+            // setStep(3); // Removed step 3 as we redirect now
         } catch (e) {
             const errorMsg = e.response?.data?.detail || e.message || "Action failed";
             showToast(errorMsg, "error");
             console.error("Application submission error:", e);
+        } finally {
+            setLoading(false);
         }
     };
-
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-        </div>
-    );
 
     if (!scholarship) return <div>Scholarship not found</div>;
 
@@ -383,9 +421,72 @@ const Apply = () => {
         <div className="max-w-4xl mx-auto space-y-8 pb-12 px-4">
             {/* Header */}
             <div className="text-center space-y-2 pt-6">
-                <h1 className="text-3xl font-bold text-slate-900 font-display">Apply for Scholarship</h1>
-                <p className="text-slate-600">Complete the steps below to submit your application.</p>
+                <h1 className="text-3xl font-bold text-slate-900 font-display">
+                    {correctionMode ? 'Correct Your Application' : 'Apply for Scholarship'}
+                </h1>
+                <p className="text-slate-600">
+                    {correctionMode ? 'Review the remarks below and update your application.' : 'Complete the steps below to submit your application.'}
+                </p>
             </div>
+
+            {/* Admin Remarks Banner */}
+            {correctionMode && adminRemarks && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 shadow-sm animate-pulse-slow">
+                    <div className="flex gap-4">
+                        <div className="p-3 bg-amber-100 rounded-lg h-fit text-amber-700">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-amber-800 mb-1">Action Required</h3>
+                            <p className="text-amber-700 font-medium mb-2">The scholarship office has requested changes to your application:</p>
+                            <div className="bg-white/60 p-3 rounded-lg border border-amber-100 text-amber-900 text-sm font-medium">
+                                {(() => {
+                                    // Parse the remarks
+                                    let actionText = "";
+                                    let notesText = "";
+
+                                    if (adminRemarks.includes("ACTION REQUIRED:")) {
+                                        const parts = adminRemarks.split("NOTES:");
+                                        actionText = parts[0].replace("ACTION REQUIRED:", "").trim();
+                                        if (parts.length > 1) notesText = parts[1].trim();
+                                    } else {
+                                        notesText = adminRemarks;
+                                    }
+
+                                    const actionItems = actionText
+                                        ? actionText.split('\n').map(l => l.trim()).filter(l => l.startsWith('-'))
+                                        : [];
+
+                                    return (
+                                        <div className="space-y-4">
+                                            {actionItems.length > 0 && (
+                                                <div className="bg-white/80 p-4 rounded-lg border border-amber-100">
+                                                    <h4 className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2">Fix Checklist</h4>
+                                                    <ul className="space-y-2">
+                                                        {actionItems.map((item, idx) => (
+                                                            <li key={idx} className="flex items-start gap-2 text-sm text-amber-900">
+                                                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0"></span>
+                                                                <span>{item.substring(1).trim()}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {notesText && (
+                                                <div className="bg-amber-100/50 p-3 rounded-lg text-sm text-amber-800 italic border-l-4 border-amber-400">
+                                                    <span className="font-bold not-italic mr-1">Note:</span>
+                                                    {notesText}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Progress Bar */}
             <div className="relative">
@@ -889,14 +990,25 @@ const Apply = () => {
                                                     </div>
                                                 ) : decision === 'confirmed' ? (
                                                     // State 1: Confirmed (Green)
-                                                    <div className="text-xs text-slate-500 pl-1 flex items-center justify-between">
-                                                        <span>Using <strong>{uploadedDoc.file_path.split('/').pop()}</strong> from vault.</span>
-                                                        <button
-                                                            onClick={() => setDocDecisions(prev => ({ ...prev, [req.document_format_id]: undefined }))}
-                                                            className="text-primary-600 hover:underline ml-2"
-                                                        >
-                                                            Change
-                                                        </button>
+                                                    <div className="text-xs text-slate-500 pl-1 flex flex-col gap-2">
+                                                        <div className="flex items-center justify-between">
+                                                            <span>Using <strong>{uploadedDoc.file_path.split('/').pop()}</strong> from vault.</span>
+                                                            <button
+                                                                onClick={() => setDocDecisions(prev => ({ ...prev, [req.document_format_id]: undefined }))}
+                                                                className="text-primary-600 hover:underline ml-2"
+                                                            >
+                                                                Change
+                                                            </button>
+                                                        </div>
+                                                        {uploadedDoc.is_verified === false && uploadedDoc.remarks && (
+                                                            <div className="bg-red-50 border border-red-200 rounded p-2 text-xs text-red-700 flex items-start gap-2">
+                                                                <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                                <div>
+                                                                    <span className="font-bold block mb-0.5">Integration Rejected:</span>
+                                                                    {uploadedDoc.remarks}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 ) : (
                                                     // State 2: Replacing (Show Uploader)
@@ -1065,7 +1177,7 @@ const Apply = () => {
                             onClick={() => handleSubmit(false)}
                             className="flex-[2] bg-primary-600 text-white py-3 rounded-xl font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-900/20"
                         >
-                            Submit Application
+                            {correctionMode ? 'Correct Your Application' : 'Submit Application'}
                         </button>
                     </div>
                 </div>

@@ -155,12 +155,12 @@ const ScholarshipDetails = () => {
                                         )}
                                     </ul>
 
-                                    {!scholarship.eligibility_criteria && 
-                                     !scholarship.min_percentage && 
-                                     !scholarship.max_family_income && 
-                                     (!scholarship.allowed_categories || scholarship.allowed_categories.length === 0) && (
-                                        <p className="text-slate-500 italic">No specific eligibility criteria defined.</p>
-                                    )}
+                                    {!scholarship.eligibility_criteria &&
+                                        !scholarship.min_percentage &&
+                                        !scholarship.max_family_income &&
+                                        (!scholarship.allowed_categories || scholarship.allowed_categories.length === 0) && (
+                                            <p className="text-slate-500 italic">No specific eligibility criteria defined.</p>
+                                        )}
                                 </div>
                             </section>
                         </div>
@@ -177,6 +177,21 @@ const ScholarshipDetails = () => {
                                         <span className="text-slate-500">Duration</span>
                                         <span className="font-semibold text-slate-900">One Time</span>
                                     </div>
+                                    {scholarship.application_link && (
+                                        <div className="pt-2">
+                                            <a
+                                                href={scholarship.application_link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center justify-center w-full px-4 py-2.5 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors shadow-sm mb-3"
+                                            >
+                                                External Application Link ↗
+                                            </a>
+                                            <p className="text-xs text-slate-500 text-center mb-2">
+                                                This scholarship requires application via an external portal.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <Link

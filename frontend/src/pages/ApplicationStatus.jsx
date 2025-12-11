@@ -90,11 +90,11 @@ const ApplicationStatus = () => {
                             {scholarship?.category && <span className="inline-block mt-2 text-xs font-semibold bg-white/60 px-2.5 py-1 rounded-full border border-slate-200">{scholarship.category}</span>}
                         </div>
                         <div className={`px-4 py-2 rounded-full text-sm font-bold border flex items-center gap-2 
-                            ${statusInfo.color === 'green' ? 'bg-green-100 text-green-700 border-green-200' : 
-                              statusInfo.color === 'red' ? 'bg-red-100 text-red-700 border-red-200' : 
-                              statusInfo.color === 'blue' ? 'bg-blue-100 text-blue-700 border-blue-200' : 
-                              statusInfo.color === 'orange' ? 'bg-orange-100 text-orange-700 border-orange-200' : 
-                              'bg-amber-100 text-amber-700 border-amber-200'}`}>
+                            ${statusInfo.color === 'green' ? 'bg-green-100 text-green-700 border-green-200' :
+                                statusInfo.color === 'red' ? 'bg-red-100 text-red-700 border-red-200' :
+                                    statusInfo.color === 'blue' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                                        statusInfo.color === 'orange' ? 'bg-orange-100 text-orange-700 border-orange-200' :
+                                            'bg-amber-100 text-amber-700 border-amber-200'}`}>
                             <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${statusInfo.color === 'green' ? 'bg-green-500' : statusInfo.color === 'red' ? 'bg-red-500' : statusInfo.color === 'blue' ? 'bg-blue-500' : statusInfo.color === 'orange' ? 'bg-orange-500' : 'bg-amber-500'}`}></span>
                             {statusInfo.label}
                         </div>
@@ -105,6 +105,23 @@ const ApplicationStatus = () => {
                     <div className={`mb-8 p-4 rounded-xl border ${statusInfo.color === 'green' ? 'bg-green-50 border-green-100' : statusInfo.color === 'red' ? 'bg-red-50 border-red-100' : statusInfo.color === 'blue' ? 'bg-blue-50 border-blue-100' : statusInfo.color === 'orange' ? 'bg-orange-50 border-orange-100' : 'bg-amber-50 border-amber-100'}`}>
                         <p className={`font-medium ${statusInfo.color === 'green' ? 'text-green-800' : statusInfo.color === 'red' ? 'text-red-800' : statusInfo.color === 'blue' ? 'text-blue-800' : statusInfo.color === 'orange' ? 'text-orange-800' : 'text-amber-800'}`}>{statusInfo.message}</p>
                         {application.remarks && <p className={`mt-2 text-sm ${statusInfo.color === 'green' ? 'text-green-700' : statusInfo.color === 'red' ? 'text-red-700' : 'text-amber-700'}`}><strong>Remarks:</strong> {application.remarks}</p>}
+
+                        {application.status === 'docs_required' && (
+                            <div className="mt-4">
+                                <Link
+                                    to={`/apply/${application.scholarship_id}`}
+                                    state={{
+                                        correctionMode: true,
+                                        applicationId: application.id,
+                                        adminRemarks: application.remarks
+                                    }}
+                                    className="inline-flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
+                                >
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                    Correct Your Application
+                                </Link>
+                            </div>
+                        )}
                     </div>
 
                     <div className="relative mb-8">

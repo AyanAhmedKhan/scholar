@@ -13,11 +13,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-class UserResponse(UserBase):
-    id: int
-    is_active: bool
-    class Config:
-        from_attributes = True
+
 
 # Student Profile Schemas
 class StudentProfileBase(BaseModel):
@@ -66,6 +62,13 @@ class StudentProfileUpdate(StudentProfileBase):
 class StudentProfileResponse(StudentProfileBase):
     id: int
     user_id: int
+    class Config:
+        from_attributes = True
+
+class UserResponse(UserBase):
+    id: int
+    is_active: bool
+    profile: Optional[StudentProfileResponse] = None
     class Config:
         from_attributes = True
 
@@ -134,6 +137,7 @@ class ScholarshipBase(BaseModel):
     eligibility_criteria: Optional[str] = None
     last_date: Optional[date] = None
     mutually_exclusive_ids: Optional[List[int]] = []
+    application_link: Optional[str] = None
     
     # Eligibility Criteria
     min_percentage: Optional[float] = None
@@ -227,6 +231,7 @@ class ApplicationDocumentResponse(BaseModel):
     file_path: str
     is_verified: bool
     remarks: Optional[str] = None
+    document_format: Optional[DocumentFormatResponse] = None
     class Config:
         from_attributes = True
 
@@ -238,6 +243,7 @@ class ApplicationResponse(BaseModel):
     remarks: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
+    student: Optional[UserResponse] = None
     documents: List[ApplicationDocumentResponse] = []
     
     class Config:

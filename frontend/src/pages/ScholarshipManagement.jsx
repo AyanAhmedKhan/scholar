@@ -276,9 +276,8 @@ const ScholarshipManagement = () => {
 
             {/* Toast Notification */}
             {toast && (
-                <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium transition-all z-50 flex items-center gap-2 ${
-                    toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-                }`}>
+                <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium transition-all z-50 flex items-center gap-2 ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+                    }`}>
                     {toast.type === 'success' ? (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -298,21 +297,19 @@ const ScholarshipManagement = () => {
                     <nav className="flex -mb-px">
                         <button
                             onClick={() => setActiveTab('list')}
-                            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                                activeTab === 'list'
+                            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'list'
                                     ? 'border-primary-600 text-primary-600'
                                     : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-                            }`}
+                                }`}
                         >
                             📋 All Scholarships
                         </button>
                         <button
                             onClick={() => setActiveTab('form')}
-                            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                                activeTab === 'form'
+                            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'form'
                                     ? 'border-primary-600 text-primary-600'
                                     : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-                            }`}
+                                }`}
                         >
                             {editing ? '✏️ Edit Scholarship' : '➕ Create Scholarship'}
                         </button>
@@ -432,6 +429,16 @@ const ScholarshipManagement = () => {
                                         />
                                     </div>
                                     <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Application Link (Optional)</label>
+                                        <input
+                                            placeholder="https://example.com/apply"
+                                            value={formData.application_link || ''}
+                                            onChange={e => setFormData({ ...formData, application_link: e.target.value })}
+                                            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                        />
+                                        <p className="text-xs text-slate-500 mt-1">If provided, an "Official Application Link" button will be shown.</p>
+                                    </div>
+                                    <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-1.5">Category *</label>
                                         <input
                                             placeholder="e.g., Merit, Need-based"
@@ -485,7 +492,7 @@ const ScholarshipManagement = () => {
                             {/* Batch/Session Management */}
                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
                                 <h3 className="text-lg font-bold text-slate-800 mb-4">Batch & Renewal Management</h3>
-                                
+
                                 <div className="mb-4">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input
@@ -619,11 +626,10 @@ const ScholarshipManagement = () => {
                                                 key={cat}
                                                 type="button"
                                                 onClick={() => toggleCategory(cat)}
-                                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                                                    formData.allowed_categories?.includes(cat)
+                                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${formData.allowed_categories?.includes(cat)
                                                         ? 'bg-primary-100 text-primary-700 border-primary-200'
                                                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                                                }`}
+                                                    }`}
                                             >
                                                 {cat}
                                             </button>
@@ -701,9 +707,9 @@ const ScholarshipManagement = () => {
                                         </div>
                                     </div>
                                 ))}
-                                <button 
-                                    type="button" 
-                                    onClick={handleAddDoc} 
+                                <button
+                                    type="button"
+                                    onClick={handleAddDoc}
                                     className="text-primary-600 text-sm font-medium hover:underline flex items-center gap-1"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -758,20 +764,20 @@ const ScholarshipManagement = () => {
 
                             {/* Submit Buttons */}
                             <div className="flex gap-3">
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-sm"
                                 >
                                     {editing ? 'Update Scholarship' : 'Create Scholarship'}
                                 </button>
                                 {editing && (
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         onClick={() => {
                                             setEditing(null);
                                             resetForm();
                                             setActiveTab('list');
-                                        }} 
+                                        }}
                                         className="bg-slate-200 text-slate-700 px-8 py-3 rounded-lg font-semibold hover:bg-slate-300 transition-colors"
                                     >
                                         Cancel

@@ -12,6 +12,7 @@ class Scholarship(Base):
     eligibility_criteria = Column(Text)
     last_date = Column(Date)
     mutually_exclusive_ids = Column(JSON, nullable=True) # List of scholarship IDs
+    application_link = Column(String(500), nullable=True) # External application link
     
     # Eligibility Criteria
     min_percentage = Column(Float, nullable=True) # Deprecated or generic

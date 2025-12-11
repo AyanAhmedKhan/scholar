@@ -144,6 +144,98 @@ def apply_for_scholarship(
     
     return application
 
+class ApplicationUpdate(BaseModel):
+    remarks: Optional[str] = None
+
+@router.put("/{application_id}", response_model=schemas.ApplicationResponse)
+def update_application(
+    application_id: int,
+    application_in: ApplicationUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user),
+) -> Any:
+    """
+    Update/Resubmit an application (Correction)
+    Only allowed if status is DOCS_REQUIRED or DRAFT
+    """
+    application = db.query(Application).filter(Application.id == application_id).first()
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+        
+    if application.student_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    if application.status not in [ApplicationStatus.DOCS_REQUIRED, ApplicationStatus.DRAFT]:
+        raise HTTPException(status_code=400, detail="Application cannot be updated in current status")
+        
+    # Update Status and Remarks
+    application.status = ApplicationStatus.SUBMITTED
+    application.remarks = application_in.remarks # Student's new remarks
+    
+    # Re-link documents
+    student_docs = db.query(StudentDocument).filter(
+        StudentDocument.student_id == current_user.id,
+        StudentDocument.is_active == True
+    ).all()
+    
+    from app.core.storage import get_storage_path, copy_file
+    
+    for doc in student_docs:
+        # Find or create a format based on doc type
+        fmt = db.query(DocumentFormat).filter(DocumentFormat.name == doc.document_type).first()
+        if not fmt:
+            continue
+            
+        # Check if already linked
+        app_doc = db.query(ApplicationDocument).filter(
+            ApplicationDocument.application_id == application.id,
+            ApplicationDocument.document_format_id == fmt.id
+        ).first()
+        
+        dest_dir = get_storage_path(
+            category="application",
+            student_id=current_user.id,
+            scholarship_id=application.scholarship_id,
+            application_id=application.id
+        )
+        
+        try:
+            new_path = copy_file(doc.file_path, dest_dir)
+            
+            if app_doc:
+                # Update existing
+                app_doc.file_path = new_path
+                app_doc.is_verified = False # Reset verification
+            else:
+                # Create new
+                app_doc = ApplicationDocument(
+                    application_id=application.id,
+                    document_format_id=fmt.id,
+                    file_path=new_path,
+                    is_verified=False
+                )
+                db.add(app_doc)
+                
+        except FileNotFoundError as e:
+            logger.error(f"File missing during update for doc {doc.id}: {e}")
+            continue
+
+    db.commit()
+    db.refresh(application)
+    
+    # Audit
+    from app.core.audit_logger import log_action
+    log_action(
+        db, 
+        action="UPDATE_APPLICATION", 
+        user_id=current_user.id, 
+        target_type="Application", 
+        target_id=str(application.id),
+        details={"status": "SUBMITTED"}
+    )
+    
+    return application
+
 @router.get("/", response_model=List[schemas.ApplicationResponse])
 def get_my_applications(
     db: Session = Depends(get_db),

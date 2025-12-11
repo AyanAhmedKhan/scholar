@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, Float, ForeignKey, Boolean, DateTime, JSON
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 from app.db.database import Base
 
@@ -60,7 +60,7 @@ class StudentProfile(Base):
     # Residential
     residential_status = Column(String(20)) # Hosteler / Day Scholar
     
-    user = relationship("app.models.user.User", backref="profile")
+    user = relationship("app.models.user.User", backref=backref("profile", uselist=False))
 
 class StudentDocument(Base):
     __tablename__ = "student_documents"

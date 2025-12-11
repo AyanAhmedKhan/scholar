@@ -160,7 +160,13 @@ def get_all_applications(
     """
     Get all applications (Admin & GOffice)
     """
-    query = db.query(Application)
+    from sqlalchemy.orm import joinedload
+    from app.models.application import Application, ApplicationDocument
+    from app.models.user import User
+    query = db.query(Application).options(
+        joinedload(Application.documents).joinedload(ApplicationDocument.document_format),
+        joinedload(Application.student).joinedload(User.profile)
+    )
     if status:
         query = query.filter(Application.status == status)
     return query.offset(skip).limit(limit).all()
