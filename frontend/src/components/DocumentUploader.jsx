@@ -60,9 +60,19 @@ const DocumentUploader = ({ documentType, documentFormatId, onUploadSuccess, sho
                 <input
                     type="file"
                     name="file"
+                    accept="application/pdf"
                     className="w-full p-1.5 border border-slate-300 rounded-md bg-white"
                     required
-                    onChange={(ev) => setFile(ev.target.files?.[0] || null)}
+                    onChange={(ev) => {
+                        const selectedFile = ev.target.files?.[0];
+                        if (selectedFile && selectedFile.type !== 'application/pdf') {
+                            alert('Only PDF files are allowed');
+                            ev.target.value = '';
+                            setFile(null);
+                        } else {
+                            setFile(selectedFile || null);
+                        }
+                    }}
                 />
             </div>
             <button
