@@ -10,6 +10,7 @@ import Toast from '../components/Toast';
 const ALL_PROFILE_FIELDS = [
     { key: 'enrollment_no', label: 'Enrollment Number', type: 'text' },
     { key: 'department', label: 'Department', type: 'select', options: [] }, // Options populated dynamically
+    { key: 'branch', label: 'Branch', type: 'select', options: [] }, // Options populated dynamically
     { key: 'mobile_number', label: 'Mobile Number', type: 'text' },
     { key: 'date_of_birth', label: 'Date of Birth', type: 'date' },
     { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female'] },
@@ -75,6 +76,7 @@ const Apply = () => {
     const [step, setStep] = useState(1);
     const [userInfo, setUserInfo] = useState(null);
     const [departments, setDepartments] = useState([]);
+    const [branches, setBranches] = useState([]);
     const [toast, setToast] = useState(null);
 
     const [docDecisions, setDocDecisions] = useState({}); // Track user decision for each doc: 'confirmed' or 'replacing'
@@ -118,6 +120,21 @@ const Apply = () => {
     useEffect(() => {
         fetchData();
     }, [id]);
+
+    // Fetch branches when department changes in profile or draft
+    useEffect(() => {
+        const deptName = profileDraft?.department || profile?.department;
+        if (deptName && departments.length > 0) {
+            const selectedDept = departments.find(d => d.name === deptName);
+            if (selectedDept) {
+                api.get(`/university/branches?department_id=${selectedDept.id}`)
+                    .then(res => setBranches(res.data || []))
+                    .catch(err => console.error(err));
+            }
+        } else {
+            setBranches([]);
+        }
+    }, [profileDraft?.department, profile?.department, departments]);
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -489,25 +506,47 @@ const Apply = () => {
             )}
 
             {/* Progress Bar */}
-            <div className="relative">
-                <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-200 -translate-y-1/2 rounded-full"></div>
+            <div className="relative mb-12 px-4">
+                {/* Track background */}
+                <div className="absolute top-6 left-0 w-full h-1.5 bg-slate-100 -translate-y-1/2 rounded-full z-0"></div>
+                {/* Track fill */}
                 <div
-                    className="absolute top-1/2 left-0 h-1 bg-primary-600 -translate-y-1/2 rounded-full transition-all duration-500"
-                    style={{ width: `${(step / 3) * 100}%` }}
+                    className="absolute top-6 left-0 h-1.5 bg-gradient-to-r from-primary-600 to-indigo-600 -translate-y-1/2 rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(79,70,229,0.3)] z-0"
+                    style={{ width: `${((step - 1) / 2) * 100}%` }}
                 ></div>
-                <div className="relative flex justify-between">
-                    <div className="flex flex-col items-center gap-2">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${step >= 1 ? 'bg-primary-600 text-white shadow-glow-sm' : 'bg-slate-200 text-slate-500'}`}>1</div>
-                        <span className={`text-sm font-medium ${step >= 1 ? 'text-primary-700' : 'text-slate-500'}`}>Profile</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${step >= 2 ? 'bg-primary-600 text-white shadow-glow-sm' : 'bg-slate-200 text-slate-500'}`}>2</div>
-                        <span className={`text-sm font-medium ${step >= 2 ? 'text-primary-700' : 'text-slate-500'}`}>Documents</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${step >= 3 ? 'bg-primary-600 text-white shadow-glow-sm' : 'bg-slate-200 text-slate-500'}`}>3</div>
-                        <span className={`text-sm font-medium ${step >= 3 ? 'text-primary-700' : 'text-slate-500'}`}>Review & Submit</span>
-                    </div>
+                <div className="relative flex justify-between w-full">
+                    {[
+                        { num: 1, label: 'Profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+                        { num: 2, label: 'Documents', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+                        { num: 3, label: 'Review', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' }
+                    ].map((item, idx) => {
+                        const isActive = step >= item.num;
+                        const isCurrent = step === item.num;
+                        return (
+                            <div key={item.num} className="flex flex-col items-center gap-3 relative z-10 group cursor-default">
+                                <div
+                                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 transform ${isActive
+                                        ? 'bg-gradient-to-br from-primary-600 to-indigo-600 text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-110'
+                                        : 'bg-white text-slate-300 border-2 border-slate-100 shadow-sm'
+                                        } ${isCurrent ? 'ring-4 ring-primary-100 ring-offset-2' : ''}`}
+                                >
+                                    {isActive ? (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={item.icon} />
+                                        </svg>
+                                    ) : (
+                                        <span className="font-bold text-lg font-display">{item.num}</span>
+                                    )}
+                                </div>
+                                <span
+                                    className={`text-sm font-bold tracking-wide transition-colors duration-300 ${isActive ? 'text-indigo-900' : 'text-slate-400'
+                                        }`}
+                                >
+                                    {item.label}
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -615,16 +654,7 @@ const Apply = () => {
                                                             id={`create-field-${key}`}
                                                             value={inputValue}
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
-                                                            style={{
-                                                                width: '100%',
-                                                                padding: '10px 12px',
-                                                                border: '2px solid #cbd5e1',
-                                                                borderRadius: '8px',
-                                                                fontSize: '14px',
-                                                                color: '#0f172a',
-                                                                backgroundColor: '#ffffff',
-                                                                fontFamily: 'Inter, sans-serif'
-                                                            }}
+                                                            className="w-full px-3 py-2.5 border-2 border-slate-200 rounded-lg text-sm text-slate-900 bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all duration-300 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-[right_1rem_center] bg-no-repeat pr-10"
                                                         >
                                                             <option value="">Select Category</option>
                                                             <option value="General">General</option>
@@ -639,16 +669,7 @@ const Apply = () => {
                                                             id={`create-field-${key}`}
                                                             value={inputValue}
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
-                                                            style={{
-                                                                width: '100%',
-                                                                padding: '10px 12px',
-                                                                border: '2px solid #cbd5e1',
-                                                                borderRadius: '8px',
-                                                                fontSize: '14px',
-                                                                color: '#0f172a',
-                                                                backgroundColor: '#ffffff',
-                                                                fontFamily: 'Inter, sans-serif'
-                                                            }}
+                                                            className="w-full px-3 py-2.5 border-2 border-slate-200 rounded-lg text-sm text-slate-900 bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all duration-300 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-[right_1rem_center] bg-no-repeat pr-10"
                                                         >
                                                             <option value="">Select Department</option>
                                                             {departments.map(dept => (
@@ -665,23 +686,7 @@ const Apply = () => {
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
                                                             placeholder={`Enter ${label.toLowerCase()}`}
                                                             autoComplete="off"
-                                                            style={{
-                                                                width: '100%',
-                                                                padding: '10px 12px',
-                                                                border: '2px solid #cbd5e1',
-                                                                borderRadius: '8px',
-                                                                fontSize: '14px',
-                                                                lineHeight: '1.5',
-                                                                color: '#0f172a',
-                                                                backgroundColor: '#ffffff',
-                                                                fontFamily: 'Inter, sans-serif',
-                                                                WebkitTextFillColor: '#0f172a',
-                                                                opacity: '1',
-                                                                textShadow: 'none',
-                                                                WebkitAppearance: 'none',
-                                                                MozAppearance: 'none',
-                                                                appearance: 'none'
-                                                            }}
+                                                            className="w-full px-3 py-2.5 border-2 border-slate-200 rounded-lg text-sm text-slate-900 bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all duration-300 placeholder:text-slate-400"
                                                         />
                                                     )}
                                                 </div>
@@ -780,6 +785,10 @@ const Apply = () => {
                                             // Dynamic options for department
                                             if (key === 'department') {
                                                 options = departments.map(d => d.name);
+                                            }
+                                            // Dynamic options for branch
+                                            if (key === 'branch') {
+                                                options = branches.map(b => b.name);
                                             }
 
                                             const inputValue = (profileDraft && profileDraft[key] !== undefined)

@@ -225,14 +225,33 @@ def get_current_user_info(
     """
     # Get enrollment from profile if exists
     enrollment_no = None
+    is_profile_complete = False
+    
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
     if profile:
         enrollment_no = profile.enrollment_no
-    
+        
+        # Check completeness based on mandatory fields
+        # Mandatory: Session, Dept, Mobile, DOB, Gender, Father, Mother, Category, Income
+        mandatory_fields = [
+            profile.current_year_or_semester,
+            profile.department,
+            profile.branch,
+            profile.mobile_number,
+            profile.date_of_birth,
+            profile.gender,
+            profile.father_name,
+            profile.mother_name,
+            profile.category,
+            profile.annual_family_income
+        ]
+        is_profile_complete = all(field is not None and field != "" for field in mandatory_fields)
+
     return {
         "id": current_user.id,
         "email": current_user.email,
         "full_name": current_user.full_name,
         "role": current_user.role.value,
-        "enrollment_no": enrollment_no
+        "enrollment_no": enrollment_no,
+        "is_profile_complete": is_profile_complete
     }

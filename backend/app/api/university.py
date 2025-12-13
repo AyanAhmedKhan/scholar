@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.user import User, UserRole
-from app.models.university import Department, SessionYear
+from app.models.university import Department, SessionYear, Branch
 from app.schemas import schemas
 from app.api import deps
 
@@ -64,3 +64,39 @@ def create_session(
     db.commit()
     db.refresh(session)
     return session
+
+# --- Branches ---
+
+@router.get("/branches", response_model=List[schemas.BranchResponse])
+def get_branches(
+    department_id: int = None,
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Get branches, optionally filtered by department_id
+    """
+    query = db.query(Branch).filter(Branch.is_active == True)
+    if department_id:
+        query = query.filter(Branch.department_id == department_id)
+    return query.offset(skip).limit(limit).all()
+
+@router.post("/branches", response_model=schemas.BranchResponse)
+def create_branch(
+    branch_in: schemas.BranchCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.RoleChecker([UserRole.ADMIN])),
+) -> Any:
+    """
+    Create branch (Admin only)
+    """
+    branch = Branch(
+        name=branch_in.name, 
+        code=branch_in.code,
+        department_id=branch_in.department_id
+    )
+    db.add(branch)
+    db.commit()
+    db.refresh(branch)
+    return branch

@@ -19,6 +19,7 @@ class UserCreate(UserBase):
 class StudentProfileBase(BaseModel):
     enrollment_no: Optional[str] = None
     department: Optional[str] = None
+    branch: Optional[str] = None
     mobile_number: Optional[str] = None
     date_of_birth: Optional[date] = None
     gender: Optional[str] = None
@@ -184,6 +185,20 @@ class DepartmentUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 class DepartmentResponse(DepartmentBase):
+    id: int
+    is_active: bool
+    class Config:
+        from_attributes = True
+
+class BranchBase(BaseModel):
+    name: str
+    code: Optional[str] = None
+    department_id: int
+
+class BranchCreate(BranchBase):
+    pass
+
+class BranchResponse(BranchBase):
     id: int
     is_active: bool
     class Config:

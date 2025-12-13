@@ -12,6 +12,7 @@ class StudentProfile(Base):
     # Personal
     enrollment_no = Column(String(50), unique=True)
     department = Column(String(100))
+    branch = Column(String(100))
     mobile_number = Column(String(15))
     date_of_birth = Column(Date)
     gender = Column(String(10))
@@ -45,7 +46,7 @@ class StudentProfile(Base):
     branch_name = Column(String(100))
     
     # Education
-    current_year_or_semester = Column(String(20))
+    current_year_or_semester = Column(String(50))
     previous_exam_percentage = Column(Float)
     backlogs = Column(Integer, default=0)
     gap_year = Column(Boolean, default=False)

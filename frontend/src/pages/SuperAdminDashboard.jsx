@@ -15,15 +15,20 @@ const SuperAdminDashboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    
+
     // Department form state
     const [deptForm, setDeptForm] = useState({ name: '', code: '' });
     const [editingDept, setEditingDept] = useState(null);
-    
+
     // Session form state
     const [sessionForm, setSessionForm] = useState({ name: '' });
     const [editingSession, setEditingSession] = useState(null);
-    
+
+    // Branch form state
+    const [branches, setBranches] = useState([]);
+    const [branchForm, setBranchForm] = useState({ name: '', code: '', department_id: '' });
+    const [editingBranch, setEditingBranch] = useState(null);
+
     // Email form state
     const [emailForm, setEmailForm] = useState({
         target_group: 'all',
@@ -44,6 +49,9 @@ const SuperAdminDashboard = () => {
             fetchDepartments();
         } else if (activeTab === 'sessions') {
             fetchSessions();
+        } else if (activeTab === 'branches') {
+            fetchDepartments(); // Need departments for dropdown
+            fetchBranches();
         }
     }, [activeTab]);
 
@@ -110,6 +118,16 @@ const SuperAdminDashboard = () => {
             setSessions(res.data);
         } catch (e) {
             showError('Failed to fetch sessions');
+            console.error(e);
+        }
+    };
+
+    const fetchBranches = async () => {
+        try {
+            const res = await api.get('/university/branches');
+            setBranches(res.data);
+        } catch (e) {
+            showError('Failed to fetch branches');
             console.error(e);
         }
     };
@@ -198,6 +216,21 @@ const SuperAdminDashboard = () => {
         }
     };
 
+    const handleCreateBranch = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await api.post('/university/branches', branchForm);
+            showSuccess('Branch created successfully');
+            setBranchForm({ name: '', code: '', department_id: '' });
+            fetchBranches();
+        } catch (err) {
+            showError(err.response?.data?.detail || 'Failed to create branch');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleRoleChange = async (userId, newRole) => {
         try {
             await api.put(`/admin/users/${userId}/role`, { role: newRole });
@@ -212,12 +245,12 @@ const SuperAdminDashboard = () => {
         if (!window.confirm(`Are you sure you want to permanently delete user "${userEmail}"?\n\nThis will also delete:\n- User profile\n- All applications\n- All documents\n\nThis action cannot be undone!`)) {
             return;
         }
-        
+
         // Double confirmation for safety
         if (!window.confirm(`FINAL CONFIRMATION: Delete user "${userEmail}"?\n\nThis action is PERMANENT and cannot be undone!`)) {
             return;
         }
-        
+
         try {
             await api.delete(`/admin/users/${userId}`);
             showSuccess(`User "${userEmail}" deleted successfully`);
@@ -261,6 +294,7 @@ const SuperAdminDashboard = () => {
         { id: 'overview', label: 'Overview', icon: '📊' },
         { id: 'users', label: 'Users', icon: '👥' },
         { id: 'departments', label: 'Departments', icon: '🏛️' },
+        { id: 'branches', label: 'Branches', icon: '🌿' },
         { id: 'sessions', label: 'Sessions', icon: '📅' },
         { id: 'communications', label: 'Communications', icon: '📧' },
     ];
@@ -274,21 +308,21 @@ const SuperAdminDashboard = () => {
                     <p className="text-slate-500 mt-1">Manage system configuration, users, and analytics</p>
                 </div>
                 <div className="flex gap-3">
-                    <button 
-                        onClick={() => handleExport('applicants')} 
+                    <button
+                        onClick={() => handleExport('applicants')}
                         className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
                     >
                         Export Applicants
                     </button>
-                    <button 
-                        onClick={() => handleExport('applications')} 
+                    <button
+                        onClick={() => handleExport('applications')}
                         className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
                     >
                         Export Applications
                     </button>
-                    <a 
-                        href="http://localhost:8000/admin" 
-                        target="_blank" 
+                    <a
+                        href="http://localhost:8000/admin"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="bg-primary-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-800 transition-colors"
                     >
@@ -323,11 +357,10 @@ const SuperAdminDashboard = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                                    activeTab === tab.id
-                                        ? 'border-primary-600 text-primary-600'
-                                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-                                }`}
+                                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.id
+                                    ? 'border-primary-600 text-primary-600'
+                                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                                    }`}
                             >
                                 <span className="mr-2">{tab.icon}</span>
                                 {tab.label}
@@ -592,9 +625,8 @@ const SuperAdminDashboard = () => {
                                                     <td className="px-6 py-3 font-medium text-slate-900">{dept.name}</td>
                                                     <td className="px-6 py-3">{dept.code || '-'}</td>
                                                     <td className="px-6 py-3">
-                                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                                                            dept.is_active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                                                        }`}>
+                                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${dept.is_active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                                                            }`}>
                                                             {dept.is_active ? 'Active' : 'Inactive'}
                                                         </span>
                                                     </td>
@@ -619,6 +651,112 @@ const SuperAdminDashboard = () => {
                                                     </td>
                                                 </tr>
                                             ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Branches Tab */}
+                    {activeTab === 'branches' && (
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-slate-800">Branch Management</h2>
+                                <button onClick={fetchBranches} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                                    Refresh
+                                </button>
+                            </div>
+
+                            {/* Create Form */}
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                <h3 className="text-lg font-semibold text-slate-800 mb-4">
+                                    Create New Branch
+                                </h3>
+                                <form onSubmit={handleCreateBranch} className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Department *</label>
+                                            <select
+                                                required
+                                                value={branchForm.department_id}
+                                                onChange={(e) => setBranchForm({ ...branchForm, department_id: e.target.value })}
+                                                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white"
+                                            >
+                                                <option value="">Select Department</option>
+                                                {departments.map(d => (
+                                                    <option key={d.id} value={d.id}>{d.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Branch Name *</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={branchForm.name}
+                                                onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
+                                                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                                placeholder="e.g., Artificial Intelligence"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Branch Code</label>
+                                            <input
+                                                type="text"
+                                                value={branchForm.code}
+                                                onChange={(e) => setBranchForm({ ...branchForm, code: e.target.value })}
+                                                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                                placeholder="e.g., AI"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <button
+                                            type="submit"
+                                            disabled={loading}
+                                            className="bg-primary-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50"
+                                        >
+                                            {loading ? 'Saving...' : 'Create Branch'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {/* Branches List */}
+                            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                                    <h3 className="text-lg font-bold text-slate-800">All Branches</h3>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left text-sm text-slate-600">
+                                        <thead className="bg-slate-50 text-slate-700 font-semibold">
+                                            <tr>
+                                                <th className="px-6 py-3 border-b border-slate-200">ID</th>
+                                                <th className="px-6 py-3 border-b border-slate-200">Department</th>
+                                                <th className="px-6 py-3 border-b border-slate-200">Name</th>
+                                                <th className="px-6 py-3 border-b border-slate-200">Code</th>
+                                                <th className="px-6 py-3 border-b border-slate-200">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {branches.map((branch) => {
+                                                const dept = departments.find(d => d.id === branch.department_id);
+                                                return (
+                                                    <tr key={branch.id} className="hover:bg-slate-50 transition-colors">
+                                                        <td className="px-6 py-3 font-mono text-xs">#{branch.id}</td>
+                                                        <td className="px-6 py-3 font-semibold text-slate-700">{dept?.name || branch.department_id}</td>
+                                                        <td className="px-6 py-3 font-medium text-slate-900">{branch.name}</td>
+                                                        <td className="px-6 py-3">{branch.code || '-'}</td>
+                                                        <td className="px-6 py-3">
+                                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${branch.is_active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                                                                }`}>
+                                                                {branch.is_active ? 'Active' : 'Inactive'}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -699,9 +837,8 @@ const SuperAdminDashboard = () => {
                                                     <td className="px-6 py-3 font-mono text-xs">#{session.id}</td>
                                                     <td className="px-6 py-3 font-medium text-slate-900">{session.name}</td>
                                                     <td className="px-6 py-3">
-                                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                                                            session.is_active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                                                        }`}>
+                                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${session.is_active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                                                            }`}>
                                                             {session.is_active ? 'Active' : 'Inactive'}
                                                         </span>
                                                     </td>
@@ -821,8 +958,8 @@ const SuperAdminDashboard = () => {
                                         </div>
 
                                         <div className="flex justify-end">
-                                            <button 
-                                                type="submit" 
+                                            <button
+                                                type="submit"
                                                 disabled={loading}
                                                 className="bg-primary-600 text-white px-8 py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-50"
                                             >

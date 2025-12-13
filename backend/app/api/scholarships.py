@@ -98,7 +98,10 @@ def create_scholarship(
                     scholarship_id=scholarship.id,
                     document_format_id=req.document_format_id,
                     order_index=req.order_index,
-                    is_mandatory=req.is_mandatory
+                    is_mandatory=req.is_mandatory,
+                    is_renewal_required=req.is_renewal_required,
+                    renewal_instruction=req.renewal_instruction,
+                    instructions=req.instructions
                 )
                 db.add(doc_req)
             logger.info("Document requirements added")
@@ -192,7 +195,10 @@ def update_scholarship(
                 scholarship_id=scholarship.id,
                 document_format_id=req.document_format_id,
                 order_index=req.order_index,
-                is_mandatory=req.is_mandatory
+                is_mandatory=req.is_mandatory,
+                is_renewal_required=req.is_renewal_required,
+                renewal_instruction=req.renewal_instruction,
+                instructions=req.instructions
             )
             db.add(doc_req)
             
