@@ -58,6 +58,9 @@ class StudentProfile(Base):
     parents_govt_job = Column(Boolean, default=False)
     parent_contact_number = Column(String(15))
     
+    # Tracking
+    scholarship_switch_count = Column(Integer, default=0)
+
     # Residential
     residential_status = Column(String(20)) # Hosteler / Day Scholar
     

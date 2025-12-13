@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import MergedPDFButton from './MergedPDFButton';
 
-const ScholarshipCard = ({ scholarship, application }) => {
+const ScholarshipCard = ({ scholarship, application, onApply }) => {
     const isDeadlinePassed = new Date(scholarship.last_date) < new Date();
     const daysUntilDeadline = Math.ceil((new Date(scholarship.last_date) - new Date()) / (1000 * 60 * 60 * 24));
 
@@ -75,12 +75,12 @@ const ScholarshipCard = ({ scholarship, application }) => {
                             >
                                 View Details
                             </Link>
-                            <Link
-                                to={`/apply/${scholarship.id}`}
+                            <button
+                                onClick={() => onApply(scholarship.id)}
                                 className="flex items-center justify-center px-4 py-2.5 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 shadow-sm hover:shadow transition-all"
                             >
                                 Apply Now
-                            </Link>
+                            </button>
                         </div>
                     )}
                 </div>

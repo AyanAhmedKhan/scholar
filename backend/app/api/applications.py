@@ -518,3 +518,81 @@ def get_application_pdf(
         except Exception as sync_e:
             logger.error(f"Synchronous PDF generation also failed: {sync_e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error generating PDF (Sync): {str(sync_e)}")
+
+@router.post("/switch-scholarship")
+def switch_scholarship(
+    switch_in: schemas.SwitchScholarshipRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    """
+    Switch from a conflicting scholarship to a new one.
+    Allowed only ONCE per student.
+    Deletes the conflicting application to allow applying to the new one.
+    """
+    # 1. Get Student Profile
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Student profile not found")
+        
+    # 2. Check Switch Count Limit
+    if (profile.scholarship_switch_count or 0) >= 1:
+        raise HTTPException(status_code=400, detail="You have already used your one-time switch allowance.")
+        
+    # 3. Validation: Check Target Scholarship
+    target_scholarship = db.query(Scholarship).filter(Scholarship.id == switch_in.target_scholarship_id).first()
+    if not target_scholarship:
+        raise HTTPException(status_code=404, detail="Target scholarship not found")
+        
+    # 4. Find Conflicting Application
+    # We need to find which application conflicts with the target
+    user_apps = db.query(Application).filter(
+        Application.student_id == current_user.id,
+        Application.status != ApplicationStatus.REJECTED
+    ).all()
+    
+    conflicting_app = None
+    if target_scholarship.mutually_exclusive_ids:
+        for app in user_apps:
+            if app.scholarship_id in target_scholarship.mutually_exclusive_ids:
+                conflicting_app = app
+                break
+    
+    if not conflicting_app:
+        raise HTTPException(status_code=400, detail="No conflicting application found to switch from.")
+        
+    # 5. Execute Switch (Delete old app, increment count)
+    try:
+        # Delete documents associated with the app explicitly to ensure no integrity error
+        # Use synchronize_session=False to avoid session issues
+        db.query(ApplicationDocument).filter(ApplicationDocument.application_id == conflicting_app.id).delete(synchronize_session=False)
+        
+        # Delete the application record via query to bypass complex ORM cascade checks
+        db.query(Application).filter(Application.id == conflicting_app.id).delete(synchronize_session=False)
+        
+        # Increment count
+        profile.scholarship_switch_count = (profile.scholarship_switch_count or 0) + 1
+        
+        db.commit()
+        
+        # Log action
+        from app.core.audit_logger import log_action
+        log_action(
+            db,
+            action="SWITCH_SCHOLARSHIP",
+            user_id=current_user.id,
+            target_type="Scholarship",
+            target_id=str(switch_in.target_scholarship_id),
+            details={
+                "deleted_application_id": conflicting_app.id,
+                "deleted_scholarship_id": conflicting_app.scholarship_id,
+                "switch_count": profile.scholarship_switch_count
+            }
+        )
+        
+        return {"message": "Successfully switched. You can now apply for the new scholarship."}
+        
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to switch scholarship: {e}")
+        raise HTTPException(status_code=500, detail="Failed to process scholarship switch")

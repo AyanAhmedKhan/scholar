@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import ScholarshipCard from '../components/ScholarshipCard';
 
@@ -10,21 +11,77 @@ const Scholarships = () => {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [sortBy, setSortBy] = useState('deadline');
 
+    const [userProfile, setUserProfile] = useState(null);
+
+    const [conflictModal, setConflictModal] = useState({ isOpen: false, conflictName: '', targetId: null });
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const schRes = await api.get('/scholarships/');
+                const [schRes, appRes, profileRes] = await Promise.all([
+                    api.get('/scholarships/'),
+                    api.get('/applications/'),
+                    api.get('/profile/me').catch(() => ({ data: null })) // Handle no profile
+                ]);
                 setScholarships(schRes.data);
-                const appRes = await api.get('/applications/');
                 setApplications(appRes.data);
+                setUserProfile(profileRes.data);
             } catch (error) {
-                console.error("Failed to fetch scholarships", error);
+                console.error("Failed to fetch data", error);
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
     }, []);
+
+    const onApplyClick = (scholarshipId) => {
+        const sch = scholarships.find(s => s.id === scholarshipId);
+
+        // Check for mutual exclusion
+        if (sch.mutually_exclusive_ids && sch.mutually_exclusive_ids.length > 0) {
+            const conflictingApp = applications.find(app =>
+                sch.mutually_exclusive_ids.includes(app.scholarship_id) &&
+                app.status !== 'rejected'
+            );
+
+            if (conflictingApp) {
+                const conflictingScholarship = scholarships.find(s => s.id === conflictingApp.scholarship_id);
+                const conflictName = conflictingScholarship ? conflictingScholarship.name : 'another scholarship';
+                setConflictModal({ isOpen: true, conflictName, targetId: scholarshipId });
+                return;
+            }
+        }
+
+        // No conflict, proceed
+        navigate(`/apply/${scholarshipId}`);
+    };
+
+    const handleSwitchConfirm = async () => {
+        try {
+            setLoading(true);
+            await api.post('/applications/switch-scholarship', { target_scholarship_id: conflictModal.targetId });
+            alert("Application switched successfully! You can now apply to the new scholarship.");
+            setConflictModal({ ...conflictModal, isOpen: false });
+
+            // Refresh data
+            const [appRes, profileRes] = await Promise.all([
+                api.get('/applications/'),
+                api.get('/profile/me')
+            ]);
+            setApplications(appRes.data);
+            setUserProfile(profileRes.data);
+
+            // Navigate to apply
+            navigate(`/apply/${conflictModal.targetId}`);
+        } catch (error) {
+            console.error("Switch failed", error);
+            alert(error.response?.data?.detail || "Failed to switch scholarship.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Get unique categories
     const categories = useMemo(() => {
@@ -73,7 +130,7 @@ const Scholarships = () => {
     );
 
     return (
-        <div className="space-y-6 animate-fade-in-up">
+        <div className="space-y-6 animate-fade-in-up relative">
             {/* Header */}
             <div className="flex flex-col gap-4">
                 <div>
@@ -154,11 +211,68 @@ const Scholarships = () => {
                             key={sch.id}
                             scholarship={sch}
                             application={existingApp}
+                            onApply={onApplyClick}
                         />
                     );
                 })}
             </div>
 
+            {/* Conflict Modal */}
+            {conflictModal.isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-scale-in">
+                        <div className="flex items-start gap-4 mb-4">
+                            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                                <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900">Application Conflict</h3>
+                                <p className="text-slate-600 text-sm mt-1">
+                                    You have already applied for <strong>{conflictModal.conflictName}</strong>, which is mutually exclusive with this scholarship.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+                            {(userProfile?.scholarship_switch_count || 0) < 1 ? (
+                                <>
+                                    <p className="text-sm text-slate-700 font-medium mb-2">Available Action:</p>
+                                    <p className="text-xs text-slate-600">
+                                        You can <span className="font-bold text-primary-600">switch</span> your application to this one.
+                                        This will withdraw your current application for {conflictModal.conflictName}.
+                                    </p>
+                                    <p className="text-xs text-amber-600 font-semibold mt-2">
+                                        Note: This action can be performed only once.
+                                    </p>
+                                </>
+                            ) : (
+                                <p className="text-sm text-red-600 font-medium">
+                                    You have already used your one-time switch allowance. You cannot apply for this scholarship.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={() => setConflictModal({ ...conflictModal, isOpen: false })}
+                                className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            {(userProfile?.scholarship_switch_count || 0) < 1 && (
+                                <button
+                                    onClick={handleSwitchConfirm}
+                                    className="px-4 py-2 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 shadow-sm hover:shadow transition-all"
+                                >
+                                    Switch & Apply
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
             {filteredScholarships.length === 0 && scholarships.length > 0 && (
                 <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">

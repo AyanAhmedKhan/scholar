@@ -53,6 +53,7 @@ class StudentProfileBase(BaseModel):
     parents_govt_job: Optional[bool] = False
     parent_contact_number: Optional[str] = None
     residential_status: Optional[str] = None
+    scholarship_switch_count: Optional[int] = 0
 
 class StudentProfileCreate(StudentProfileBase):
     pass
@@ -284,3 +285,7 @@ class NoticeResponse(NoticeBase):
 
     class Config:
         from_attributes = True
+
+# Switch Scholarship Schema
+class SwitchScholarshipRequest(BaseModel):
+    target_scholarship_id: int

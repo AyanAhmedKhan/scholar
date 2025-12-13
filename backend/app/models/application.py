@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text, Enum, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 from app.db.database import Base
 import enum
@@ -36,5 +36,5 @@ class ApplicationDocument(Base):
     is_verified = Column(Boolean, default=False)
     remarks = Column(Text, nullable=True)
     
-    application = relationship("Application", backref="documents")
+    application = relationship("Application", backref=backref("documents", cascade="all, delete-orphan"))
     document_format = relationship("app.models.scholarship.DocumentFormat")
