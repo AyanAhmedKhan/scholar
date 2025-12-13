@@ -182,7 +182,6 @@ const Login = () => {
                             useOneTap
                             theme="outline"
                             shape="rectangular"
-                            width="100%"
                             size="large"
                         />
                     </div>

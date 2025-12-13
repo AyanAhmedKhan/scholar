@@ -37,7 +37,13 @@ api.interceptors.response.use(
                 try {
                     localStorage.removeItem('token');
                 } catch (e) { console.warn("Storage clear failed", e); }
-                window.location.href = '/login';
+
+                // Determine if this was an auth check (don't reload loop)
+                const isAuthCheck = error.config?.url?.includes('/auth/me');
+
+                if (!isAuthCheck) {
+                    window.location.href = '/login';
+                }
                 return Promise.reject(error);
             }
 
