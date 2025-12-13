@@ -105,9 +105,18 @@ async def upload_document(
     else:
         doc_type_name = document_type or "uncategorized"
 
+    # Get enrollment number
+    student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+    enrollment_no = student_profile.enrollment_no if student_profile else None
+    
+    # Clean enrollment number for path safety if present
+    if enrollment_no:
+        enrollment_no = "".join(c for c in enrollment_no if c.isalnum() or c in ('-', '_')).strip()
+
     destination_dir = get_storage_path(
         category="vault", 
-        student_id=current_user.id, 
+        student_id=current_user.id,
+        enrollment_no=enrollment_no,
         document_type=doc_type_name
     )
     

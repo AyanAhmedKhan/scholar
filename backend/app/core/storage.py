@@ -18,6 +18,7 @@ def get_storage_path(
         category: 'vault' or 'application'
         student_id: ID of the student
         kwargs: 
+            - enrollment_no: str (optional, for folder naming)
             - document_type: str (for vault)
             - scholarship_id: int (for application)
             - application_id: int (for application)
@@ -26,7 +27,12 @@ def get_storage_path(
     Returns:
         Path object representing the directory
     """
-    base_path = Path(settings.MEDIA_DIR) / "students" / str(student_id)
+    # Use enrollment_no if available, otherwise fallback to student_id
+    folder_name = kwargs.get("enrollment_no")
+    if not folder_name:
+        folder_name = str(student_id)
+        
+    base_path = Path(settings.MEDIA_DIR) / "students" / folder_name
     
     if category == "vault":
         doc_type = kwargs.get("document_type", "uncategorized")

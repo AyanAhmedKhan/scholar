@@ -115,10 +115,18 @@ def apply_for_scholarship(
             db.add(fmt)
             db.flush()
             
+        # Get enrollment number for path
+        student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+        enrollment_no = student_profile.enrollment_no if student_profile else None
+        
+        if enrollment_no:
+            enrollment_no = "".join(c for c in enrollment_no if c.isalnum() or c in ('-', '_')).strip()
+
         # Determine destination for application snapshot
         dest_dir = get_storage_path(
             category="application",
             student_id=current_user.id,
+            enrollment_no=enrollment_no,
             scholarship_id=application.scholarship_id,
             application_id=application.id
         )
@@ -192,9 +200,16 @@ def update_application(
             ApplicationDocument.document_format_id == fmt.id
         ).first()
         
+        # Get enrollment number
+        student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+        enrollment_no = student_profile.enrollment_no if student_profile else None
+        if enrollment_no:
+            enrollment_no = "".join(c for c in enrollment_no if c.isalnum() or c in ('-', '_')).strip()
+
         dest_dir = get_storage_path(
             category="application",
             student_id=current_user.id,
+            enrollment_no=enrollment_no,
             scholarship_id=application.scholarship_id,
             application_id=application.id
         )
@@ -366,9 +381,16 @@ def renew_scholarship(
         # Find student document for this requirement
         student_doc = next((d for d in student_docs if d.document_format_id == req.document_format_id), None)
         if student_doc:
+            # Get enrollment number
+            student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+            enrollment_no = student_profile.enrollment_no if student_profile else None
+            if enrollment_no:
+                enrollment_no = "".join(c for c in enrollment_no if c.isalnum() or c in ('-', '_')).strip()
+
             dest_dir = get_storage_path(
                 category="application",
                 student_id=current_user.id,
+                enrollment_no=enrollment_no,
                 scholarship_id=application.scholarship_id,
                 application_id=application.id
             )
@@ -391,9 +413,16 @@ def renew_scholarship(
             # Only link if not a renewal-required document
             is_renewal_doc = any(req.document_format_id == prev_doc.document_format_id for req in renewal_docs)
             if not is_renewal_doc:
+                # Get enrollment number
+                student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+                enrollment_no = student_profile.enrollment_no if student_profile else None
+                if enrollment_no:
+                    enrollment_no = "".join(c for c in enrollment_no if c.isalnum() or c in ('-', '_')).strip()
+
                 dest_dir = get_storage_path(
                     category="application",
                     student_id=current_user.id,
+                    enrollment_no=enrollment_no,
                     scholarship_id=application.scholarship_id,
                     application_id=application.id
                 )
