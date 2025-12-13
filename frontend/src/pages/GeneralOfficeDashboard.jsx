@@ -328,23 +328,23 @@ const GeneralOfficeDashboard = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 py-2">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 font-display">General Office Dashboard</h1>
-                    <p className="text-slate-500 mt-1">Verify applications, manage documents, and communicate with students</p>
+                    <h1 className="text-2xl font-bold text-slate-800 font-display">General Office Dashboard</h1>
+                    <p className="text-sm text-slate-500">Manage scholarship applications and verification</p>
                 </div>
                 <div className="flex gap-3">
                     <button
                         onClick={handleExport}
-                        className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
+                        className="bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors shadow-sm"
                     >
                         Export CSV
                     </button>
                     <Link
                         to="/scholarship-management"
-                        className="bg-primary-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-sm flex items-center gap-2"
+                        className="bg-primary-600 text-white px-4 py-1.5 rounded-lg text-xs font-semibold hover:bg-primary-700 transition-colors shadow-sm flex items-center gap-2"
                     >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                         Manage Scholarships
@@ -354,16 +354,16 @@ const GeneralOfficeDashboard = () => {
 
             {/* Success/Error Messages */}
             {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-lg flex items-center gap-2 text-sm">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {success}
                 </div>
             )}
             {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg flex items-center gap-2 text-sm">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {error}
@@ -371,52 +371,52 @@ const GeneralOfficeDashboard = () => {
             )}
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="text-3xl font-bold text-slate-800">{stats.total}</div>
-                    <div className="text-sm text-slate-600 font-medium mt-1">Total Applications</div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                    <div className="text-2xl font-bold text-slate-800">{stats.total}</div>
+                    <div className="text-xs text-slate-500 font-medium uppercase tracking-wide mt-1">Total Apps</div>
                 </div>
                 <div
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 shadow-sm cursor-pointer hover:shadow-md transition-all"
+                    className="bg-blue-50 p-4 rounded-lg border border-blue-100 shadow-sm cursor-pointer hover:shadow-md transition-all group"
                     onClick={() => setStatusFilter(statusFilter === 'submitted' ? 'all' : 'submitted')}
                 >
-                    <div className="text-3xl font-bold text-blue-700">{stats.pending}</div>
-                    <div className="text-sm text-blue-600 font-medium mt-1">Pending Review</div>
+                    <div className="text-2xl font-bold text-blue-700 group-hover:text-blue-800">{stats.pending}</div>
+                    <div className="text-xs text-blue-600 font-medium uppercase tracking-wide mt-1">Pending</div>
                 </div>
                 <div
-                    className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200 shadow-sm cursor-pointer hover:shadow-md transition-all"
+                    className="bg-green-50 p-4 rounded-lg border border-green-100 shadow-sm cursor-pointer hover:shadow-md transition-all group"
                     onClick={() => setStatusFilter(statusFilter === 'approved' ? 'all' : 'approved')}
                 >
-                    <div className="text-3xl font-bold text-green-700">{stats.approved}</div>
-                    <div className="text-sm text-green-600 font-medium mt-1">Approved</div>
+                    <div className="text-2xl font-bold text-green-700 group-hover:text-green-800">{stats.approved}</div>
+                    <div className="text-xs text-green-600 font-medium uppercase tracking-wide mt-1">Approved</div>
                 </div>
                 <div
-                    className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl border border-red-200 shadow-sm cursor-pointer hover:shadow-md transition-all"
+                    className="bg-red-50 p-4 rounded-lg border border-red-100 shadow-sm cursor-pointer hover:shadow-md transition-all group"
                     onClick={() => setStatusFilter(statusFilter === 'rejected' ? 'all' : 'rejected')}
                 >
-                    <div className="text-3xl font-bold text-red-700">{stats.rejected}</div>
-                    <div className="text-sm text-red-600 font-medium mt-1">Rejected</div>
+                    <div className="text-2xl font-bold text-red-700 group-hover:text-red-800">{stats.rejected}</div>
+                    <div className="text-xs text-red-600 font-medium uppercase tracking-wide mt-1">Rejected</div>
                 </div>
                 <div
-                    className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border border-orange-200 shadow-sm cursor-pointer hover:shadow-md transition-all"
+                    className="bg-orange-50 p-4 rounded-lg border border-orange-100 shadow-sm cursor-pointer hover:shadow-md transition-all group"
                     onClick={() => setStatusFilter(statusFilter === 'docs_required' ? 'all' : 'docs_required')}
                 >
-                    <div className="text-3xl font-bold text-orange-700">{stats.docsRequired}</div>
-                    <div className="text-sm text-orange-600 font-medium mt-1">Docs Required</div>
+                    <div className="text-2xl font-bold text-orange-700 group-hover:text-orange-800">{stats.docsRequired}</div>
+                    <div className="text-xs text-orange-600 font-medium uppercase tracking-wide mt-1">Docs Req.</div>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="border-b border-slate-200">
-                    <nav className="flex -mb-px">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                <div className="border-b border-slate-200 flex items-center justify-between px-4 py-2 bg-slate-50/50">
+                    <nav className="flex space-x-1">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.id
-                                    ? 'border-primary-600 text-primary-600'
-                                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                                className={`px-4 py-2 text-xs font-semibold rounded-md transition-all ${activeTab === tab.id
+                                    ? 'bg-white text-primary-700 shadow-sm border border-slate-200'
+                                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                                     }`}
                             >
                                 <span className="mr-2">{tab.icon}</span>
@@ -426,29 +426,29 @@ const GeneralOfficeDashboard = () => {
                     </nav>
                 </div>
 
-                <div className="p-6">
+                <div className="p-0">
                     {/* Applications Tab */}
                     {activeTab === 'applications' && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 p-4">
                             {/* Filters and Bulk Actions */}
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                <div className="flex flex-col md:flex-row gap-3 flex-1">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+                                <div className="flex flex-col md:flex-row gap-2 flex-1 w-full md:w-auto">
                                     <div className="relative flex-1 md:w-64">
                                         <input
                                             type="text"
-                                            placeholder="Search by scholarship, ID, or student..."
+                                            placeholder="Search applications..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+                                            className="w-full pl-9 pr-3 py-1.5 rounded-md border border-slate-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500/20 outline-none text-xs"
                                         />
-                                        <svg className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
                                     <select
                                         value={statusFilter}
                                         onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="px-4 py-2 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm bg-white"
+                                        className="px-3 py-1.5 rounded-md border border-slate-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500/20 outline-none text-xs bg-white"
                                     >
                                         <option value="all">All Status</option>
                                         <option value="submitted">Submitted</option>
@@ -460,17 +460,18 @@ const GeneralOfficeDashboard = () => {
                                 </div>
 
                                 {selectedApps.length > 0 && (
-                                    <div className="flex gap-2">
-                                        <span className="text-sm text-slate-600 self-center">{selectedApps.length} selected</span>
+                                    <div className="flex gap-2 items-center">
+                                        <span className="text-xs text-slate-600 font-medium">{selectedApps.length} selected</span>
+                                        <div className="h-4 w-px bg-slate-200"></div>
                                         <button
                                             onClick={() => handleBulkStatusUpdate('under_verification')}
-                                            className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-medium border border-blue-200 transition-colors"
+                                            className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-xs font-medium transition-colors"
                                         >
-                                            Mark Reviewing
+                                            Review
                                         </button>
                                         <button
                                             onClick={() => handleBulkStatusUpdate('approved')}
-                                            className="bg-green-50 text-green-600 hover:bg-green-100 px-3 py-1.5 rounded-lg text-xs font-medium border border-green-200 transition-colors"
+                                            className="text-green-600 hover:bg-green-50 px-2 py-1 rounded text-xs font-medium transition-colors"
                                         >
                                             Approve
                                         </button>
@@ -480,123 +481,104 @@ const GeneralOfficeDashboard = () => {
 
                             {/* Applications Table */}
                             {loading ? (
-                                <div className="flex justify-center items-center h-64">
-                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                                <div className="flex justify-center items-center h-48">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                                 </div>
                             ) : filteredApplications.length === 0 ? (
-                                <div className="p-12 text-center bg-slate-50 rounded-xl border border-slate-200">
-                                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-slate-900">No applications found</h3>
-                                    <p className="text-slate-500 mt-1">Try adjusting your filters or search criteria.</p>
+                                <div className="p-8 text-center bg-slate-50 rounded-lg border border-slate-100 border-dashed">
+                                    <p className="text-slate-500 text-sm">No applications found matching your criteria.</p>
                                 </div>
                             ) : (
-                                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div className="border border-slate-200 rounded-lg overflow-hidden">
                                     <div className="overflow-x-auto">
-                                        <table className="w-full text-left text-sm text-slate-600">
-                                            <thead className="bg-slate-50 text-slate-700 font-semibold">
+                                        <table className="w-full text-left text-xs text-slate-600">
+                                            <thead className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider">
                                                 <tr>
-                                                    <th className="px-6 py-3 border-b border-slate-200">
+                                                    <th className="px-4 py-2 border-b border-slate-200 w-8">
                                                         <input
                                                             type="checkbox"
                                                             checked={selectedApps.length === filteredApplications.length && filteredApplications.length > 0}
                                                             onChange={toggleSelectAll}
-                                                            className="rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+                                                            className="rounded border-slate-300 text-primary-600 focus:ring-primary-500 h-3 w-3"
                                                         />
                                                     </th>
-                                                    <th className="px-6 py-3 border-b border-slate-200">Application</th>
-                                                    <th className="px-6 py-3 border-b border-slate-200">Scholarship</th>
-                                                    <th className="px-6 py-3 border-b border-slate-200">Student</th>
-                                                    <th className="px-6 py-3 border-b border-slate-200">Status</th>
-                                                    <th className="px-6 py-3 border-b border-slate-200">Documents</th>
-                                                    <th className="px-6 py-3 border-b border-slate-200">Actions</th>
+                                                    <th className="px-4 py-2 border-b border-slate-200">ID / Date</th>
+                                                    <th className="px-4 py-2 border-b border-slate-200">Scholarship</th>
+                                                    <th className="px-4 py-2 border-b border-slate-200">Student</th>
+                                                    <th className="px-4 py-2 border-b border-slate-200">Status</th>
+                                                    <th className="px-4 py-2 border-b border-slate-200">Docs</th>
+                                                    <th className="px-4 py-2 border-b border-slate-200 text-right">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-slate-100">
                                                 {filteredApplications.map((app) => (
                                                     <React.Fragment key={app.id}>
-                                                        <tr className={`hover:bg-slate-50 cursor-pointer transition-colors ${expandedAppId === app.id ? 'bg-slate-50' : ''}`} onClick={() => toggleExpand(app.id)}>
-                                                            <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                                                        <tr className={`hover:bg-slate-50/80 cursor-pointer transition-colors ${expandedAppId === app.id ? 'bg-slate-50' : ''}`} onClick={() => toggleExpand(app.id)}>
+                                                            <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={selectedApps.includes(app.id)}
                                                                     onChange={() => toggleSelectApp(app.id)}
-                                                                    className="rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+                                                                    className="rounded border-slate-300 text-primary-600 focus:ring-primary-500 h-3 w-3"
                                                                 />
                                                             </td>
-                                                            <td className="px-6 py-4">
-                                                                <div className="flex items-center gap-3">
-                                                                    <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center text-primary-700 font-bold text-sm border border-primary-100">
-                                                                        #{app.id}
-                                                                    </div>
-                                                                    <div>
-                                                                        <div className="font-medium text-slate-800">App #{app.id}</div>
-                                                                        <div className="text-xs text-slate-500">{new Date(app.created_at).toLocaleDateString()}</div>
-                                                                    </div>
+                                                            <td className="px-4 py-2">
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-mono text-slate-700 font-medium">#{app.id}</span>
+                                                                    <span className="text-[10px] text-slate-400">{new Date(app.created_at).toLocaleDateString()}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="px-6 py-4">
-                                                                <div className="font-medium text-slate-800">{getScholarshipName(app.scholarship_id)}</div>
+                                                            <td className="px-4 py-2 font-medium text-slate-700 truncate max-w-[150px]" title={getScholarshipName(app.scholarship_id)}>
+                                                                {getScholarshipName(app.scholarship_id)}
                                                             </td>
-                                                            <td className="px-6 py-4">
+                                                            <td className="px-4 py-2">
                                                                 <div
-                                                                    className="cursor-pointer group"
+                                                                    className="group flex flex-col"
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         setStudentModal({ open: true, app: app });
                                                                     }}
                                                                 >
-                                                                    <div className="font-medium text-primary-600 group-hover:text-primary-800 transition-colors flex items-center gap-1">
+                                                                    <span className="font-medium text-primary-600 group-hover:underline cursor-pointer">
                                                                         {app.student?.full_name || `Student #${app.student_id}`}
-                                                                        <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                                                                    </div>
+                                                                    </span>
                                                                     {app.student?.profile?.enrollment_no && (
-                                                                        <div className="text-xs text-slate-500 font-mono mt-0.5">
+                                                                        <span className="text-[10px] text-slate-400 font-mono">
                                                                             {app.student.profile.enrollment_no}
-                                                                        </div>
+                                                                        </span>
                                                                     )}
                                                                 </div>
                                                             </td>
-                                                            <td className="px-6 py-4">
-                                                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize border ${getStatusColor(app.status)}`}>
+                                                            <td className="px-4 py-2">
+                                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(app.status)}`}>
                                                                     {app.status.replace(/_/g, ' ')}
                                                                 </span>
                                                             </td>
-                                                            <td className="px-6 py-4">
-                                                                <MergedPDFButton applicationId={app.id} />
+                                                            <td className="px-4 py-2">
+                                                                <MergedPDFButton applicationId={app.id} compact={true} />
                                                             </td>
-                                                            <td className="px-6 py-4">
-                                                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                                                                    <button
-                                                                        onClick={() => setStatusModal({ open: true, appId: app.id, status: 'under_verification' })}
-                                                                        className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-medium border border-blue-200 transition-colors shadow-sm"
-                                                                        title="Mark as under verification"
-                                                                    >
-                                                                        Review
-                                                                    </button>
+                                                            <td className="px-4 py-2 text-right">
+                                                                <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                                                                     <button
                                                                         onClick={() => setStatusModal({ open: true, appId: app.id, status: 'approved' })}
-                                                                        className="bg-green-50 text-green-600 hover:bg-green-100 px-3 py-1.5 rounded-lg text-xs font-medium border border-green-200 transition-colors shadow-sm"
-                                                                        title="Approve application"
+                                                                        className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
+                                                                        title="Approve"
                                                                     >
-                                                                        Approve
+                                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setStatusModal({ open: true, appId: app.id, status: 'rejected' })}
-                                                                        className="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-200 transition-colors shadow-sm"
-                                                                        title="Reject application"
+                                                                        className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                                        title="Reject"
                                                                     >
-                                                                        Reject
+                                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setStatusModal({ open: true, appId: app.id, status: 'docs_required' })}
-                                                                        className="bg-orange-50 text-orange-600 hover:bg-orange-100 px-3 py-1.5 rounded-lg text-xs font-medium border border-orange-200 transition-colors shadow-sm"
-                                                                        title="Return for Correction (Docs/Profile)"
+                                                                        className="p-1 text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                                                                        title="Request Changes"
                                                                     >
-                                                                        Return
+                                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                                                     </button>
                                                                 </div>
                                                             </td>
