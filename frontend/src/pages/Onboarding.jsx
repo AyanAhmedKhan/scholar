@@ -43,6 +43,8 @@ const Onboarding = () => {
         mother_name: '',
         category: '',
         annual_family_income: '',
+        percentage_12th: '',
+        parents_govt_job: '',
     });
 
     // Helper to fetch branches
@@ -87,6 +89,8 @@ const Onboarding = () => {
                         mother_name: profile.mother_name || '',
                         category: profile.category || '',
                         annual_family_income: profile.annual_family_income || '',
+                        percentage_12th: profile.percentage_12th || '',
+                        parents_govt_job: profile.parents_govt_job !== undefined ? (profile.parents_govt_job ? 'Yes' : 'No') : '',
                     });
 
                     // Fetch branches for existing department
@@ -145,6 +149,8 @@ const Onboarding = () => {
             } else {
                 payload.annual_family_income = parseFloat(payload.annual_family_income);
             }
+            if (payload.percentage_12th) payload.percentage_12th = parseFloat(payload.percentage_12th);
+            payload.parents_govt_job = payload.parents_govt_job === 'Yes';
 
             if (isEditing) {
                 await api.put('/profile/me', payload);
@@ -349,6 +355,39 @@ const Onboarding = () => {
                                         {numberToWords(Math.floor(formData.annual_family_income))} Rupees Only
                                     </p>
                                 )}
+                            </div>
+
+                            {/* 12th Percentage */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-semibold text-slate-700">12th Percentage <span className="text-red-500">*</span></label>
+                                <input
+                                    type="number"
+                                    name="percentage_12th"
+                                    required
+                                    value={formData.percentage_12th}
+                                    onChange={handleChange}
+                                    placeholder="Enter percentage"
+                                    step="0.01"
+                                    min="0"
+                                    max="100"
+                                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition"
+                                />
+                            </div>
+
+                            {/* Parents Govt Job */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-semibold text-slate-700">Parents have Govt Job? <span className="text-red-500">*</span></label>
+                                <select
+                                    name="parents_govt_job"
+                                    required
+                                    value={formData.parents_govt_job}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none transition bg-white"
+                                >
+                                    <option value="">Select Option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
 

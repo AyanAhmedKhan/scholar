@@ -47,6 +47,7 @@ class StudentProfile(Base):
     
     # Education
     current_year_or_semester = Column(String(50))
+    percentage_12th = Column(Float, nullable=True)
     previous_exam_percentage = Column(Float)
     backlogs = Column(Integer, default=0)
     gap_year = Column(Boolean, default=False)

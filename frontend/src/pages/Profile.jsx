@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import ProfileForm from '../components/ProfileForm';
+import Toast from '../components/Toast';
 
 const Profile = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -28,12 +30,16 @@ const Profile = () => {
             // Actually, usually it's POST /profile/ or PUT. Let's try POST based on Onboarding.
 
             // Re-checking Onboarding might be good, but standard is POST /profile/ for creation/update usually in this app
-            await api.post('/profile/', formData);
-            alert("Profile updated successfully!");
-            window.location.reload(); // Simple reload to refresh data/sidebar state if needed
+            if (userProfile) {
+                await api.put('/profile/me', formData);
+            } else {
+                await api.post('/profile/', formData);
+            }
+            setToast({ message: "Profile updated successfully!", type: "success" });
+            setTimeout(() => window.location.reload(), 1500);
         } catch (error) {
             console.error("Update failed", error);
-            alert(error.response?.data?.detail || "Failed to update profile.");
+            setToast({ message: error.response?.data?.detail || "Failed to update profile.", type: "error" });
         }
     };
 
@@ -51,6 +57,7 @@ const Profile = () => {
             </div>
 
             <ProfileForm initialData={userProfile} onSubmit={handleSubmit} />
+            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
     );
 };

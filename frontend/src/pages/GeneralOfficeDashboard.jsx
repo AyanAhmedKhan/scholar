@@ -139,15 +139,34 @@ const GeneralOfficeDashboard = () => {
     };
 
     const updateDocStatusInState = (docId, isVerified, remarks) => {
-        setStudentModal(prev => ({
-            ...prev,
-            app: {
-                ...prev.app,
-                documents: prev.app.documents.map(d =>
+        // Update applications list to reflect changes in the dashboard
+        setApplications(prevApps => prevApps.map(app => {
+            const hasDoc = app.documents?.some(d => d.id === docId);
+            if (!hasDoc) return app;
+            return {
+                ...app,
+                documents: app.documents.map(d =>
                     d.id === docId ? { ...d, is_verified: isVerified, remarks: remarks } : d
                 )
-            }
+            };
         }));
+
+        // Safely update studentModal if it's open and showing this application
+        setStudentModal(prev => {
+            if (!prev.app || !prev.app.documents) return prev;
+            const hasDoc = prev.app.documents.some(d => d.id === docId);
+            if (!hasDoc) return prev;
+
+            return {
+                ...prev,
+                app: {
+                    ...prev.app,
+                    documents: prev.app.documents.map(d =>
+                        d.id === docId ? { ...d, is_verified: isVerified, remarks: remarks } : d
+                    )
+                }
+            };
+        });
     };
 
     const getScholarshipName = (id) => {

@@ -44,6 +44,7 @@ class StudentProfileBase(BaseModel):
     ifsc_code: Optional[str] = None
     branch_name: Optional[str] = None
     current_year_or_semester: Optional[str] = None
+    percentage_12th: Optional[float] = None
     previous_exam_percentage: Optional[float] = None
     backlogs: Optional[int] = 0
     gap_year: Optional[bool] = False
