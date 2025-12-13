@@ -1074,23 +1074,29 @@ const GeneralOfficeDashboard = () => {
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="flex justify-end gap-1 mb-2">
+                                            <div className="flex justify-end gap-2 mb-2">
                                                 {!doc.is_verified && (
-                                                    <button
-                                                        onClick={() => handleVerifyDocument(doc.id, true)}
-                                                        className="p-1 rounded bg-green-50 text-green-600 hover:bg-green-100 border border-green-200 transition-colors"
-                                                        title="Approve Document"
-                                                    >
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                                    </button>
+                                                    <>
+                                                        <button
+                                                            onClick={() => handleVerifyDocument(doc.id, true)}
+                                                            className="px-3 py-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 border border-green-200 transition-colors text-xs font-semibold shadow-sm"
+                                                        >
+                                                            Accept
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleVerifyDocument(doc.id, false)}
+                                                            className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-colors text-xs font-semibold shadow-sm"
+                                                        >
+                                                            Reject
+                                                        </button>
+                                                    </>
                                                 )}
                                                 {doc.is_verified && (
                                                     <button
                                                         onClick={() => handleVerifyDocument(doc.id, false)}
-                                                        className="p-1 rounded bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-colors"
-                                                        title="Reject/Unverify Document"
+                                                        className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-colors text-xs font-semibold shadow-sm"
                                                     >
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                        Reject
                                                     </button>
                                                 )}
                                             </div>
