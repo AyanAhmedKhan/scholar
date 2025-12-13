@@ -305,15 +305,15 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>}
                 />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <InputGroup label="Permanent Address" name="permanent_address" type="textarea" rows="3" value={formData.permanent_address} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Permanent Address" name="permanent_address" type="textarea" rows="3" value={formData.permanent_address} onChange={handleChange} readOnly={readOnly} />
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                         gap: '24px'
                     }}>
-                        <InputGroup label="State" name="state" value={formData.state} onChange={handleChange} readOnly={readOnly} required />
-                        <InputGroup label="District" name="district" value={formData.district} onChange={handleChange} readOnly={readOnly} required />
-                        <InputGroup label="Pincode" name="pincode" value={formData.pincode} onChange={handleChange} readOnly={readOnly} required />
+                        <InputGroup label="State" name="state" value={formData.state} onChange={handleChange} readOnly={readOnly} />
+                        <InputGroup label="District" name="district" value={formData.district} onChange={handleChange} readOnly={readOnly} />
+                        <InputGroup label="Pincode" name="pincode" value={formData.pincode} onChange={handleChange} readOnly={readOnly} />
                     </div>
                     <InputGroup label="Current Address (if different)" name="current_address" type="textarea" rows="3" value={formData.current_address} onChange={handleChange} readOnly={readOnly} />
                 </div>
@@ -337,11 +337,11 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                     gap: '24px'
                 }}>
-                    <InputGroup label="Account Holder Name" name="account_holder_name" value={formData.account_holder_name} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="Bank Name" name="bank_name" value={formData.bank_name} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="Account Number" name="account_number" value={formData.account_number} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="IFSC Code" name="ifsc_code" value={formData.ifsc_code} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="Branch Name" name="branch_name" value={formData.branch_name} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Account Holder Name" name="account_holder_name" value={formData.account_holder_name} onChange={handleChange} readOnly={readOnly} />
+                    <InputGroup label="Bank Name" name="bank_name" value={formData.bank_name} onChange={handleChange} readOnly={readOnly} />
+                    <InputGroup label="Account Number" name="account_number" value={formData.account_number} onChange={handleChange} readOnly={readOnly} />
+                    <InputGroup label="IFSC Code" name="ifsc_code" value={formData.ifsc_code} onChange={handleChange} readOnly={readOnly} />
+                    <InputGroup label="Branch Name" name="branch_name" value={formData.branch_name} onChange={handleChange} readOnly={readOnly} />
                 </div>
             </div>
 
@@ -363,10 +363,10 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                     gap: '24px'
                 }}>
-                    <InputGroup label="Father's Occupation" name="father_occupation" value={formData.father_occupation} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="Mother's Occupation" name="mother_occupation" value={formData.mother_occupation} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Father's Occupation" name="father_occupation" value={formData.father_occupation} onChange={handleChange} readOnly={readOnly} />
+                    <InputGroup label="Mother's Occupation" name="mother_occupation" value={formData.mother_occupation} onChange={handleChange} readOnly={readOnly} />
                     <InputGroup label="Guardian's Annual Income" name="guardian_annual_income" type="number" value={formData.guardian_annual_income} onChange={handleChange} readOnly={readOnly} />
-                    <InputGroup label="Parent Contact Number" name="parent_contact_number" value={formData.parent_contact_number} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Parent Contact Number" name="parent_contact_number" value={formData.parent_contact_number} onChange={handleChange} readOnly={readOnly} />
 
                     <div style={{ gridColumn: '1 / -1', paddingTop: '8px' }}>
                         <label style={{
