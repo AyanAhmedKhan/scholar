@@ -120,6 +120,7 @@ class ScholarshipDocumentRequirementBase(BaseModel):
     is_mandatory: bool = True
     is_renewal_required: bool = False
     renewal_instruction: Optional[str] = None
+    instructions: Optional[str] = None
 
 class ScholarshipDocumentRequirementCreate(ScholarshipDocumentRequirementBase):
     pass

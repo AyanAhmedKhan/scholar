@@ -130,7 +130,6 @@ const ScholarshipManagement = () => {
             mutually_exclusive_ids: [], required_documents: [], required_profile_fields: [],
             min_12th_percentage: '', min_cgpa: '', max_family_income: '', govt_job_allowed: true,
             allowed_categories: [], notify_students: true,
-            allowed_categories: [], notify_students: true,
             allowed_batches_new: [], allowed_batches_renewal: [], is_renewable: false,
             application_link: ''
         });
@@ -712,6 +711,16 @@ const ScholarshipManagement = () => {
                                                 />
                                             )}
                                         </div>
+
+                                        {/* Instructions Field */}
+                                        <div className="mt-3 ml-10">
+                                            <input
+                                                placeholder="Instructions for students (e.g. 'Must be attested', 'Upload original scan')"
+                                                value={doc.instructions || ''}
+                                                onChange={e => handleDocChange(idx, 'instructions', e.target.value)}
+                                                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-slate-50 focus:bg-white transition-colors"
+                                            />
+                                        </div>
                                     </div>
                                 ))}
                                 <button
@@ -797,39 +806,41 @@ const ScholarshipManagement = () => {
             </div>
 
             {/* Modal for New Document Type */}
-            {showDocModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md mx-4">
-                        <h3 className="text-lg font-bold text-slate-800 mb-4">Add New Document Type</h3>
-                        <form onSubmit={handleCreateDocType}>
-                            <input
-                                autoFocus
-                                placeholder="Document Type Name (e.g. Bonafide Certificate)"
-                                value={newDocName}
-                                onChange={e => setNewDocName(e.target.value)}
-                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none mb-4"
-                                required
-                            />
-                            <div className="flex justify-end gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowDocModal(false)}
-                                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
-                                >
-                                    Add Type
-                                </button>
-                            </div>
-                        </form>
+            {
+                showDocModal && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md mx-4">
+                            <h3 className="text-lg font-bold text-slate-800 mb-4">Add New Document Type</h3>
+                            <form onSubmit={handleCreateDocType}>
+                                <input
+                                    autoFocus
+                                    placeholder="Document Type Name (e.g. Bonafide Certificate)"
+                                    value={newDocName}
+                                    onChange={e => setNewDocName(e.target.value)}
+                                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none mb-4"
+                                    required
+                                />
+                                <div className="flex justify-end gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDocModal(false)}
+                                        className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
+                                    >
+                                        Add Type
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

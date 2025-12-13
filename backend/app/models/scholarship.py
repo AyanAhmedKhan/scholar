@@ -65,6 +65,7 @@ class ScholarshipDocumentRequirement(Base):
     is_mandatory = Column(Boolean, default=True)
     is_renewal_required = Column(Boolean, default=False)
     renewal_instruction = Column(Text, nullable=True)
+    instructions = Column(Text, nullable=True)
     
     scholarship = relationship("Scholarship", back_populates="required_documents")
     document_format = relationship("DocumentFormat")
