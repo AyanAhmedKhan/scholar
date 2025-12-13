@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import ScholarshipCard from '../components/ScholarshipCard';
+import Toast from '../components/Toast';
 
 const Scholarships = () => {
     const [scholarships, setScholarships] = useState([]);
@@ -50,6 +51,69 @@ const Scholarships = () => {
                 const conflictingScholarship = scholarships.find(s => s.id === conflictingApp.scholarship_id);
                 const conflictName = conflictingScholarship ? conflictingScholarship.name : 'another scholarship';
                 setConflictModal({ isOpen: true, conflictName, targetId: scholarshipId });
+                return;
+            }
+        }
+
+        // Eligibility + Missing Data Check
+        if (userProfile) {
+            console.log("Checking Eligibility for:", sch.name);
+            console.log("User Profile:", userProfile);
+            console.log("Criteria:", {
+                cats: sch.allowed_categories,
+                income: sch.max_family_income,
+                cgpa: sch.min_cgpa,
+                govt: sch.govt_job_allowed
+            });
+
+            const failures = [];
+            const missing = [];
+
+            // 1. Category Check
+            if (sch.allowed_categories && sch.allowed_categories.length > 0) {
+                if (!userProfile.category) {
+                    missing.push("Category");
+                } else if (!sch.allowed_categories.includes(userProfile.category)) {
+                    failures.push(`Allowed Categories: ${sch.allowed_categories.join(', ')} (You are: ${userProfile.category})`);
+                }
+            }
+
+            // 2. Income Check
+            if (sch.max_family_income) {
+                if (userProfile.annual_family_income === undefined || userProfile.annual_family_income === null) {
+                    missing.push("Annual Family Income");
+                } else if (userProfile.annual_family_income > sch.max_family_income) {
+                    failures.push(`Max Family Income: ₹${sch.max_family_income.toLocaleString()} (Yours: ₹${userProfile.annual_family_income.toLocaleString()})`);
+                }
+            }
+
+            // 3. Score/CGPA Check
+            if (sch.min_cgpa) {
+                if (userProfile.previous_exam_percentage === undefined || userProfile.previous_exam_percentage === null) {
+                    missing.push("Previous Exam Percentage/CGPA");
+                } else if ((userProfile.previous_exam_percentage || 0) < sch.min_cgpa) {
+                    failures.push(`Min Score Required: ${sch.min_cgpa} (Yours: ${userProfile.previous_exam_percentage})`);
+                }
+            }
+
+            // 4. Govt Job Check
+            if (sch.govt_job_allowed === false) {
+                if (userProfile.parents_govt_job === undefined || userProfile.parents_govt_job === null) {
+                    missing.push("Parent's Govt Job Status");
+                } else if (userProfile.parents_govt_job) {
+                    failures.push("Students with parents in Govt Jobs are not eligible.");
+                }
+            }
+
+            // Handle Missing Data
+            if (missing.length > 0) {
+                alert(`Please complete your profile before applying.\n\nMissing details:\n- ${missing.join('\n- ')}\n\nGo to 'Profile' to add these details.`);
+                return;
+            }
+
+            // Handle Ineligibility
+            if (failures.length > 0) {
+                alert(`You are not eligible for this scholarship based on the following criteria:\n\n- ${failures.join('\n- ')}`);
                 return;
             }
         }

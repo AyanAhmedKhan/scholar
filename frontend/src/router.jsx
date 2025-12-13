@@ -21,6 +21,7 @@ import ScholarshipManagement from './pages/ScholarshipManagement';
 import VaultManagement from './pages/VaultManagement';
 import ManageNotices from './pages/ManageNotices';
 import LandingPage from './pages/LandingPage';
+import Profile from './pages/Profile';
 
 import Layout from './components/Layout';
 
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
                 children: [
                     { path: "/dashboard", element: <Dashboard /> },
                     { path: "/onboarding", element: <Onboarding /> },
+                    { path: "/profile", element: <Profile /> },
                     { path: "/vault", element: <DocumentVault /> },
                     { path: "/scholarships", element: <Scholarships /> },
                     { path: "/scholarships/:id", element: <ScholarshipDetails /> },

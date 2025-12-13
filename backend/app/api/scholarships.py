@@ -86,6 +86,16 @@ def create_scholarship(
             required_profile_fields=scholarship_in.required_profile_fields,
             is_renewable=scholarship_in.is_renewable or False,
             application_link=scholarship_in.application_link,
+            
+            # Eligibility Fields
+            min_percentage=scholarship_in.min_percentage,
+            min_12th_percentage=scholarship_in.min_12th_percentage,
+            min_cgpa=scholarship_in.min_cgpa,
+            max_family_income=scholarship_in.max_family_income,
+            allowed_categories=scholarship_in.allowed_categories,
+            allowed_departments=scholarship_in.allowed_departments,
+            govt_job_allowed=scholarship_in.govt_job_allowed,
+            
             is_active=True
         )
         db.add(scholarship)
@@ -185,6 +195,15 @@ def update_scholarship(
     scholarship.required_profile_fields = scholarship_in.required_profile_fields
     scholarship.is_renewable = scholarship_in.is_renewable or False
     scholarship.application_link = scholarship_in.application_link
+    
+    # Update Eligibility Fields
+    scholarship.min_percentage = scholarship_in.min_percentage
+    scholarship.min_12th_percentage = scholarship_in.min_12th_percentage
+    scholarship.min_cgpa = scholarship_in.min_cgpa
+    scholarship.max_family_income = scholarship_in.max_family_income
+    scholarship.allowed_categories = scholarship_in.allowed_categories
+    scholarship.allowed_departments = scholarship_in.allowed_departments
+    scholarship.govt_job_allowed = scholarship_in.govt_job_allowed
     
     # Update requirements: Delete old and add new (Simple approach)
     db.query(ScholarshipDocumentRequirement).filter(ScholarshipDocumentRequirement.scholarship_id == scholarship.id).delete()
