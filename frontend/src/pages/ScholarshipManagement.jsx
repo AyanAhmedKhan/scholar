@@ -17,6 +17,7 @@ const ScholarshipManagement = () => {
     const [showDocModal, setShowDocModal] = useState(false);
     const [newDocName, setNewDocName] = useState('');
     const [activeTab, setActiveTab] = useState('list');
+    const [isCustomCategory, setIsCustomCategory] = useState(false);
 
     const casteCategories = ["General", "OBC", "ST", "SC", "Gen-EWS", "Other"];
 
@@ -133,6 +134,7 @@ const ScholarshipManagement = () => {
             allowed_batches_new: [], allowed_batches_renewal: [], is_renewable: false,
             application_link: ''
         });
+        setIsCustomCategory(false);
     };
 
     const handleCreateDocType = async (e) => {
@@ -191,6 +193,13 @@ const ScholarshipManagement = () => {
             is_renewable: sch.is_renewable || false,
             application_link: sch.application_link || ''
         });
+
+        if (sch.category && !["Merit Based", "Need Based"].includes(sch.category)) {
+            setIsCustomCategory(true);
+        } else {
+            setIsCustomCategory(false);
+        }
+
         setActiveTab('form');
     };
 
@@ -446,13 +455,36 @@ const ScholarshipManagement = () => {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-1.5">Category *</label>
-                                        <input
-                                            placeholder="e.g., Merit, Need-based"
-                                            value={formData.category}
-                                            onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                        <select
+                                            value={isCustomCategory ? 'Custom' : formData.category}
+                                            onChange={(e) => {
+                                                if (e.target.value === 'Custom') {
+                                                    setIsCustomCategory(true);
+                                                    setFormData({ ...formData, category: '' });
+                                                } else {
+                                                    setIsCustomCategory(false);
+                                                    setFormData({ ...formData, category: e.target.value });
+                                                }
+                                            }}
+                                            className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white mb-2"
                                             required
-                                        />
+                                        >
+                                            <option value="">Select Category</option>
+                                            <option value="Merit Based">Merit Based</option>
+                                            <option value="Need Based">Need Based</option>
+                                            <option value="Custom">Custom Create</option>
+                                        </select>
+
+                                        {isCustomCategory && (
+                                            <input
+                                                placeholder="Enter Custom Category Name"
+                                                value={formData.category}
+                                                onChange={e => setFormData({ ...formData, category: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                                required
+                                                autoFocus
+                                            />
+                                        )}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-1.5">Application Deadline</label>
