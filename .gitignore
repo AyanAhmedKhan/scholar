@@ -1,7 +1,8 @@
 # Node dependencies
 node_modules/
 media/
-
+pycache/
+__pycache__/
 # Environment variables
 .env
 .env.local
