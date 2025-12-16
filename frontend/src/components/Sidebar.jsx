@@ -38,7 +38,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen, isCollapsed, setIsCollapsed })
         <div className="flex flex-col h-full bg-white border-r border-slate-200 transition-all duration-300">
             {/* Logo */}
             <div className={`p-6 flex items-center ${collapsed ? 'justify-center px-4' : 'gap-3'} transition-all duration-300`}>
-                <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-10 w-auto object-contain" />
+                <img src="/mits-logo.png" alt="MITS Scholar" className="h-8 w-auto bg-white/10 rounded p-0.5" />
                 {!collapsed && (
                     <span className="font-display font-bold text-lg tracking-tight text-slate-800 whitespace-nowrap overflow-hidden transition-all duration-300">
                         MITS <span className="text-primary-600">Scholar</span>

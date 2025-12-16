@@ -18,8 +18,8 @@ const Layout = () => {
             <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-72'}`}>
                 {/* Mobile Header */}
                 <header className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-30">
-                    <div className="flex items-center gap-3">
-                        <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-10 w-auto object-contain" />
+                    <div className="flex items-center">
+                        <img src="/mits-logo.png" alt="MITS Scholar" className="h-8 w-auto bg-white/10 rounded p-0.5" />
                         <span className="font-display font-bold text-lg text-slate-800">MITS Scholar</span>
                     </div>
                     <button

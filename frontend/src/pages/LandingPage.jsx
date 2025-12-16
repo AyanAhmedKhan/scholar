@@ -20,7 +20,7 @@ const LandingPage = () => {
                 const noticeRes = await api.get('/notices/public').catch(e => ({ data: [] }));
                 setNotices(noticeRes.data || []);
             } catch (e) { console.error("Notice fetch failed", e); }
-            
+
             setLoading(false);
         };
         fetchData();
@@ -218,7 +218,7 @@ const LandingPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                         <div className="col-span-1 md:col-span-2">
                             <div className="flex items-center gap-3 mb-6">
-                                <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-10 w-auto object-contain" />
+                                <img src="/mits-logo.png" alt="MITS Logo" className="h-10 w-auto bg-white/10 rounded-lg p-1" />
                                 <span className="font-display font-bold text-xl text-slate-900">MITS Scholar</span>
                             </div>
                             <p className="text-slate-600 mb-6 max-w-sm">

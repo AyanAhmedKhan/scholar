@@ -16,3 +16,4 @@ gunicorn
 httpx
 python-dotenv
 fastapi-mail
+itsdangerous

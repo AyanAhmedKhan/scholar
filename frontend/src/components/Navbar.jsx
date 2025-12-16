@@ -42,7 +42,7 @@ const Navbar = () => {
                     {/* Logo */}
                     <div className="flex-shrink-0">
                         <Link to="/" className="flex items-center gap-3 group">
-                            <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-12 w-auto object-contain" />
+                            <img src="/mits-logo.png" alt="MITS Portal" className="h-8 w-auto bg-white/10 rounded p-0.5" />
                             <div className="flex flex-col">
                                 <span className="font-display font-bold text-xl tracking-tight text-slate-800 leading-none">
                                     MITS <span className="text-primary-600">Scholar</span>
