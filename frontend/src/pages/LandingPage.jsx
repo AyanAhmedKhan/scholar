@@ -34,7 +34,7 @@ const LandingPage = () => {
                     <div className="flex flex-col md:flex-row items-center justify-between py-2 md:py-4 gap-4 md:gap-0">
                         {/* Logo Section */}
                         <Link to="/" className="flex items-center gap-4">
-                            <img src="/src/public/mits-logo.png" alt="MITS Logo" className="h-16 w-auto object-contain" />
+                            <img src="//mits-logo.png" alt="MITS Logo" className="h-16 w-auto object-contain" />
                             <div className="flex flex-col items-start">
                                 <h1 className="text-xl md:text-2xl font-bold text-blue-700 leading-tight">
                                     माधव प्रौद्योगिकी एवं विज्ञान संस्थान, ग्वालियर

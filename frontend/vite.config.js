@@ -8,12 +8,12 @@ export default defineConfig({
     port: 4255,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://127.0.0.1:5001',
         changeOrigin: true,
         secure: false,
       },
       '/media': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://127.0.0.1:5001',
         changeOrigin: true,
         secure: false,
       }
