@@ -22,11 +22,13 @@ import VaultManagement from './pages/VaultManagement';
 import ManageNotices from './pages/ManageNotices';
 import LandingPage from './pages/LandingPage';
 import Profile from './pages/Profile';
+import ConnectionCheck from './pages/ConnectionCheck';
 
 import Layout from './components/Layout';
 
 const router = createBrowserRouter([
     { path: "/", element: <LandingPage /> },
+    { path: "/checkconnection", element: <ConnectionCheck /> },
     { path: "/login", element: <Login /> },
     {
         element: <Layout />,

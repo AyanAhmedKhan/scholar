@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Connection Check</title>
+</head>
+
+<body>
+    <h1>Backend Connection Checker</h1>
+    <p>Status: <span id="status">Checking...</span></p>
+    <div id="result"></div>
+    <script>
+        const API_URL = 'http://localhost:5001/';
+
+        async function checkConnection() {
+            try {
+                const response = await fetch(API_URL);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('status').innerText = '✅ CONNECTED';
+                    document.getElementById('status').style.color = 'green';
+                    document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('status').innerText = '❌ Backend Error ' + response.status;
+                    document.getElementById('status').style.color = 'red';
+                }
+            } catch (error) {
+                document.getElementById('status').innerText = '❌ DISCONNECTED (Connection Refused)';
+                document.getElementById('status').style.color = 'red';
+                document.getElementById('result').innerText = 'Ensure the backend is running on port 5001.\nError: ' + error.message;
+            }
+        }
+
+        checkConnection();
+    </script>
+</body>
+
+</html>
