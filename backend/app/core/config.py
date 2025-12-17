@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr, field_validator
-from typing import List
+from typing import List, Union
 import os
 
 class Settings(BaseSettings):
@@ -40,11 +40,26 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: List[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
+        "http://localhost:4255",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
-        "http://localhost:4255",
         "http://127.0.0.1:4255",
+        "http://localhost:5001",
+        "http://127.0.0.1:5001",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
     ]
+
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, str) and v.startswith("["):
+            # If it comes as a string representation of list (e.g. from .env sometimes)
+            # This is a naive check, might just rely on the above split for simple CSV
+             return [i.strip() for i in v.strip("[]").split(",")]
+        return v
 
     class Config:
         env_file = ".env"
