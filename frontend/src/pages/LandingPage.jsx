@@ -1,12 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Award, Users, Shield, Globe, ChevronRight, Bell } from 'lucide-react';
+import { ArrowRight, BookOpen, Award, Users, Shield, Globe, ChevronRight, Bell, UserPlus, Search, FileCheck, Banknote, FileText, CheckCircle, CreditCard, IdCard, GraduationCap, Coins, Car } from 'lucide-react';
 import api from '../services/api';
+import { Hero } from "@/components/ui/animated-hero";
+import { motion } from 'framer-motion';
 
 const LandingPage = () => {
     const [scholarships, setScholarships] = useState([]);
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 1.5, // Much slower step-by-step
+                delayChildren: 0.5
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 50, scale: 0.9 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                type: "spring",
+                stiffness: 40,
+                damping: 15,
+                duration: 1.0
+            }
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -84,38 +112,85 @@ const LandingPage = () => {
             )}
 
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-br from-blue-50 via-white to-slate-50 py-20 md:py-32 overflow-hidden">
+            <section className="relative bg-gradient-to-br from-blue-50 via-white to-slate-50 overflow-hidden">
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10"></div>
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-8 animate-fade-in-up">
-                            <span className="relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                            </span>
-                            Admissions & Scholarships Open for 2024-25
-                        </div>
-                        <h1 className="text-4xl md:text-6xl font-display font-bold text-slate-900 mb-6 leading-tight tracking-tight animate-fade-in-up delay-100">
-                            Empowering Future Leaders with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">MITS Scholar</span>
-                        </h1>
-                        <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up delay-200">
-                            A unified platform for students to discover, apply, and track scholarships. Streamlining the journey from application to disbursement.
-                        </p>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-300">
-                            <Link to="/login" className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:bg-blue-700 hover:shadow-blue-500/30 transition-all duration-300 flex items-center justify-center gap-2 group">
-                                Get Started
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-                            <a href="#scholarships" className="w-full sm:w-auto px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold text-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-300">
-                                View Scholarships
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
+                <Hero />
                 {/* Decorative blobs */}
                 <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
                 <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 w-[500px] h-[500px] bg-indigo-200/30 rounded-full blur-3xl -z-10"></div>
+            </section>
+
+            {/* How It Works Section */}
+            <section className="py-24 bg-white relative overflow-hidden">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-20">
+                        <span className="text-blue-600 font-semibold tracking-wider uppercase text-sm">Process</span>
+                        <h2 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mt-2 mb-6">How It Works</h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            Your journey to academic funding in 4 simple steps.
+                        </p>
+                    </div>
+
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-4 gap-8 relative"
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                    >
+                        {/* Road Line (Desktop) */}
+                        <div className="hidden md:block absolute top-[2.5rem] left-0 w-full h-1 bg-slate-200 -z-20 rounded-full"></div>
+                        <div className="hidden md:block absolute top-[2.5rem] left-0 w-full h-1 border-t-2 border-dashed border-slate-400 -z-20 opacity-30"></div>
+
+                        {/* Vertical Road Line (Mobile) */}
+                        <div className="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-1 h-full bg-slate-100 -z-20"></div>
+                        <div className="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-1 h-full border-l-2 border-dashed border-slate-300 -z-20 opacity-40"></div>
+
+                        {/* Traveling Car */}
+                        <motion.div
+                            className="hidden md:flex absolute top-[1.5rem] -left-4 z-0 text-blue-600 bg-white p-1 rounded-full shadow-sm border border-blue-100"
+                            initial={{ left: "0%" }}
+                            whileInView={{ left: "100%" }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 6, ease: "easeInOut", delay: 0.5 }}
+                        >
+                            <Car className="w-6 h-6 fill-blue-600 text-blue-100" />
+                        </motion.div>
+
+                        <StepCard
+                            number="01"
+                            icon={<UserPlus className="w-6 h-6 text-white" />}
+                            title="Register"
+                            description="Create your student profile with basic details and verify your email."
+                            color="bg-blue-600"
+                            variants={itemVariants}
+                        />
+                        <StepCard
+                            number="02"
+                            icon={<Search className="w-6 h-6 text-white" />}
+                            title="Browse"
+                            description="Explore available scholarships that match your course and category."
+                            color="bg-indigo-600"
+                            variants={itemVariants}
+                        />
+                        <StepCard
+                            number="03"
+                            icon={<FileCheck className="w-6 h-6 text-white" />}
+                            title="Apply"
+                            description="Submit your application and upload necessary documents securely."
+                            color="bg-violet-600"
+                            variants={itemVariants}
+                        />
+                        <StepCard
+                            number="04"
+                            icon={<Banknote className="w-6 h-6 text-white" />}
+                            title="Receive"
+                            description="Track status and receive funds directly in your bank account."
+                            color="bg-emerald-600"
+                            variants={itemVariants}
+                        />
+                    </motion.div>
+                </div>
             </section>
 
             {/* Active Scholarships Section */}
@@ -199,15 +274,22 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* Stats Section */}
-            <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center opacity-10"></div>
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                        <StatCard number="50+" label="Scholarships" />
-                        <StatCard number="1000+" label="Students Benefited" />
-                        <StatCard number="₹2Cr+" label="Disbursed" />
-                        <StatCard number="100%" label="Transparency" />
+            {/* CTA Section */}
+            <section className="py-20 bg-blue-600 overflow-hidden relative">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-display">Ready to Secure Your Scholarship?</h2>
+                    <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                        Don't wait for the deadline. Create your account today and start your application process.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link to="/login" className="px-8 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                            Register Now
+                        </Link>
+                        <a href="#scholarships" className="px-8 py-4 bg-blue-700 text-white border border-blue-500 rounded-xl font-bold text-lg hover:bg-blue-800 transition-all">
+                            Browse Scholarships
+                        </a>
                     </div>
                 </div>
             </section>
@@ -267,6 +349,38 @@ const LandingPage = () => {
     );
 };
 
+const StepCard = ({ number, icon, title, description, color, variants }) => (
+    <motion.div
+        className="relative flex flex-col items-center text-center group"
+        variants={variants}
+    >
+        <div className={`w-12 h-12 ${color} rounded-2xl rotate-3 flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform duration-300 z-10 mb-6`}>
+            {icon}
+        </div>
+        <div className="text-6xl font-black text-slate-100 absolute top-0 -z-10 select-none group-hover:text-blue-50 transition-colors">
+            {number}
+        </div>
+        <h3 className="text-xl font-bold text-slate-900 mb-2">{title}</h3>
+        <p className="text-slate-600">{description}</p>
+    </motion.div>
+);
+
+const DocCard = ({ icon, label }) => (
+    <div className="flex items-center gap-3 p-4 bg-white border border-slate-100 rounded-xl shadow-sm hover:border-blue-200 hover:shadow-md transition-all">
+        <div className="text-blue-500 bg-blue-50 p-2 rounded-lg">
+            {icon}
+        </div>
+        <span className="font-semibold text-slate-700">{label}</span>
+    </div>
+);
+
+const ListItem = ({ children }) => (
+    <li className="flex items-start gap-2 text-slate-600 text-sm">
+        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+        <span>{children}</span>
+    </li>
+);
+
 const FeatureCard = ({ icon, title, description }) => (
     <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all duration-300 group">
         <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -300,3 +414,5 @@ const FooterLink = ({ to, children }) => (
 );
 
 export default LandingPage;
+
+

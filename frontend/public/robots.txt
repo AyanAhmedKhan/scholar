@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scholar.mitsgwalior.in/sitemap.xml
