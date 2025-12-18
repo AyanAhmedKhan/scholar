@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.db.database import SessionLocal
 from app.models.user import User, UserRole
+from app.models.notice import Notice
 from app.core.security import get_password_hash
 
 def create_superuser():
