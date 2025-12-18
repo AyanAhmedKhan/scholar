@@ -235,7 +235,7 @@ const Login = () => {
                             <GoogleLogin
                                 onSuccess={handleGoogleSuccess}
                                 onError={() => setError('Google Login Failed')}
-                                useOneTap={false} // Often better false for custom styled pages to avoid popups blocking UI
+                                useOneTap={true} // Enabled for direct login experience
                                 theme="filled_blue"
                                 shape="pill"
                                 size="large"
