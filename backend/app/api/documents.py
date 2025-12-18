@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.user import User, UserRole
-from app.models.student import StudentDocument
+from app.models.student import StudentDocument, StudentProfile
 from app.models.scholarship import DocumentFormat
 from app.schemas import schemas
 from app.api import deps
@@ -88,10 +88,13 @@ async def upload_document(
         
         max_mb = 5 
         if document_format_id:
+            print(f"DEBUG: Processing upload with format_id={document_format_id} (Type: {type(document_format_id)})")
             # Validate Format ID exists (Prevention of FK IntegrityError)
             fmt = db.query(DocumentFormat).filter(DocumentFormat.id == document_format_id).first()
             if not fmt:
+                print(f"ERROR: DocumentFormat with id={document_format_id} NOT FOUND in DB.")
                 raise HTTPException(status_code=400, detail=f"Invalid document_format_id: {document_format_id}")
+            print(f"DEBUG: Found DocumentFormat: {fmt.name} (id={fmt.id})")
             if fmt.max_size_mb:
                 max_mb = fmt.max_size_mb
                 
