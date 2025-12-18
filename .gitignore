@@ -9,7 +9,7 @@ __pycache__/
 .env.development
 .env.production
 .env.test
-
+startup_error.log
 # Logs
 npm-debug.log*
 yarn-debug.log*
