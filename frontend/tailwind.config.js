@@ -64,22 +64,22 @@ export default {
                 'glow': '0 0 20px rgba(37, 99, 235, 0.5)', // Blue-600 glow
                 'glow-sm': '0 0 10px rgba(37, 99, 235, 0.3)',
             },
-            animation: {
-                'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-                'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                'float': 'float 6s ease-in-out infinite',
+            float: {
+                '0%, 100%': { transform: 'translateY(0) translateZ(0)' },
+                '50%': { transform: 'translateY(-10px) translateZ(0)' },
             },
-            keyframes: {
-                fadeInUp: {
-                    '0%': { opacity: '0', transform: 'translateY(10px) translateZ(0)' },
-                    '100%': { opacity: '1', transform: 'translateY(0) translateZ(0)' },
-                },
-                float: {
-                    '0%, 100%': { transform: 'translateY(0) translateZ(0)' },
-                    '50%': { transform: 'translateY(-10px) translateZ(0)' },
-                }
+            marquee: {
+                '0%': { transform: 'translateX(100%)' },
+                '100%': { transform: 'translateX(-100%)' },
             }
         },
+        animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'marquee': 'marquee 25s linear infinite',
+        },
     },
-    plugins: [],
+},
+plugins: [],
 }
