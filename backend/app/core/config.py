@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # Database
-    DATABASE_URL: str = "mysql+mysqlconnector://root:password@localhost:3306/scholarship_db"
+    DATABASE_URL: str = "mysql+mysqlconnector://webmits:Web%40mits123@127.0.0.1:3306/scholar"
 
     # Redis / Celery
     REDIS_URL: str = "redis://localhost:6379/0"
