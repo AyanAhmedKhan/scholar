@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Award, Users, Shield, Globe, ChevronRight, Bell, UserPlus, Search, FileCheck, Banknote, FileText, CheckCircle, CreditCard, IdCard, GraduationCap, Coins, Car } from 'lucide-react';
+import { ArrowRight, BookOpen, Award, Users, Shield, Globe, ChevronRight, Bell, UserPlus, Search, FileCheck, Banknote, FileText, CheckCircle, CreditCard, IdCard, GraduationCap, Coins, Car, Menu, X } from 'lucide-react';
 import api from '../services/api';
 import { Hero } from "@/components/ui/animated-hero";
 import { motion } from 'framer-motion';
@@ -9,6 +9,7 @@ const LandingPage = () => {
     const [scholarships, setScholarships] = useState([]);
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -57,28 +58,39 @@ const LandingPage = () => {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900">
             {/* Top Bar / Header matching the reference image */}
+            {/* Top Bar / Header matching the reference image */}
             <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row items-center justify-between py-2 md:py-4 gap-4 md:gap-0">
-                        {/* Logo Section */}
-                        <Link to="/" className="flex items-center gap-4">
-                            <img src="/mits-logo.png" alt="MITS Logo" className="h-16 w-auto object-contain" />
-                            <div className="flex flex-col items-start">
-                                <h1 className="text-xl md:text-2xl font-bold text-blue-700 leading-tight">
-                                    माधव प्रौद्योगिकी एवं विज्ञान संस्थान, ग्वालियर
-                                </h1>
-                                <h2 className="text-sm md:text-base font-semibold text-blue-600 leading-tight">
-                                    Madhav Institute of Technology & Science, Gwalior
-                                </h2>
-                                <p className="text-xs md:text-sm font-medium text-red-600 mt-0.5">
-                                    Deemed University
-                                </p>
-                            </div>
-                        </Link>
+                        <div className="flex items-center justify-between w-full md:w-auto">
+                            {/* Logo Section */}
+                            <Link to="/" className="flex items-center gap-4">
+                                <img src="/mits-logo.png" alt="MITS Logo" className="h-12 md:h-16 w-auto object-contain" />
+                                <div className="flex flex-col items-start">
+                                    <h1 className="text-lg md:text-2xl font-bold text-blue-700 leading-tight">
+                                        माधव प्रौद्योगिकी एवं विज्ञान संस्थान
+                                    </h1>
+                                    <h2 className="text-xs md:text-base font-semibold text-blue-600 leading-tight">
+                                        MITS, Gwalior
+                                    </h2>
+                                    <p className="hidden md:block text-xs md:text-sm font-medium text-red-600 mt-0.5">
+                                        Deemed University
+                                    </p>
+                                </div>
+                            </Link>
 
-                        {/* Navigation Links */}
-                        <nav className="flex items-center gap-6 text-sm font-medium">
-                            <span className="text-blue-800 font-bold text-lg hidden md:block">MITS Scholar</span>
+                            {/* Mobile Menu Button */}
+                            <button
+                                className="md:hidden p-2 text-slate-600 hover:text-blue-600"
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            >
+                                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            </button>
+                        </div>
+
+                        {/* Desktop Navigation */}
+                        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+                            <span className="text-blue-800 font-bold text-lg hidden lg:block">MITS Scholar</span>
                             <Link to="/" className="text-blue-600 hover:text-blue-800 border-b-2 border-blue-600 pb-0.5">Home</Link>
                             <a href="https://web.mitsgwalior.in/" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">Institute Site</a>
                             <Link to="/login" className="text-slate-600 hover:text-blue-600 transition-colors">Login</Link>
@@ -87,6 +99,22 @@ const LandingPage = () => {
                             </Link>
                         </nav>
                     </div>
+
+                    {/* Mobile Navigation Dropdown */}
+                    {isMobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="md:hidden py-4 border-t border-slate-100 flex flex-col gap-4"
+                        >
+                            <Link to="/" className="text-blue-600 font-medium px-2 py-1 bg-blue-50 rounded-lg">Home</Link>
+                            <a href="https://web.mitsgwalior.in/" className="text-slate-600 font-medium px-2 py-1">Institute Site</a>
+                            <Link to="/login" className="text-slate-600 font-medium px-2 py-1">Login</Link>
+                            <Link to="/login" className="bg-blue-600 text-white text-center px-5 py-3 rounded-xl font-bold mt-2 shadow-sm">
+                                Portal Login
+                            </Link>
+                        </motion.div>
+                    )}
                 </div>
             </header>
 
@@ -297,9 +325,9 @@ const LandingPage = () => {
             {/* Footer */}
             <footer className="bg-slate-50 border-t border-slate-200 pt-16 pb-8">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 text-center md:text-left">
                         <div className="col-span-1 md:col-span-2">
-                            <div className="flex items-center gap-3 mb-6">
+                            <div className="flex items-center justify-center md:justify-start gap-3 mb-6">
                                 <img src="/mits-logo.png" alt="MITS Logo" className="h-10 w-auto bg-white/10 rounded-lg p-1" />
                                 <span className="font-display font-bold text-xl text-slate-900">MITS Scholar</span>
                             </div>
