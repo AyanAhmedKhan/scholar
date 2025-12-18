@@ -9,8 +9,22 @@
     <h1>Backend Connection Checker</h1>
     <p>Status: <span id="status">Checking...</span></p>
     <div id="result"></div>
+    <!-- Load configuration -->
+    <script src="config.js"></script>
     <script>
-        const API_URL = 'http://localhost:5001/';
+        // Use URL parameter 'api' if present, otherwise use config, otherwise fallback
+        function getApiUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('api')) {
+                return params.get('api');
+            }
+            if (typeof CONFIG !== 'undefined' && CONFIG.API_URL) {
+                return CONFIG.API_URL;
+            }
+            return 'http://localhost:5001/'; // Fallback
+        }
+
+        const API_URL = getApiUrl();
 
         async function checkConnection() {
             try {
