@@ -89,23 +89,23 @@ const Dashboard = () => {
                 />
             )}
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-primary-900 to-primary-800 rounded-2xl p-8 text-white shadow-lg">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="bg-gradient-to-r from-primary-900 to-primary-800 rounded-2xl p-5 sm:p-8 text-white shadow-lg">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6">
                     <div>
-                        <h1 className="text-3xl font-bold mb-2 font-display">
+                        <h1 className="text-2xl sm:text-3xl font-bold mb-2 font-display">
                             Welcome back, {profile?.full_name?.split(' ')[0] || 'Student'}! 👋
                         </h1>
-                        <p className="text-primary-100 text-lg">
+                        <p className="text-primary-100 text-base sm:text-lg">
                             Here's an overview of your scholarship applications.
                         </p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3 w-full md:w-auto">
                         {!profile && (
-                            <Link to="/onboarding" className="bg-white text-primary-900 hover:bg-slate-50 px-6 py-3 rounded-lg font-semibold transition-colors shadow-sm">
+                            <Link to="/onboarding" className="flex-1 md:flex-none text-center bg-white text-primary-900 hover:bg-slate-50 px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold transition-colors shadow-sm text-sm sm:text-base">
                                 Complete Profile
                             </Link>
                         )}
-                        <Link to="/scholarships" className="bg-primary-700 text-white hover:bg-primary-600 px-6 py-3 rounded-lg font-semibold transition-colors border border-primary-600">
+                        <Link to="/scholarships" className="flex-1 md:flex-none text-center bg-primary-700 text-white hover:bg-primary-600 px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold transition-colors border border-primary-600 text-sm sm:text-base">
                             Browse Scholarships
                         </Link>
                     </div>
@@ -126,7 +126,7 @@ const Dashboard = () => {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <StatCard
                     title="Total Applications"
                     value={applications.length}
@@ -176,8 +176,8 @@ const Dashboard = () => {
                         </div>
                     ) : (
                         applications.slice(0, 5).map((app) => (
-                            <Link key={app.id} to={`/applications/${app.id}`} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-slate-50 transition-colors gap-4 group">
-                                <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <Link key={app.id} to={`/applications/${app.id}`} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-slate-50 transition-colors gap-3 sm:gap-4 group">
+                                <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full">
                                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center text-primary-700 font-bold text-sm border border-primary-100 flex-shrink-0">
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     </div>
@@ -192,8 +192,8 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                                    <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0">
+                                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                                         <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border capitalize ${getStatusColor(app.status)}`}>
                                             {app.status.replace(/_/g, ' ')}
                                         </span>
@@ -201,6 +201,7 @@ const Dashboard = () => {
                                             <div className="flex flex-col items-end gap-1">
                                                 <button
                                                     onClick={(e) => {
+                                                        e.preventDefault(); // Prevent Link navigation
                                                         navigate(`/apply/${app.scholarship_id}`, { state: { applicationId: app.id, correctionMode: true, adminRemarks: app.remarks } });
                                                     }}
                                                     className="bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 shadow-md shadow-red-500/20 active:scale-95 transition-all flex items-center gap-1.5"
@@ -235,7 +236,7 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                 <Link to="/vault" className="bg-white p-5 rounded-xl border border-slate-200 hover:border-primary-200 hover:shadow-md transition-all group">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-purple-50 rounded-lg text-purple-600 group-hover:scale-105 transition-transform">
