@@ -97,9 +97,12 @@ async def upload_document(
             print(f"DEBUG: Found DocumentFormat: {fmt.name} (id={fmt.id})")
             if fmt.max_size_mb:
                 max_mb = fmt.max_size_mb
-                
+        
+        print(f"DEBUG: File Size: {file_size} bytes ({file_size/1024/1024:.2f} MB). Max Allowed: {max_mb} MB.")
+        
         if file_size > max_mb * 1024 * 1024:
-             raise HTTPException(status_code=400, detail=f"File too large. Maximum size is {max_mb}MB")
+             print(f"ERROR: File too large.")
+             raise HTTPException(status_code=400, detail=f"File too large. Your file is {file_size/1024/1024:.2f}MB, but maximum size for this document is {max_mb}MB")
 
         # Save File
         from app.core.storage import get_storage_path, save_upload_file, delete_file
