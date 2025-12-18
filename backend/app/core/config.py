@@ -48,6 +48,10 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5001",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
+        "http://scholar.mitsgwalior.in",
+        "https://scholar.mitsgwalior.in",
+        "http://scholar.mitsgwalior.in:4255",
+        "https://scholar.mitsgwalior.in:4255",
     ]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")

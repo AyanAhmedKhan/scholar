@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 4255,
-    host: '0.0.0.0', // Ensure it listens on all interfaces
-    allowedHosts: ['scholar.mitsgwalior.in', 'localhost', '127.0.0.1'],
+    host: '0.0.0.0',
+    allowedHosts: true,
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:5001',
