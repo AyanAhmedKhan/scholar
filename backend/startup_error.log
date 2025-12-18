@@ -1,0 +1,558 @@
+DEBUG:passlib.utils.compat:loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+DEBUG:passlib.utils.compat:loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+DEBUG:passlib.utils.compat:loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+DEBUG:passlib.registry:registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:GET /api/v1/ - Status: 404 - Time: 0.000s
+DEBUG:passlib.utils.compat:loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+DEBUG:passlib.utils.compat:loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+DEBUG:passlib.utils.compat:loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+DEBUG:passlib.registry:registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:passlib.utils.compat:loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+DEBUG:passlib.utils.compat:loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+DEBUG:passlib.utils.compat:loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+DEBUG:passlib.registry:registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+DEBUG:asyncio:Using proactor: IocpProactor
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.003s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.001s
+INFO:app.core.middleware:POST /api/v1/auth/login/access-token - Client: 127.0.0.1
+DEBUG:multipart.multipart:Calling on_part_begin with no data
+DEBUG:multipart.multipart:Calling on_header_field with data[42:61]
+DEBUG:multipart.multipart:Calling on_header_value with data[63:89]
+DEBUG:multipart.multipart:Calling on_header_end with no data
+DEBUG:multipart.multipart:Calling on_headers_finished with no data
+DEBUG:multipart.multipart:Calling on_part_data with data[93:110]
+DEBUG:multipart.multipart:Calling on_part_end with no data
+DEBUG:multipart.multipart:Calling on_part_begin with no data
+DEBUG:multipart.multipart:Calling on_header_field with data[154:173]
+DEBUG:multipart.multipart:Calling on_header_value with data[175:201]
+DEBUG:multipart.multipart:Calling on_header_end with no data
+DEBUG:multipart.multipart:Calling on_headers_finished with no data
+DEBUG:multipart.multipart:Calling on_part_data with data[205:210]
+DEBUG:multipart.multipart:Calling on_part_end with no data
+DEBUG:multipart.multipart:Calling on_end with no data
+DEBUG:passlib.handlers.bcrypt:detected 'bcrypt' backend, version '4.0.1'
+DEBUG:passlib.handlers.bcrypt:'bcrypt' backend lacks $2$ support, enabling workaround
+INFO:app.core.middleware:POST /api/v1/auth/login/access-token - Status: 200 - Time: 0.539s
+INFO:app.core.middleware:GET /api/v1/auth/me - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/auth/me - Status: 200 - Time: 0.032s
+INFO:app.core.middleware:GET /api/v1/admin/stats - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/admin/analytics/dashboard - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/admin/audit-logs - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/admin/analytics/dashboard - Status: 200 - Time: 0.114s
+INFO:app.core.middleware:GET /api/v1/admin/stats - Status: 200 - Time: 0.127s
+INFO:app.core.middleware:GET /api/v1/admin/analytics/dashboard - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/admin/stats - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/admin/analytics/dashboard - Status: 200 - Time: 0.018s
+INFO:app.core.middleware:GET /api/v1/admin/stats - Status: 200 - Time: 0.017s
+INFO:app.core.middleware:GET /api/v1/admin/audit-logs - Status: 200 - Time: 0.140s
+INFO:app.core.middleware:GET /api/v1/admin/audit-logs - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/admin/audit-logs - Status: 200 - Time: 0.013s
+INFO:app.core.middleware:OPTIONS /api/v1/scholarships/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/scholarships/public - Status: 400 - Time: 0.010s
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Status: 200 - Time: 0.140s
+INFO:app.core.middleware:OPTIONS /api/v1/notices/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/notices/public - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/notices/public - Client: 127.0.0.1
+ERROR:app.core.exceptions:Database error on /api/v1/notices/public: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\middleware\exceptions.py", line 68, in __call__
+    await self.app(scope, receive, sender)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 20, in __call__
+    raise e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 17, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 718, in __call__
+    await route.handle(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 66, in app
+    response = await func(request)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 274, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\concurrency.py", line 41, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\ayanp\OneDrive\Desktop\Scholarship portal\backend\app\api\notices.py", line 21, in read_public_notices
+    notices = db.query(Notice).filter(Notice.is_active == True).order_by(Notice.created_at.desc()).offset(skip).limit(limit).all()
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2673, in all
+    return self._iter().all()  # type: ignore
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2827, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
+    return meth(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+WARNING:app.core.middleware:GET /api/v1/notices/public - Status: 500 - Time: 0.062s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.003s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.004s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.002s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.002s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.019s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.001s
+INFO:app.core.middleware:OPTIONS /api/v1/scholarships/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/scholarships/public - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Status: 200 - Time: 0.046s
+INFO:app.core.middleware:OPTIONS /api/v1/notices/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/notices/public - Status: 400 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/notices/public - Client: 127.0.0.1
+ERROR:app.core.exceptions:Database error on /api/v1/notices/public: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\middleware\exceptions.py", line 68, in __call__
+    await self.app(scope, receive, sender)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 20, in __call__
+    raise e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 17, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 718, in __call__
+    await route.handle(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 66, in app
+    response = await func(request)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 274, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\concurrency.py", line 41, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\ayanp\OneDrive\Desktop\Scholarship portal\backend\app\api\notices.py", line 21, in read_public_notices
+    notices = db.query(Notice).filter(Notice.is_active == True).order_by(Notice.created_at.desc()).offset(skip).limit(limit).all()
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2673, in all
+    return self._iter().all()  # type: ignore
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2827, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
+    return meth(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+WARNING:app.core.middleware:GET /api/v1/notices/public - Status: 500 - Time: 0.015s
+INFO:app.core.middleware:OPTIONS /api/v1/auth/login/google - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/auth/login/google - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:OPTIONS /api/v1/scholarships/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/scholarships/public - Status: 400 - Time: 0.016s
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\asyncio\proactor_events.py", line 162, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Status: 200 - Time: 0.200s
+INFO:app.core.middleware:OPTIONS /api/v1/notices/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/notices/public - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/notices/public - Client: 127.0.0.1
+ERROR:app.core.exceptions:Database error on /api/v1/notices/public: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\middleware\exceptions.py", line 68, in __call__
+    await self.app(scope, receive, sender)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 20, in __call__
+    raise e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 17, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 718, in __call__
+    await route.handle(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 66, in app
+    response = await func(request)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 274, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\concurrency.py", line 41, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\ayanp\OneDrive\Desktop\Scholarship portal\backend\app\api\notices.py", line 21, in read_public_notices
+    notices = db.query(Notice).filter(Notice.is_active == True).order_by(Notice.created_at.desc()).offset(skip).limit(limit).all()
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2673, in all
+    return self._iter().all()  # type: ignore
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2827, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
+    return meth(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+WARNING:app.core.middleware:GET /api/v1/notices/public - Status: 500 - Time: 0.026s
+INFO:app.core.middleware:OPTIONS /api/v1/scholarships/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/scholarships/public - Status: 400 - Time: 0.000s
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/scholarships/public - Status: 200 - Time: 0.040s
+INFO:app.core.middleware:OPTIONS /api/v1/notices/public - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/notices/public - Status: 400 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/notices/public - Client: 127.0.0.1
+ERROR:app.core.exceptions:Database error on /api/v1/notices/public: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\middleware\exceptions.py", line 68, in __call__
+    await self.app(scope, receive, sender)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 20, in __call__
+    raise e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 17, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 718, in __call__
+    await route.handle(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\routing.py", line 66, in app
+    response = await func(request)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 274, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\starlette\concurrency.py", line 41, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func, *args)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\ayanp\OneDrive\Desktop\Scholarship portal\backend\app\api\notices.py", line 21, in read_public_notices
+    notices = db.query(Notice).filter(Notice.is_active == True).order_by(Notice.created_at.desc()).offset(skip).limit(limit).all()
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2673, in all
+    return self._iter().all()  # type: ignore
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\query.py", line 2827, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2362, in execute
+    return self._execute_internal(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\orm\context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
+    return meth(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\sqlalchemy\engine\default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\ayanp\AppData\Local\Programs\Python\Python39\lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1146 (42S02): Table 'scholarship_db.notices' doesn't exist
+[SQL: SELECT notices.id AS notices_id, notices.title AS notices_title, notices.content AS notices_content, notices.is_active AS notices_is_active, notices.created_at AS notices_created_at, notices.created_by AS notices_created_by 
+FROM notices 
+WHERE notices.is_active = true ORDER BY notices.created_at DESC 
+ LIMIT %(param_1)s, %(param_2)s]
+[parameters: {'param_1': 0, 'param_2': 100}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+WARNING:app.core.middleware:GET /api/v1/notices/public - Status: 500 - Time: 0.012s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.004s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.002s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.003s
+INFO:app.core.middleware:OPTIONS /api/v1/ - Client: 127.0.0.1
+WARNING:app.core.middleware:OPTIONS /api/v1/ - Status: 400 - Time: 0.001s
+INFO:app.core.middleware:GET /api/v1/ - Client: 127.0.0.1
+INFO:app.core.middleware:GET /api/v1/ - Status: 200 - Time: 0.002s

@@ -11,3 +11,7 @@ api_router.include_router(admin_routes.router, prefix="/admin", tags=["admin"])
 api_router.include_router(notices.router, prefix="/notices", tags=["notices"])
 api_router.include_router(university.router, prefix="/university", tags=["university"])
 api_router.include_router(health.router, tags=["health"])
+
+@api_router.get("/")
+def api_root():
+    return {"message": "API v1 is running", "status": "ok"}
