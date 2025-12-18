@@ -27,21 +27,70 @@
         const API_URL = getApiUrl();
 
         async function checkConnection() {
+            const resultDiv = document.getElementById('result');
+            const statusSpan = document.getElementById('status');
+
+            // 1. Mixed Content Check
+            const isPageHttps = window.location.protocol === 'https:';
+            const isApiHttp = API_URL.startsWith('http://');
+
+            if (isPageHttps && isApiHttp) {
+                statusSpan.innerText = '❌ BLOCKED (Mixed Content)';
+                statusSpan.style.color = 'red';
+                resultDiv.innerHTML = `
+                    <div style="background:#ffebee; border:1px solid red; padding:15px; border-radius:5px;">
+                        <h3>🔒 Security Error: Mixed Content</h3>
+                        <p>You are viewing this page on <b>HTTPS</b>, but trying to connect to an <b>HTTP</b> Backend.</p>
+                        <p>Browsers block this to protect you.</p>
+                        <hr>
+                        <h4>How to fix:</h4>
+                        <ul>
+                            <li><b>Option A (Best):</b> Configure Nginx/Apache to serve the Backend via SSL (HTTPS).</li>
+                            <li><b>Option B (Quick Fix):</b> Load this page via HTTP instead (e.g., http://scholar.mitsgwalior.in).</li>
+                            <li><b>Option C (Dev Only):</b> Click the "shield" icon in your browser URL bar and "Allow unsafe scripts/content".</li>
+                        </ul>
+                    </div>
+                 `;
+                return;
+            }
+
             try {
-                const response = await fetch(API_URL);
+                statusSpan.innerText = '⏳ Connecting to ' + API_URL + '...';
+                const response = await fetch(API_URL); // Tries root endpoint first
+
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('status').innerText = '✅ CONNECTED';
-                    document.getElementById('status').style.color = 'green';
-                    document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+                    statusSpan.innerText = '✅ CONNECTED';
+                    statusSpan.style.color = 'green';
+                    resultDiv.innerText = JSON.stringify(data, null, 2);
                 } else {
-                    document.getElementById('status').innerText = '❌ Backend Error ' + response.status;
-                    document.getElementById('status').style.color = 'red';
+                    statusSpan.innerText = '⚠️ Backend Error ' + response.status;
+                    statusSpan.style.color = 'orange';
+                    resultDiv.innerText = await response.text();
                 }
             } catch (error) {
-                document.getElementById('status').innerText = '❌ DISCONNECTED (Connection Refused)';
-                document.getElementById('status').style.color = 'red';
-                document.getElementById('result').innerText = 'Ensure the backend is running on port 5001.\nError: ' + error.message;
+                statusSpan.innerText = '❌ CONNECTION FAILED';
+                statusSpan.style.color = 'red';
+
+                let advice = '';
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    advice = `
+                        <h4>Possible Causes:</h4>
+                        <ul>
+                            <li><b>CORS Error:</b> The backend does not allow requests from <i>${window.location.origin}</i>. Check <code>BACKEND_CORS_ORIGINS</code> in <code>backend/.env</code>.</li>
+                            <li><b>Backend Down:</b> The server component is not running or crashed.</li>
+                            <li><b>Wrong URL:</b> Is <code>${API_URL}</code> correct?</li>
+                            <li><b>Network:</b> Firewall blocking port 5001.</li>
+                        </ul>
+                    `;
+                }
+
+                resultDiv.innerHTML = `
+                    <div style="background:#fff3e0; border:1px solid orange; padding:10px;">
+                        <strong>Error Details:</strong> ${error.message}<br>
+                        ${advice}
+                    </div>
+                `;
             }
         }
 
