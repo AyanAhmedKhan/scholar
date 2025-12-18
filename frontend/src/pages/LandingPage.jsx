@@ -71,8 +71,8 @@ const LandingPage = () => {
                         </span>
                         <div className="flex-1 overflow-hidden relative h-6">
                             <div className="animate-marquee whitespace-nowrap absolute top-0 left-0 flex gap-8 items-center h-full">
-                                {[...notices, ...notices, ...notices, ...notices].map((notice, idx) => (
-                                    <span key={`${notice.id}-${idx}`} className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                {notices.map((notice) => (
+                                    <span key={notice.id} className="text-sm font-medium text-slate-700 flex items-center gap-2">
                                         <Bell className="w-3 h-3 text-yellow-600" />
                                         <span className="font-semibold text-slate-900">{notice.title}:</span> {notice.content && notice.content.substring(0, 100)}
                                     </span>
