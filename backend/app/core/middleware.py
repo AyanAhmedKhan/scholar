@@ -3,8 +3,12 @@ import logging
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+# Reduce noise from some libraries if needed, but for now keep full debug
+logging.getLogger("uvicorn.access").setLevel(logging.INFO) # Keep access logs clean
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO) # Log SQL queries
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):

@@ -378,6 +378,37 @@ def get_audit_logs(
     """
     return db.query(AuditLog).order_by(AuditLog.timestamp.desc()).offset(skip).limit(limit).all()
 
+@router.get("/server-logs")
+def get_server_logs(
+    lines: int = 1000,
+    current_user: User = Depends(deps.RoleChecker([UserRole.ADMIN])),
+):
+    """
+    Get server logs (Super Admin only)
+    """
+    import os
+    
+    log_file = "server.log" # Assumes in root or current working dir logic
+    
+    # Try different locations if not found
+    if not os.path.exists(log_file):
+        # try backend/server.log if running from root
+        if os.path.exists("backend/server.log"):
+            log_file = "backend/server.log"
+        elif os.path.exists("../server.log"):
+            log_file = "../server.log"
+        else:
+             return {"logs": ["Log file not found."]}
+
+    try:
+        # Efficiently read last N lines
+        with open(log_file, "r") as f:
+            # Simple approach for now
+            all_lines = f.readlines()
+            return {"logs": all_lines[-lines:]}
+    except Exception as e:
+        return {"logs": [f"Error reading log file: {str(e)}"]}
+
 @router.get("/analytics/dashboard")
 def get_analytics_dashboard(
     db: Session = Depends(get_db),

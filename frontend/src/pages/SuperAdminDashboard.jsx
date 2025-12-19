@@ -29,6 +29,10 @@ const SuperAdminDashboard = () => {
     const [branchForm, setBranchForm] = useState({ name: '', code: '', department_id: '' });
     const [editingBranch, setEditingBranch] = useState(null);
 
+    // Logs state
+    const [logTab, setLogTab] = useState('audit'); // 'audit' or 'server'
+    const [serverLogs, setServerLogs] = useState([]);
+
     // Email form state
     const [emailForm, setEmailForm] = useState({
         target_group: 'all',
@@ -52,8 +56,11 @@ const SuperAdminDashboard = () => {
         } else if (activeTab === 'branches') {
             fetchDepartments(); // Need departments for dropdown
             fetchBranches();
+        } else if (activeTab === 'logs') {
+            if (logTab === 'audit') fetchAuditLogs();
+            if (logTab === 'server') fetchServerLogs();
         }
-    }, [activeTab]);
+    }, [activeTab, logTab]);
 
     const showSuccess = (msg) => {
         setSuccess(msg);
@@ -95,10 +102,20 @@ const SuperAdminDashboard = () => {
 
     const fetchAuditLogs = async () => {
         try {
-            const res = await api.get('/admin/audit-logs?limit=50');
+            const res = await api.get('/admin/audit-logs?limit=100');
             setAuditLogs(res.data);
         } catch (e) {
             console.error(e);
+        }
+    };
+
+    const fetchServerLogs = async () => {
+        try {
+            const res = await api.get('/admin/server-logs');
+            setServerLogs(res.data.logs);
+        } catch (e) {
+            console.error(e);
+            showError('Failed to fetch server logs');
         }
     };
 
@@ -296,6 +313,7 @@ const SuperAdminDashboard = () => {
         { id: 'departments', label: 'Departments', icon: '🏛️' },
         { id: 'branches', label: 'Branches', icon: '🌿' },
         { id: 'sessions', label: 'Sessions', icon: '📅' },
+        { id: 'logs', label: 'Logs', icon: '📜' },
         { id: 'communications', label: 'Communications', icon: '📧' },
     ];
 
@@ -761,6 +779,95 @@ const SuperAdminDashboard = () => {
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {/* Logs Tab */}
+                    {activeTab === 'logs' && (
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-slate-800">System Logs</h2>
+                                <div className="flex bg-slate-100 p-1 rounded-lg">
+                                    <button
+                                        onClick={() => setLogTab('audit')}
+                                        className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${logTab === 'audit' ? 'bg-white text-primary-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        Audit Logs
+                                    </button>
+                                    <button
+                                        onClick={() => setLogTab('server')}
+                                        className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${logTab === 'server' ? 'bg-white text-primary-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        Server Console
+                                    </button>
+                                </div>
+                            </div>
+
+                            {logTab === 'audit' ? (
+                                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                                    <div className="flex justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                                        <h3 className="text-lg font-bold text-slate-800">User Actions History</h3>
+                                        <button onClick={fetchAuditLogs} className="text-primary-600 hover:text-primary-700 text-sm font-medium">Refresh</button>
+                                    </div>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left text-sm text-slate-600">
+                                            <thead className="bg-slate-50 text-slate-700 font-semibold sticky top-0">
+                                                <tr>
+                                                    <th className="px-6 py-3 border-b border-slate-200">Time</th>
+                                                    <th className="px-6 py-3 border-b border-slate-200">User ID</th>
+                                                    <th className="px-6 py-3 border-b border-slate-200">Action</th>
+                                                    <th className="px-6 py-3 border-b border-slate-200">Target</th>
+                                                    <th className="px-6 py-3 border-b border-slate-200">Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-100">
+                                                {auditLogs.map((log) => (
+                                                    <tr key={log.id} className="hover:bg-slate-50 transition-colors">
+                                                        <td className="px-6 py-3 text-slate-500 whitespace-nowrap">{new Date(log.timestamp).toLocaleString()}</td>
+                                                        <td className="px-6 py-3 font-mono text-xs">{log.user_id || 'System'}</td>
+                                                        <td className="px-6 py-3 font-medium text-slate-800">{log.action}</td>
+                                                        <td className="px-6 py-3">{log.target_type} #{log.target_id}</td>
+                                                        <td className="px-6 py-3">
+                                                            <div className="max-w-xs truncate text-xs font-mono text-slate-500" title={JSON.stringify(log.details, null, 2)}>
+                                                                {JSON.stringify(log.details)}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-[#1e1e1e] rounded-xl shadow-lg border border-slate-800 overflow-hidden flex flex-col h-[70vh]">
+                                    <div className="px-4 py-2 bg-[#2d2d2d] border-b border-[#3e3e3e] flex justify-between items-center">
+                                        <div className="flex gap-2">
+                                            <div className="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+                                            <div className="w-3 h-3 rounded-full bg-[#febc2e]"></div>
+                                            <div className="w-3 h-3 rounded-full bg-[#28c840]"></div>
+                                        </div>
+                                        <span className="text-xs text-slate-400 font-mono">server.log (Live)</span>
+                                        <button onClick={fetchServerLogs} className="text-slate-400 hover:text-white text-xs">Refresh</button>
+                                    </div>
+                                    <div className="flex-1 overflow-auto p-4 font-mono text-xs md:text-sm">
+                                        {serverLogs.length > 0 ? (
+                                            serverLogs.map((line, i) => (
+                                                <div key={i} className="whitespace-pre-wrap break-all hover:bg-[#2d2d2d] px-1 py-0.5 rounded">
+                                                    {line.includes('INFO') ? <span className="text-blue-400">INFO </span> :
+                                                        line.includes('ERROR') ? <span className="text-red-400">ERROR</span> :
+                                                            line.includes('WARNING') ? <span className="text-yellow-400">WARN </span> :
+                                                                <span className="text-slate-500">LOG  </span>}
+                                                    <span className="text-slate-300">{line}</span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="text-slate-500 italic">No logs found or empty file.</div>
+                                        )}
+                                        {/* Scroll anchor */}
+                                        <div ref={(el) => { if (el) el.scrollIntoView({ behavior: 'smooth' }); }}></div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
