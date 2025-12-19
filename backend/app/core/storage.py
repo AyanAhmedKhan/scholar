@@ -96,7 +96,7 @@ def save_upload_file(
     try:
         relative_path = file_path.relative_to(Path(settings.MEDIA_DIR))
         # Return path with forward slashes for URL compatibility
-        return f"/{relative_path.as_posix()}"
+        return f"/media/{relative_path.as_posix()}"
     except ValueError:
         # If not relative to MEDIA_DIR, try relative to current working directory
         try:
@@ -170,7 +170,7 @@ def copy_file(
     # Calculate relative path from MEDIA_DIR
     try:
         relative_path = dest_file_path.relative_to(Path(settings.MEDIA_DIR))
-        return f"/{relative_path.as_posix()}"
+        return f"/media/{relative_path.as_posix()}"
     except ValueError:
         # If not relative to MEDIA_DIR, try relative to current working directory
         try:

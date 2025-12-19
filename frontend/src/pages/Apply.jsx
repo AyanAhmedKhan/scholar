@@ -1085,7 +1085,7 @@ const Apply = () => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         setPreviewFile({
-                                            url: doc.file_path,
+                                            url: doc.file_path.startsWith('/media') ? doc.file_path : `/media${doc.file_path}`,
                                             name: doc.document_type || 'Document',
                                             type: doc.mime_type?.includes('image') ? 'image' : 'pdf'
                                         });
