@@ -98,9 +98,13 @@ async def upload_document(
                 reader = PdfReader(file.file)
                 page_count = len(reader.pages)
                 file.file.seek(0) # Reset after reading
+            except ImportError:
+                 raise HTTPException(status_code=500, detail="Server configuration error: 'pypdf' library not found. Please install backend requirements.")
             except Exception as e:
                 print(f"Error reading PDF page count: {e}")
-                # Don't fail upload, but maybe warn or set to 1? Setting 0 implies unknown
+                # If we can't read it, we should probably fail if validation is required
+                if max_pages:
+                     raise HTTPException(status_code=400, detail="Could not read PDF to validate page count. The file might be corrupted or encrypted.")
                 page_count = 0 
                 file.file.seek(0) # Ensure reset
         

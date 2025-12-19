@@ -1085,13 +1085,25 @@ const Apply = () => {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         // robust URL construction
-                                        const apiBase = import.meta.env.VITE_API_BASE_URL
-                                            ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/v1\/?$/, '')
-                                            : '';
-                                        const fileUrl = doc.file_path.startsWith('/media') ? doc.file_path : `/media${doc.file_path}`;
+                                        let apiBase = '';
+                                        if (import.meta.env.VITE_API_BASE_URL) {
+                                            apiBase = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+                                            // Ensure apiBase doesn't end with slash
+                                            apiBase = apiBase.replace(/\/$/, '');
+                                        }
+
+                                        // Ensure fileUrl starts with /media
+                                        let fileUrl = doc.file_path;
+                                        if (!fileUrl.startsWith('/media')) {
+                                            if (fileUrl.startsWith('/')) {
+                                                fileUrl = `/media${fileUrl}`;
+                                            } else {
+                                                fileUrl = `/media/${fileUrl}`;
+                                            }
+                                        }
 
                                         setPreviewFile({
-                                            url: `${apiBase}${fileUrl}`,
+                                            url: apiBase ? `${apiBase}${fileUrl}` : fileUrl,
                                             name: doc.document_type || 'Document',
                                             type: doc.mime_type?.includes('image') ? 'image' : 'pdf'
                                         });
