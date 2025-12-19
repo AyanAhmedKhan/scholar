@@ -33,6 +33,7 @@ from app.models import (
     application,
     audit,
     university,
+    notice,
 )
 
 target_metadata = Base.metadata
