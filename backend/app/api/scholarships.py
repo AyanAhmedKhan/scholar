@@ -111,7 +111,9 @@ def create_scholarship(
                     is_mandatory=req.is_mandatory,
                     is_renewal_required=req.is_renewal_required,
                     renewal_instruction=req.renewal_instruction,
-                    instructions=req.instructions
+                    instructions=req.instructions,
+                    allowed_types=req.allowed_types,
+                    max_pages=req.max_pages
                 )
                 db.add(doc_req)
             logger.info("Document requirements added")
@@ -217,7 +219,9 @@ def update_scholarship(
                 is_mandatory=req.is_mandatory,
                 is_renewal_required=req.is_renewal_required,
                 renewal_instruction=req.renewal_instruction,
-                instructions=req.instructions
+                instructions=req.instructions,
+                allowed_types=req.allowed_types,
+                max_pages=req.max_pages
             )
             db.add(doc_req)
             
