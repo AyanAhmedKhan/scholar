@@ -68,6 +68,7 @@ async def upload_document(
     file: UploadFile = File(...),
     document_type: str = Form(None), # Optional if format_id provided
     document_format_id: int = Form(None),
+    max_pages: int = Form(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(deps.get_current_user),
 ) -> Any:
@@ -102,6 +103,11 @@ async def upload_document(
                 # Don't fail upload, but maybe warn or set to 1? Setting 0 implies unknown
                 page_count = 0 
                 file.file.seek(0) # Ensure reset
+        
+        # Validate Page Count
+        if max_pages and page_count > max_pages:
+            raise HTTPException(status_code=400, detail=f"File exceeds page limit. Maximum allowed pages: {max_pages}, but your file has {page_count} pages.")
+
         
         max_mb = 5 
         if document_format_id:

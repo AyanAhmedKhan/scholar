@@ -17,6 +17,9 @@ const DocumentUploader = ({ documentType, documentFormatId, validTypes, maxPages
         if (documentType) {
             formData.append('document_type', documentType);
         }
+        if (maxPages) {
+            formData.append('max_pages', maxPages);
+        }
 
         try {
             await api.post('/documents/upload', formData, {

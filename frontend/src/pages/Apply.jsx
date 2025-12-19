@@ -1084,8 +1084,14 @@ const Apply = () => {
                                     key={doc.id}
                                     onClick={(e) => {
                                         e.preventDefault();
+                                        // robust URL construction
+                                        const apiBase = import.meta.env.VITE_API_BASE_URL
+                                            ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/v1\/?$/, '')
+                                            : '';
+                                        const fileUrl = doc.file_path.startsWith('/media') ? doc.file_path : `/media${doc.file_path}`;
+
                                         setPreviewFile({
-                                            url: doc.file_path.startsWith('/media') ? doc.file_path : `/media${doc.file_path}`,
+                                            url: `${apiBase}${fileUrl}`,
                                             name: doc.document_type || 'Document',
                                             type: doc.mime_type?.includes('image') ? 'image' : 'pdf'
                                         });

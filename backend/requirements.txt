@@ -10,7 +10,7 @@ passlib[bcrypt]
 python-multipart
 celery[redis]
 redis
-pypdf2
+pypdf
 sqladmin
 gunicorn
 httpx
