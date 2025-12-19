@@ -1037,6 +1037,8 @@ const Apply = () => {
                                                         <DocumentUploader
                                                             documentType={docFormat.name || 'Document'}
                                                             documentFormatId={req.document_format_id}
+                                                            validTypes={req.allowed_types || ['pdf']}
+                                                            maxPages={req.max_pages}
                                                             onUploadSuccess={() => {
                                                                 handleUploadSuccess();
                                                                 // After upload, auto-confirm the new doc
@@ -1054,6 +1056,8 @@ const Apply = () => {
                                                 <DocumentUploader
                                                     documentType={docFormat.name || 'Document'}
                                                     documentFormatId={req.document_format_id}
+                                                    validTypes={req.allowed_types || ['pdf']}
+                                                    maxPages={req.max_pages}
                                                     onUploadSuccess={() => {
                                                         handleUploadSuccess();
                                                         // After upload, auto-confirm

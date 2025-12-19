@@ -100,6 +100,8 @@ class StudentDocumentResponse(BaseModel):
     file_path: str
     is_active: bool
     uploaded_at: datetime
+    page_count: Optional[int] = None
+    mime_type: Optional[str] = None
     class Config:
         from_attributes = True
 
@@ -124,6 +126,8 @@ class ScholarshipDocumentRequirementBase(BaseModel):
     is_renewal_required: bool = False
     renewal_instruction: Optional[str] = None
     instructions: Optional[str] = None
+    allowed_types: Optional[List[str]] = ["pdf"]
+    max_pages: Optional[int] = None
 
 class ScholarshipDocumentRequirementCreate(ScholarshipDocumentRequirementBase):
     pass

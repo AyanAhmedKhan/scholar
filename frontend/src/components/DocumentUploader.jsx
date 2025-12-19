@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 
-const DocumentUploader = ({ documentType, documentFormatId, onUploadSuccess, showToast }) => {
+const DocumentUploader = ({ documentType, documentFormatId, validTypes, maxPages, onUploadSuccess, showToast }) => {
     const [uploading, setUploading] = useState(false);
     const [file, setFile] = useState(null);
 
@@ -53,25 +53,53 @@ const DocumentUploader = ({ documentType, documentFormatId, onUploadSuccess, sho
             <div className="flex-1 w-full">
                 <label className="block text-sm font-medium text-slate-700 mb-1">Document</label>
                 <div className="text-sm text-slate-600 font-semibold">{documentType || 'Upload Document'}</div>
-                {documentFormatId && <div className="text-xs text-slate-500">Linked to required format</div>}
+                <div className="flex flex-col gap-0.5 mt-1">
+                    {validTypes && (
+                        <div className="text-xs text-slate-500">
+                            Allowed: <span className="font-medium uppercase">{validTypes.join(', ')}</span>
+                        </div>
+                    )}
+                    {maxPages && (validTypes?.includes('pdf')) && (
+                        <div className="text-xs text-orange-600 font-medium">
+                            Max Pages: {maxPages} (PDF)
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="flex-1 w-full">
                 <label className="block text-sm font-medium text-slate-700 mb-1">File</label>
                 <input
                     type="file"
                     name="file"
-                    accept="application/pdf"
-                    className="w-full p-1.5 border border-slate-300 rounded-md bg-white"
+                    accept={validTypes ? validTypes.map(t => t === 'pdf' ? '.pdf' : t === 'jpg' ? '.jpg,.jpeg' : '.png').join(',') : ".pdf,.jpg,.jpeg,.png"}
+                    className="w-full p-1.5 border border-slate-300 rounded-md bg-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
                     required
                     onChange={(ev) => {
                         const selectedFile = ev.target.files?.[0];
-                        if (selectedFile && selectedFile.type !== 'application/pdf') {
-                            alert('Only PDF files are allowed');
+                        if (!selectedFile) {
+                            setFile(null);
+                            return;
+                        }
+
+                        // Validate File Type
+                        const fileExt = selectedFile.name.split('.').pop().toLowerCase();
+                        const allowed = validTypes || ['pdf', 'jpg', 'png', 'jpeg'];
+                        const typeMap = { 'pdf': ['pdf'], 'jpg': ['jpg', 'jpeg'], 'png': ['png'] };
+
+                        const isValidType = allowed.some(type => typeMap[type]?.includes(fileExt));
+
+                        if (!isValidType) {
+                            alert(`Invalid file type. Allowed: ${allowed.join(', ')}`);
                             ev.target.value = '';
                             setFile(null);
-                        } else {
-                            setFile(selectedFile || null);
+                            return;
                         }
+
+                        // Validate Max Pages (Only for PDF, simplistic check by size warning or just rely on backend)
+                        // Client-side page counting requires a library. We'll rely on backend for strict enforcement
+                        // but show a warning if it looks huge.
+
+                        setFile(selectedFile);
                     }}
                 />
             </div>

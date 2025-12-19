@@ -67,6 +67,11 @@ class ScholarshipDocumentRequirement(Base):
     renewal_instruction = Column(Text, nullable=True)
     instructions = Column(Text, nullable=True)
     
+    # Restrictions
+    allowed_types = Column(JSON, default=["pdf"]) # ["pdf", "jpg", "png"]
+    max_pages = Column(Integer, nullable=True) # For PDFs, e.g., 1
+    
+    
     scholarship = relationship("Scholarship", back_populates="required_documents")
     document_format = relationship("DocumentFormat")
 

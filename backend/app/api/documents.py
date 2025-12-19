@@ -77,31 +77,42 @@ async def upload_document(
     If same type exists, it deactivates old one (Versioning).
     """
     # Validate File
-    if file.content_type != "application/pdf":
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
-
+    # Allow PDF, JPG, PNG
+    ALLOWED_MIMES = ["application/pdf", "image/jpeg", "image/png"]
+    if file.content_type not in ALLOWED_MIMES:
+        raise HTTPException(status_code=400, detail=f"Invalid file type. Allowed: PDF, JPG, PNG. Got: {file.content_type}")
+        
+    page_count = 1 # Default for images
+    
     try:
         # Check size
         file.file.seek(0, 2)
         file_size = file.file.tell()
         file.file.seek(0)
         
+        # Determine metadata (Page Count for PDF)
+        if file.content_type == "application/pdf":
+            try:
+                from pypdf import PdfReader
+                reader = PdfReader(file.file)
+                page_count = len(reader.pages)
+                file.file.seek(0) # Reset after reading
+            except Exception as e:
+                print(f"Error reading PDF page count: {e}")
+                # Don't fail upload, but maybe warn or set to 1? Setting 0 implies unknown
+                page_count = 0 
+                file.file.seek(0) # Ensure reset
+        
         max_mb = 5 
         if document_format_id:
-            print(f"DEBUG: Processing upload with format_id={document_format_id} (Type: {type(document_format_id)})")
             # Validate Format ID exists (Prevention of FK IntegrityError)
             fmt = db.query(DocumentFormat).filter(DocumentFormat.id == document_format_id).first()
             if not fmt:
-                print(f"ERROR: DocumentFormat with id={document_format_id} NOT FOUND in DB.")
                 raise HTTPException(status_code=400, detail=f"Invalid document_format_id: {document_format_id}")
-            print(f"DEBUG: Found DocumentFormat: {fmt.name} (id={fmt.id})")
             if fmt.max_size_mb:
                 max_mb = fmt.max_size_mb
         
-        print(f"DEBUG: File Size: {file_size} bytes ({file_size/1024/1024:.2f} MB). Max Allowed: {max_mb} MB.")
-        
         if file_size > max_mb * 1024 * 1024:
-             print(f"ERROR: File too large.")
              raise HTTPException(status_code=400, detail=f"File too large. Your file is {file_size/1024/1024:.2f}MB, but maximum size for this document is {max_mb}MB")
 
         # Save File
@@ -113,7 +124,7 @@ async def upload_document(
             doc_type_name = fmt.name if fmt else (document_type or "uncategorized")
         else:
             doc_type_name = document_type or "uncategorized"
-
+            
         # Get enrollment number
         student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
         enrollment_no = student_profile.enrollment_no if student_profile else None
@@ -129,6 +140,7 @@ async def upload_document(
             document_type=doc_type_name
         )
         
+        # Ensure we pass the original filename extension correctly if needed, simpler to rely on file.filename 
         saved_path = save_upload_file(file, destination_dir)
             
         files_to_delete = []
@@ -161,8 +173,11 @@ async def upload_document(
             document_type=doc_type_name,
             document_format_id=document_format_id,
             file_path=saved_path,
-            is_active=True
+            is_active=True,
+            mime_type=file.content_type,
+            page_count=page_count
         )
+
         db.add(db_doc)
         db.commit()
         db.refresh(db_doc)

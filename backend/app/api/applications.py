@@ -91,31 +91,92 @@ def apply_for_scholarship(
     except Exception as e:
         logger.error(f"Failed to send email notification: {e}")
 
-    # Link Documents from Vault
-    # Logic: Find all active documents in StudentDocument and link them.
-    # In a real scenario, we would match specific required documents for the scholarship.
-    # Here, we link ALL active documents from the vault.
+    # Validating and Linking Documents from Vault
+    # 1. Fetch Student's Active Documents
     student_docs = db.query(StudentDocument).filter(
         StudentDocument.student_id == current_user.id,
         StudentDocument.is_active == True
     ).all()
+    
+    # 2. Get Requirements
+    requirements = scholarship.required_documents
+    
+    # 3. Validation Logic
+    missing_docs = []
+    
+    for req in requirements:
+        if req.is_mandatory:
+            # Find matching document
+            match = next((d for d in student_docs if d.document_format_id == req.document_format_id), None)
+            
+            if not match:
+                missing_docs.append(f"{req.document_format.name} (Missing)")
+                continue
 
-    if not student_docs:
-        # In strict mode, we might block. For now, allow but warn? 
-        # Requirement says "Suggest vault documents".
-        logger.warning(f"Student {current_user.id} applied without documents in vault")
+            # Check MIME Type
+            # allowed_types is list like ["pdf", "jpg", "png"]
+            # stored mime_type is "application/pdf", "image/jpeg"
+            file_ext_map = {
+                "application/pdf": "pdf",
+                "image/jpeg": "jpg",
+                "image/png": "png"
+            }
+            
+            doc_ext = file_ext_map.get(match.mime_type, "unknown")
+            # Normalize allowed types to lowercase just in case
+            allowed = [t.lower() for t in (req.allowed_types or ["pdf"])]
+            
+            # Special case: allow 'jpg' to match 'jpeg'
+            if doc_ext == "jpg" and "jpeg" in allowed: pass 
+            elif doc_ext not in allowed:
+                # If "jpg" is allowed, allow "image/jpeg"
+                # Simple check:
+                is_valid_type = False
+                for t in allowed:
+                    if t in ["jpg", "jpeg"] and match.mime_type == "image/jpeg": is_valid_type = True
+                    if t == "png" and match.mime_type == "image/png": is_valid_type = True
+                    if t == "pdf" and match.mime_type == "application/pdf": is_valid_type = True
+                
+                if not is_valid_type:
+                     missing_docs.append(f"{req.document_format.name} (Invalid Type: {doc_ext}, Allowed: {', '.join(allowed)})")
+                     continue
+
+            # Check Page Count (Only for PDF and if limit set)
+            if match.mime_type == "application/pdf" and req.max_pages:
+                 if (match.page_count or 0) > req.max_pages:
+                     missing_docs.append(f"{req.document_format.name} (Too many pages: {match.page_count}, Max: {req.max_pages})")
+                     continue
+
+    if missing_docs:
+        raise HTTPException(status_code=400, detail=f"Document Validation Failed: {'; '.join(missing_docs)}")
 
     from app.core.storage import get_storage_path, copy_file
     
+    # Link documents that match requirements
+    # Also link any other documents that the student has but aren't strictly required? 
+    # Current logic links ALL valid docs. Let's stick to linking VALIDATED docs for the requirements + others if needed.
+    # For now, simplistic approach: Link ALL vault docs that *could* belong here? 
+    # Or strict: Only link what's required + optional?
+    # Let's iterate user docs and link them if they match a format required (even if optional)
+    
+    linked_count = 0 
+    
     for doc in student_docs:
-        # Find or create a format based on doc type
-        fmt = db.query(DocumentFormat).filter(DocumentFormat.name == doc.document_type).first()
-        if not fmt:
-            fmt = DocumentFormat(name=doc.document_type, is_active=True)
-            db.add(fmt)
-            db.flush()
+        # Check if this doc format is part of scholarship requirements
+        req = next((r for r in requirements if r.document_format_id == doc.document_format_id), None)
+        
+        # If strict, only link relevant docs
+        if not req:
+            continue 
             
-        # Get enrollment number for path
+        # Re-verify (validation passed above, but good for safety)
+        # Find or create a format based on doc type name
+        fmt = req.document_format if req else None
+        if not fmt:
+             # Should be fetched via ORM
+             fmt = db.query(DocumentFormat).filter(DocumentFormat.id == doc.document_format_id).first()
+
+        # Get enrollment number
         student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
         enrollment_no = student_profile.enrollment_no if student_profile else None
         
@@ -140,11 +201,13 @@ def apply_for_scholarship(
             
         app_doc = ApplicationDocument(
             application_id=application.id,
-            document_format_id=fmt.id,
+            document_format_id=doc.document_format_id,
             file_path=new_path,
-            is_verified=False # Default
+            is_verified=False 
         )
         db.add(app_doc)
+        linked_count += 1
+    
     
     # Commit all document links
     db.commit()

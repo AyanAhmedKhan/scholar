@@ -76,6 +76,11 @@ class StudentDocument(Base):
     document_format_id = Column(Integer, ForeignKey("document_formats.id"), nullable=True) # Link to master type
     file_path = Column(String(500), nullable=False)
     is_active = Column(Boolean, default=True)
+    
+    # Metadata for validation
+    page_count = Column(Integer, nullable=True)
+    mime_type = Column(String(100), nullable=True) # e.g., "application/pdf"
+    
     uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
     
     student = relationship("app.models.user.User", backref="documents")

@@ -160,7 +160,9 @@ const ScholarshipManagement = () => {
                 order_index: prev.required_documents.length + 1,
                 is_mandatory: true,
                 is_renewal_required: false,
-                renewal_instruction: ''
+                renewal_instruction: '',
+                allowed_types: ['pdf', 'jpg', 'png', 'jpeg'],
+                max_pages: null
             }]
         }));
     };
@@ -724,24 +726,76 @@ const ScholarshipManagement = () => {
                                         </div>
 
                                         {/* Renewal Options */}
-                                        <div className="flex items-center gap-4 ml-10">
-                                            <label className="flex items-center gap-2">
+                                        <div className="flex flex-wrap items-center gap-4 ml-10 mt-3">
+                                            <div className="flex items-center gap-2">
                                                 <input
                                                     type="checkbox"
                                                     checked={doc.is_renewal_required}
                                                     onChange={e => handleDocChange(idx, 'is_renewal_required', e.target.checked)}
-                                                    className="h-4 w-4 text-blue-600 rounded border-slate-300"
+                                                    className="h-4 w-4 text-theme-600 rounded border-slate-300"
                                                 />
                                                 <span className="text-xs font-medium text-slate-600">Required for Renewal?</span>
-                                            </label>
+                                            </div>
                                             {doc.is_renewal_required && (
                                                 <input
-                                                    placeholder="Renewal Instructions (e.g. Upload latest marksheet)"
+                                                    placeholder="Renewal Instructions"
                                                     value={doc.renewal_instruction || ''}
                                                     onChange={e => handleDocChange(idx, 'renewal_instruction', e.target.value)}
-                                                    className="flex-1 px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                                    className="flex-1 min-w-[200px] px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                                                 />
                                             )}
+                                        </div>
+
+                                        {/* Document Restrictions */}
+                                        <div className="ml-10 mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                            <div className="flex flex-wrap gap-6 items-start">
+                                                {/* Allowed File Types */}
+                                                <div>
+                                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Allowed File Types</label>
+                                                    <div className="flex items-center gap-3">
+                                                        {['pdf', 'jpg', 'png'].map(type => (
+                                                            <label key={type} className="flex items-center gap-1.5 cursor-pointer">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={(doc.allowed_types || ['pdf']).includes(type)}
+                                                                    onChange={e => {
+                                                                        const current = doc.allowed_types || ['pdf'];
+                                                                        let updated;
+                                                                        if (e.target.checked) {
+                                                                            updated = [...current, type];
+                                                                        } else {
+                                                                            updated = current.filter(t => t !== type);
+                                                                        }
+                                                                        // Ensure at least one type is selected
+                                                                        if (updated.length === 0) updated = ['pdf'];
+                                                                        handleDocChange(idx, 'allowed_types', updated);
+                                                                    }}
+                                                                    className="h-3.5 w-3.5 text-primary-600 rounded border-slate-300"
+                                                                />
+                                                                <span className="text-xs text-slate-600 uppercase">{type}</span>
+                                                            </label>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* Max Pages (Only if PDF is allowed) */}
+                                                {(doc.allowed_types || ['pdf']).includes('pdf') && (
+                                                    <div>
+                                                        <label className="block text-xs font-semibold text-slate-700 mb-1">Max Pages (PDF)</label>
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="number"
+                                                                min="1"
+                                                                placeholder="No Limit"
+                                                                value={doc.max_pages || ''}
+                                                                onChange={e => handleDocChange(idx, 'max_pages', e.target.value ? parseInt(e.target.value) : null)}
+                                                                className="w-24 px-2 py-1 text-xs border border-slate-300 rounded focus:ring-2 focus:ring-primary-500 outline-none"
+                                                            />
+                                                            <span className="text-[10px] text-slate-400">Leave blank for no limit</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
                                         {/* Instructions Field */}
