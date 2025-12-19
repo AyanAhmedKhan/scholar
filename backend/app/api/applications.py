@@ -249,7 +249,7 @@ def update_application(
         StudentDocument.is_active == True
     ).all()
     
-    from app.core.storage import get_storage_path, copy_file
+    from app.core.storage import get_storage_path, copy_file, delete_file
     
     for doc in student_docs:
         # Find or create a format based on doc type
@@ -282,6 +282,10 @@ def update_application(
             
             if app_doc:
                 # Update existing
+                # DELETE OLD FILE to save space
+                if app_doc.file_path:
+                    delete_file(app_doc.file_path)
+                    
                 app_doc.file_path = new_path
                 app_doc.is_verified = False # Reset verification
             else:
