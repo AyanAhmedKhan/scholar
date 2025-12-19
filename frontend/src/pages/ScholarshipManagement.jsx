@@ -161,7 +161,7 @@ const ScholarshipManagement = () => {
                 is_mandatory: true,
                 is_renewal_required: false,
                 renewal_instruction: '',
-                allowed_types: ['pdf', 'jpg', 'png', 'jpeg'],
+                allowed_types: ['pdf', 'jpg', 'jpeg', 'png'],
                 max_pages: null
             }]
         }));

@@ -4,6 +4,7 @@ import api from '../services/api';
 import DocumentUploader from '../components/DocumentUploader';
 import MergedPDFButton from '../components/MergedPDFButton';
 import Toast from '../components/Toast';
+import FilePreviewModal from '../components/FilePreviewModal';
 
 // All possible profile fields with labels
 // All possible profile fields with labels and types
@@ -78,6 +79,7 @@ const Apply = () => {
     const [departments, setDepartments] = useState([]);
     const [branches, setBranches] = useState([]);
     const [toast, setToast] = useState(null);
+    const [previewFile, setPreviewFile] = useState(null);
 
     const [docDecisions, setDocDecisions] = useState({}); // Track user decision for each doc: 'confirmed' or 'replacing'
     const [correctionMode, setCorrectionMode] = useState(location.state?.correctionMode || false);
@@ -1078,19 +1080,27 @@ const Apply = () => {
                         {myDocs.length === 0 && <p className="text-sm text-slate-500">No documents uploaded yet.</p>}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {myDocs.map(doc => (
-                                <a
+                                <button
                                     key={doc.id}
-                                    href={doc.file_path}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="p-4 rounded-xl border border-slate-200 hover:border-primary-200 hover:bg-primary-50/40 transition flex items-center justify-between"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setPreviewFile({
+                                            url: doc.file_path,
+                                            name: doc.document_type || 'Document',
+                                            type: doc.mime_type?.includes('image') ? 'image' : 'pdf'
+                                        });
+                                    }}
+                                    className="p-4 rounded-xl border border-slate-200 hover:border-primary-200 hover:bg-primary-50/40 transition flex items-center justify-between text-left group w-full"
                                 >
                                     <div>
-                                        <p className="text-sm font-semibold text-slate-800">{doc.document_type}</p>
+                                        <p className="text-sm font-semibold text-slate-800 group-hover:text-primary-700 transition-colors">{doc.document_type}</p>
                                         <p className="text-xs text-slate-500">Uploaded on {new Date(doc.uploaded_at).toLocaleDateString()}</p>
                                     </div>
-                                    <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l6-6 4 4 6-6" /></svg>
-                                </a>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-semibold text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity">Preview</span>
+                                        <svg className="w-5 h-5 text-slate-400 group-hover:text-primary-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                    </div>
+                                </button>
                             ))}
                         </div>
                     </div>
@@ -1206,6 +1216,14 @@ const Apply = () => {
                     message={toast.message}
                     type={toast.type}
                     onClose={() => setToast(null)}
+                />
+            )}
+            {previewFile && (
+                <FilePreviewModal
+                    fileUrl={previewFile.url}
+                    fileName={previewFile.name}
+                    fileType={previewFile.type}
+                    onClose={() => setPreviewFile(null)}
                 />
             )}
         </div>
