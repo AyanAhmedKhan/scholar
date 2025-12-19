@@ -71,7 +71,7 @@ const DocumentUploader = ({ documentType, documentFormatId, validTypes, maxPages
                 <input
                     type="file"
                     name="file"
-                    accept={validTypes ? validTypes.map(t => t === 'pdf' ? '.pdf' : t === 'jpg' ? '.jpg,.jpeg' : '.png').join(',') : ".pdf,.jpg,.jpeg,.png"}
+                    accept={validTypes ? validTypes.map(t => t === 'pdf' ? '.pdf' : t === 'jpg' ? '.jpg,.jpeg' : t === 'jpeg' ? '.jpg,.jpeg' : '.png').join(',') : ".pdf,.jpg,.jpeg,.png"}
                     className="w-full p-1.5 border border-slate-300 rounded-md bg-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
                     required
                     onChange={(ev) => {
@@ -84,7 +84,7 @@ const DocumentUploader = ({ documentType, documentFormatId, validTypes, maxPages
                         // Validate File Type
                         const fileExt = selectedFile.name.split('.').pop().toLowerCase();
                         const allowed = validTypes || ['pdf', 'jpg', 'png', 'jpeg'];
-                        const typeMap = { 'pdf': ['pdf'], 'jpg': ['jpg', 'jpeg'], 'png': ['png'] };
+                        const typeMap = { 'pdf': ['pdf'], 'jpg': ['jpg', 'jpeg'], 'jpeg': ['jpg', 'jpeg'], 'png': ['png'] };
 
                         const isValidType = allowed.some(type => typeMap[type]?.includes(fileExt));
 

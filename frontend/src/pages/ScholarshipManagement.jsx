@@ -750,32 +750,30 @@ const ScholarshipManagement = () => {
                                         <div className="ml-10 mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                                             <div className="flex flex-wrap gap-6 items-start">
                                                 {/* Allowed File Types */}
-                                                <div>
-                                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Allowed File Types</label>
-                                                    <div className="flex items-center gap-3">
-                                                        {['pdf', 'jpg', 'png'].map(type => (
-                                                            <label key={type} className="flex items-center gap-1.5 cursor-pointer">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={(doc.allowed_types || ['pdf']).includes(type)}
-                                                                    onChange={e => {
-                                                                        const current = doc.allowed_types || ['pdf'];
-                                                                        let updated;
-                                                                        if (e.target.checked) {
-                                                                            updated = [...current, type];
-                                                                        } else {
-                                                                            updated = current.filter(t => t !== type);
-                                                                        }
-                                                                        // Ensure at least one type is selected
-                                                                        if (updated.length === 0) updated = ['pdf'];
-                                                                        handleDocChange(idx, 'allowed_types', updated);
-                                                                    }}
-                                                                    className="h-3.5 w-3.5 text-primary-600 rounded border-slate-300"
-                                                                />
-                                                                <span className="text-xs text-slate-600 uppercase">{type}</span>
-                                                            </label>
-                                                        ))}
-                                                    </div>
+                                                <label className="block text-xs font-semibold text-slate-700 mb-1">Allowed File Types</label>
+                                                <div className="flex items-center gap-3">
+                                                    {['pdf', 'jpg', 'jpeg', 'png'].map(type => (
+                                                        <label key={type} className="flex items-center gap-1.5 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={(doc.allowed_types || ['pdf']).includes(type)}
+                                                                onChange={e => {
+                                                                    const current = doc.allowed_types || ['pdf'];
+                                                                    let updated;
+                                                                    if (e.target.checked) {
+                                                                        updated = [...current, type];
+                                                                    } else {
+                                                                        updated = current.filter(t => t !== type);
+                                                                    }
+                                                                    // Ensure at least one type is selected
+                                                                    if (updated.length === 0) updated = ['pdf'];
+                                                                    handleDocChange(idx, 'allowed_types', updated);
+                                                                }}
+                                                                className="h-3.5 w-3.5 text-primary-600 rounded border-slate-300"
+                                                            />
+                                                            <span className="text-xs text-slate-600 uppercase">{type}</span>
+                                                        </label>
+                                                    ))}
                                                 </div>
 
                                                 {/* Max Pages (Only if PDF is allowed) */}
