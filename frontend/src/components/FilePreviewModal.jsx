@@ -42,32 +42,11 @@ const FilePreviewModal = ({ fileUrl, fileName, fileType, onClose }) => {
                             className="max-w-full max-h-full object-contain rounded shadow-sm"
                         />
                     ) : type === 'pdf' ? (
-                        <div className="w-full h-full min-h-[60vh] bg-slate-50 relative">
-                            <object
-                                data={fileUrl}
-                                type="application/pdf"
-                                className="w-full h-full rounded shadow-sm"
-                            >
-                                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                                    <div className="w-16 h-16 bg-blue-100/50 text-blue-600 rounded-full flex items-center justify-center mb-4">
-                                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                    </div>
-                                    <p className="text-slate-900 font-semibold mb-2">Preview not available directly</p>
-                                    <p className="text-sm text-slate-500 mb-6 max-w-xs mx-auto">
-                                        Your browser cannot display this PDF inside the app. Please open it to view.
-                                    </p>
-                                    <a
-                                        href={fileUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition shadow-sm active:scale-95"
-                                    >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                                        Open PDF
-                                    </a>
-                                </div>
-                            </object>
-                        </div>
+                        <iframe
+                            src={fileUrl}
+                            className="w-full h-full min-h-[60vh] rounded shadow-sm bg-white"
+                            title={fileName}
+                        />
                     ) : (
                         <div className="text-center p-8">
                             <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
