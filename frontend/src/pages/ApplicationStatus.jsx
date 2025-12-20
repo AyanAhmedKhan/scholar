@@ -8,6 +8,7 @@ const ApplicationStatus = () => {
     const [application, setApplication] = useState(null);
     const [scholarship, setScholarship] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [viewDoc, setViewDoc] = useState(null);
 
     useEffect(() => {
         const fetchApp = async () => {
@@ -69,8 +70,6 @@ const ApplicationStatus = () => {
     };
 
     const statusInfo = getStatusInfo(application.status);
-
-    const [viewDoc, setViewDoc] = useState(null);
 
     return (
         <div className="max-w-4xl mx-auto space-y-6 animate-fade-in-up">
