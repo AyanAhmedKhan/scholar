@@ -576,19 +576,20 @@ def get_application_pdf(
         
         # Wait for result (in production, might want to poll or use websockets for very large files)
         try:
-            pdf_content = task.get(timeout=30) # 30 seconds timeout
+            pdf_content = task.get(timeout=60) # Increased to 60 seconds
             logger.info(f"PDF generated successfully, size: {len(pdf_content) if pdf_content else 0} bytes")
         except Exception as e:
             logger.error(f"PDF merge task failed: {str(e)}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+            # Re-raise to trigger fallback in outer except block
+            raise e
              
         if not pdf_content:
             logger.error("PDF merge task returned empty content")
-            raise HTTPException(status_code=500, detail="PDF generation returned empty content")
+            raise Exception("PDF generation returned empty content")
             
         if isinstance(pdf_content, str) and len(pdf_content) < 500: # Likely an error message
             logger.error(f"PDF merge returned error: {pdf_content}")
-            raise HTTPException(status_code=500, detail=f"PDF generation failed: {pdf_content}")
+            raise Exception(f"PDF generation failed: {pdf_content}")
 
         return Response(content=pdf_content, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename=application_{application_id}.pdf"})
     
