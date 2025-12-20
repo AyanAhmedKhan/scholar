@@ -52,7 +52,7 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
             .header h1 {{ margin: 0; font-size: 24px; font-weight: 600; }}
             .content {{ padding: 30px; line-height: 1.6; }}
             .footer {{ background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb; }}
-            .btn {{ display: inline-block; padding: 10px 20px; background-color: {primary_color}; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 20px; }}
+            .btn {{ display: inline-block; padding: 12px 24px; background-color: {primary_color}; color: #ffffff !important; text-decoration: none !important; border-radius: 6px; font-weight: bold; margin-top: 20px; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
             .info-box {{ background-color: #eff6ff; border-left: 4px solid {primary_color}; padding: 15px; margin: 20px 0; border-radius: 4px; }}
             .highlight {{ color: {primary_color}; font-weight: bold; }}
             .status-badge {{ display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; color: white; background-color: {accent_color}; }}
