@@ -646,8 +646,10 @@ def preview_document(
         raise HTTPException(status_code=403, detail="Not authorized to view this document")
 
     # 3. Check File Existence
+    logger.info(f"Checking file for Doc ID {doc_id}: Path='{doc.file_path}'")
     if not doc.file_path or not os.path.exists(doc.file_path):
-        raise HTTPException(status_code=404, detail="File content not found on server")
+        logger.error(f"File NOT found at path: '{doc.file_path}' (CWD: {os.getcwd()})")
+        raise HTTPException(status_code=404, detail=f"File content not found on server. Path: {doc.file_path}")
 
     # 4. Determine Media Type
     import mimetypes
