@@ -87,14 +87,14 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
                 <p><strong>Status:</strong> Submitted</p>
             </div>
             <p>Our team will review your documents shortly. You can track your application status on your dashboard.</p>
-            <center><a href="https://scholar.mitsgwalior.in/dashboard" class="btn">View Application</a></center>
+            <center><a href="https://scholar.mitsgwalior.in/dashboard" class="btn" style="color: #ffffff !important;">View Application</a></center>
         """,
         "application_approved": """
             <h2>🎉 Application Approved!</h2>
             <p>Dear {student_name},</p>
             <p>We are pleased to inform you that your application for <span class="highlight">{scholarship_name}</span> has been <strong>APPROVED</strong>.</p>
             <p>The scholarship amount will be processed and disbursed to your registered bank account soon.</p>
-            <center><a href="https://scholar.mitsgwalior.in/dashboard" class="btn">Check Status</a></center>
+            <center><a href="https://scholar.mitsgwalior.in/dashboard" class="btn" style="color: #ffffff !important;">Check Status</a></center>
         """,
         "application_rejected": """
             <h2>Application Status Update</h2>
@@ -114,7 +114,7 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
                 <p><strong>Details:</strong> {remarks}</p>
             </div>
             <p>Please log in to the portal and update your application immediately to avoid delay or rejection.</p>
-            <center><a href="https://scholar.mitsgwalior.in/dashboard" class="btn">Update Now</a></center>
+            <center><a href="https://scholar.mitsgwalior.in/dashboard" class="btn" style="color: #ffffff !important;">Update Now</a></center>
         """,
         "scholarship_added": """
             <h2>New Scholarship Announced! 📢</h2>
@@ -125,7 +125,7 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
                 <p><strong>Last Date to Apply:</strong> {last_date}</p>
             </div>
             <p>Check your eligibility and apply before the deadline.</p>
-            <center><a href="https://scholar.mitsgwalior.in/scholarships" class="btn">View Details</a></center>
+            <center><a href="https://scholar.mitsgwalior.in/scholarships" class="btn" style="color: #ffffff !important;">View Details</a></center>
         """,
         "scholarship_updated": """
             <h2>Scholarship Update 📝</h2>
@@ -136,7 +136,7 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
                 <p>{changes_summary}</p> 
             </div>
             <p>Please review the updated details on the portal.</p>
-            <center><a href="https://scholar.mitsgwalior.in/scholarships" class="btn">View Scholarship</a></center>
+            <center><a href="https://scholar.mitsgwalior.in/scholarships" class="btn" style="color: #ffffff !important;">View Scholarship</a></center>
         """,
         "notice_published": """
             <h2>New Notice Published 📌</h2>
@@ -146,7 +146,7 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
                 <p><strong>{title}</strong></p>
                 <p>{content}</p>
             </div>
-            <center><a href="https://scholar.mitsgwalior.in/notices" class="btn">View All Notices</a></center>
+            <center><a href="https://scholar.mitsgwalior.in/notices" class="btn" style="color: #ffffff !important;">View All Notices</a></center>
         """,
         "custom_message": """
             <h2>Message from Scholarship Cell</h2>
