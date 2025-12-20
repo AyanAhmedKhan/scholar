@@ -34,7 +34,7 @@ const FilePreviewModal = ({ fileUrl, fileName, fileType, onClose }) => {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-auto bg-slate-100 p-4 flex items-center justify-center">
+                <div className="flex-1 overflow-auto bg-slate-100 p-4 flex items-center justify-center relative">
                     {type === 'image' ? (
                         <img
                             src={fileUrl}
@@ -42,11 +42,23 @@ const FilePreviewModal = ({ fileUrl, fileName, fileType, onClose }) => {
                             className="max-w-full max-h-full object-contain rounded shadow-sm"
                         />
                     ) : type === 'pdf' ? (
-                        <iframe
-                            src={fileUrl}
+                        <object
+                            data={fileUrl}
+                            type="application/pdf"
                             className="w-full h-full min-h-[60vh] rounded shadow-sm bg-white"
-                            title={fileName}
-                        />
+                        >
+                            <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                                <p className="mb-2">Preview not supported on this device.</p>
+                                <a
+                                    href={fileUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-blue-600 hover:underline font-medium"
+                                >
+                                    Open PDF in New Tab
+                                </a>
+                            </div>
+                        </object>
                     ) : (
                         <div className="text-center p-8">
                             <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
