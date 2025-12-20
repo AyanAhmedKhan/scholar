@@ -29,8 +29,37 @@ def merge_pdfs_task(file_paths: list[str]):
         for path in file_paths:
             # Construct full path
             clean_path = path.lstrip("/").lstrip("\\")
-            full_path = os.path.join(settings.MEDIA_DIR, clean_path)
-            logger.info(f"Processing for merge: {full_path}")
+            # If path already starts with media dir (common if stored as relative path), don't prepend it again if it duplicates
+            if clean_path.startswith(f"{settings.MEDIA_DIR}/") or clean_path.startswith(f"{settings.MEDIA_DIR}\\"):
+                 full_path = clean_path
+            else:
+                 full_path = os.path.join(settings.MEDIA_DIR, clean_path)
+            
+            # Absolute path check (if running from backend root, full_path is relative)
+            if not os.path.exists(full_path):
+                 # Try removing the 'media' prefix from clean path if it exists, maybe it was meant to be joined?
+                 # Case: stored "/media/foo.jpg", MEDIA_DIR="media"
+                 # clean="media/foo.jpg"
+                 # JOIN -> "media/media/foo.jpg" (WRONG)
+                 # We want "media/foo.jpg"
+                 pass
+
+            # Better Logic:
+            # 1. Strip basic slashed
+            # 2. Check if clean_path starts with MEDIA_DIR name. 
+            #    If YES: assume it is already relative to ROOT.
+            #    If NO: prepend MEDIA_DIR.
+            
+            clean_path = path.lstrip("/").lstrip("\\")
+            
+            parts = clean_path.replace("\\", "/").split("/")
+            if parts[0] == settings.MEDIA_DIR:
+                full_path = clean_path
+            else:
+                full_path = os.path.join(settings.MEDIA_DIR, clean_path)
+                
+            abs_path = os.path.abspath(full_path)
+            logger.info(f"Processing for merge: {full_path} (Absolute: {abs_path})")
             
             if os.path.exists(full_path):
                 file_lower = path.lower()
