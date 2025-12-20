@@ -616,6 +616,51 @@ def get_application_pdf(
             logger.error(f"Synchronous PDF generation also failed: {sync_e}", exc_info=True)
             raise HTTPException(status_code=500, detail=f"Error generating PDF (Sync): {str(sync_e)}")
 
+@router.get("/documents/{doc_id}/preview")
+def preview_document(
+    doc_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    """
+    Securely stream document content for preview.
+    Hides the actual file path from the user.
+    """
+    # 1. Fetch Document
+    doc = db.query(ApplicationDocument).filter(ApplicationDocument.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+        
+    # 2. Check Permissions (Ownership or Admin/Staff)
+    application = db.query(Application).filter(Application.id == doc.application_id).first()
+    if not application:
+        raise HTTPException(status_code=404, detail="Associated application not found")
+
+    is_owner = (application.student_id == current_user.id)
+    is_staff = (current_user.role in [UserRole.ADMIN, UserRole.VERIFIER, UserRole.APPROVER])
+    
+    if not (is_owner or is_staff):
+        raise HTTPException(status_code=403, detail="Not authorized to view this document")
+
+    # 3. Check File Existence
+    if not doc.file_path or not os.path.exists(doc.file_path):
+        raise HTTPException(status_code=404, detail="File content not found on server")
+
+    # 4. Determine Media Type
+    import mimetypes
+    media_type, _ = mimetypes.guess_type(doc.file_path)
+    if not media_type:
+        media_type = "application/octet-stream"
+
+    # 5. Return File Stream (generic filename to hide structure)
+    from fastapi.responses import FileResponse
+    return FileResponse(
+        doc.file_path, 
+        media_type=media_type, 
+        filename=f"document_{doc_id}_{doc.document_format_id}.{media_type.split('/')[-1]}",
+        content_disposition_type="inline" # Important for previewing in browser/iframe
+    )
+
 @router.post("/switch-scholarship")
 def switch_scholarship(
     switch_in: schemas.SwitchScholarshipRequest,
