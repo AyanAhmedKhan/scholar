@@ -21,7 +21,11 @@ def send_email_task(subject: str, recipients: List[str], body: str):
     # But fastapi-mail is async. 
     # Best practice: Use an async-compatible worker or run_until_complete.
     
-    asyncio.run(send_email_async(subject, recipients, body))
+    # Wrap the raw body in our professional template
+    # We treat it as a "custom_message"
+    final_body = get_email_template("custom_message", {"body": body})
+    
+    asyncio.run(send_email_async(subject, recipients, final_body))
     return f"Email sent to {len(recipients)} recipients"
 
 @celery_app.task

@@ -245,7 +245,8 @@ def update_scholarship(
                 notification_type="scholarship_updated",
                 recipients=recipients,
                 data={
-                    "scholarship_name": scholarship.name
+                    "scholarship_name": scholarship.name,
+                    "changes_summary": "The scholarship details, eligibility criteria, or required documents have been updated by the administration."
                 }
             )
     except Exception as e:
