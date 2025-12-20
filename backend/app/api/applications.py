@@ -13,6 +13,8 @@ from app.schemas import schemas
 from app.api import deps
 import json
 import logging
+import os
+import mimetypes
 
 logger = logging.getLogger(__name__)
 
@@ -637,7 +639,8 @@ def preview_document(
         raise HTTPException(status_code=404, detail="Associated application not found")
 
     is_owner = (application.student_id == current_user.id)
-    is_staff = (current_user.role in [UserRole.ADMIN, UserRole.VERIFIER, UserRole.APPROVER])
+    # Correct roles based on user.py
+    is_staff = (current_user.role in [UserRole.ADMIN, UserRole.GOFFICE, UserRole.DEPT_HEAD])
     
     if not (is_owner or is_staff):
         raise HTTPException(status_code=403, detail="Not authorized to view this document")
