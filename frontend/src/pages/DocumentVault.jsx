@@ -69,30 +69,30 @@ const DocumentVault = () => {
     );
 
     return (
-        <div className="space-y-8 pb-12">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg shadow-blue-900/20">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold font-display mb-2">My Document Vault</h1>
-                        <p className="text-blue-100 max-w-xl text-lg">
+        <div className="space-y-6 md:space-y-8 pb-12">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl md:rounded-2xl p-6 md:p-8 text-white shadow-lg shadow-blue-900/20">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="space-y-2 max-w-2xl">
+                        <h1 className="text-2xl md:text-3xl font-bold font-display">My Document Vault</h1>
+                        <p className="text-blue-100 text-sm md:text-lg leading-relaxed">
                             Securely store and manage your official documents. Updates here automatically sync with your applications.
                         </p>
                     </div>
-                    <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl border border-white/20">
-                        <span className="text-3xl font-bold">{myDocs.length}</span>
-                        <span className="text-blue-200 ml-2 font-medium">/ {docTypes.length} Uploaded</span>
+                    <div className="w-full md:w-auto bg-white/10 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 flex items-center justify-between md:justify-center gap-3">
+                        <span className="text-2xl md:text-3xl font-bold">{myDocs.length}</span>
+                        <span className="text-blue-200 text-sm md:text-base font-medium">/ {docTypes.length} Uploaded</span>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {docTypes.map(type => {
                     const uploadedDoc = myDocs.find(d => d.document_format_id === type.id);
                     return (
                         <div
                             key={type.id}
                             className={`
-                                group relative flex flex-col p-6 rounded-xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1
+                                group relative flex flex-col p-5 md:p-6 rounded-xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1
                                 ${uploadedDoc
                                     ? 'bg-white border-slate-200 hover:border-blue-200'
                                     : 'bg-slate-50 border-dashed border-slate-300 hover:border-slate-400'
@@ -100,8 +100,8 @@ const DocumentVault = () => {
                             `}
                         >
                             <div className="flex justify-between items-start mb-4">
-                                <div className={`p-3.5 rounded-xl shadow-sm ${uploadedDoc ? 'bg-blue-50 text-blue-600' : 'bg-white text-slate-400 border border-slate-100'}`}>
-                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={uploadedDoc ? "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" : "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"} /></svg>
+                                <div className={`p-3 rounded-xl shadow-sm ${uploadedDoc ? 'bg-blue-50 text-blue-600' : 'bg-white text-slate-400 border border-slate-100'}`}>
+                                    <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={uploadedDoc ? "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" : "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"} /></svg>
                                 </div>
                                 {uploadedDoc ? (
                                     <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold bg-green-50 text-green-700 px-2.5 py-1 rounded-full border border-green-100 shadow-sm">
@@ -118,7 +118,7 @@ const DocumentVault = () => {
                             </div>
 
                             <div className="mb-4">
-                                <h3 className="font-bold text-slate-800 text-lg mb-1 leading-tight">{type.name}</h3>
+                                <h3 className="font-bold text-slate-800 text-base md:text-lg mb-1 leading-tight">{type.name}</h3>
                                 <p className="text-xs text-slate-500 line-clamp-2">{type.description || "Official document required for verification."}</p>
                             </div>
 
@@ -131,7 +131,7 @@ const DocumentVault = () => {
                                         <div className="grid grid-cols-2 gap-2">
                                             <button
                                                 onClick={() => handlePreview(uploadedDoc)}
-                                                className="flex items-center justify-center gap-2 py-2 px-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+                                                className="flex items-center justify-center gap-2 py-2 px-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm font-semibold transition-colors shadow-sm active:bg-slate-100"
                                             >
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                                 Preview
@@ -161,8 +161,9 @@ const DocumentVault = () => {
                                             documentFormatId={type.id}
                                             onUploadSuccess={handleUploadSuccess}
                                             showToast={showToast}
+                                            compact={true}
                                             customButton={
-                                                <button className="w-full flex items-center justify-center gap-2 py-2.5 bg-slate-800 text-white hover:bg-slate-700 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg">
+                                                <button className="w-full flex items-center justify-center gap-2 py-2.5 bg-slate-800 text-white hover:bg-slate-700 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg active:scale-95">
                                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                                                     Upload Document
                                                 </button>
@@ -175,7 +176,6 @@ const DocumentVault = () => {
                     );
                 })}
             </div>
-
             {toast && (
                 <Toast
                     message={toast.message}
