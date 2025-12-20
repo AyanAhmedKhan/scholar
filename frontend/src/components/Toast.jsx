@@ -9,7 +9,7 @@ const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
     }, [duration, onClose]);
 
     return (
-        <div className={`fixed top-24 right-6 px-6 py-4 rounded-xl shadow-xl text-white font-medium transition-all transform animate-in slide-in-from-right z-50 flex items-center gap-3 ${type === 'success' ? 'bg-emerald-600 shadow-emerald-500/20' : 'bg-red-600 shadow-red-500/20'
+        <div className={`fixed bottom-6 right-6 px-6 py-4 rounded-xl shadow-xl text-white font-medium transition-all transform animate-in slide-in-from-bottom z-[100] flex items-center gap-3 ${type === 'success' ? 'bg-emerald-600 shadow-emerald-500/20' : 'bg-red-600 shadow-red-500/20'
             }`}>
             {type === 'success' ? (
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
