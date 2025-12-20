@@ -645,22 +645,36 @@ def preview_document(
     if not (is_owner or is_staff):
         raise HTTPException(status_code=403, detail="Not authorized to view this document")
 
-    # 3. Check File Existence
-    logger.info(f"Checking file for Doc ID {doc_id}: Path='{doc.file_path}'")
-    if not doc.file_path or not os.path.exists(doc.file_path):
-        logger.error(f"File NOT found at path: '{doc.file_path}' (CWD: {os.getcwd()})")
-        raise HTTPException(status_code=404, detail=f"File content not found on server. Path: {doc.file_path}")
+    # 3. Check File Existence & Path Resolution
+    # DB stores paths starting with /media usually, which looks absolute on Linux.
+    # We need to resolve this relative to the project root/backend directory.
+    
+    file_path = doc.file_path
+    
+    # 1. Strip leading slash to make it relative
+    if file_path.startswith("/"):
+        file_path = file_path.lstrip("/")
+        
+    # 2. Resolve to absolute path on server
+    # Assuming CWD is the backend root where 'media' folder exists
+    abs_file_path = os.path.abspath(file_path)
+    
+    logger.info(f"Resolving path: DB='{doc.file_path}' -> Abs='{abs_file_path}'")
+    
+    if not os.path.exists(abs_file_path):
+        logger.error(f"File NOT found at resolved path: '{abs_file_path}'")
+        raise HTTPException(status_code=404, detail="File content not found on server")
 
     # 4. Determine Media Type
     import mimetypes
-    media_type, _ = mimetypes.guess_type(doc.file_path)
+    media_type, _ = mimetypes.guess_type(abs_file_path)
     if not media_type:
         media_type = "application/octet-stream"
 
     # 5. Return File Stream (generic filename to hide structure)
     from fastapi.responses import FileResponse
     return FileResponse(
-        doc.file_path, 
+        abs_file_path, 
         media_type=media_type, 
         filename=f"document_{doc_id}_{doc.document_format_id}.{media_type.split('/')[-1]}",
         content_disposition_type="inline" # Important for previewing in browser/iframe
