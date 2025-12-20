@@ -9,6 +9,25 @@ const ApplicationStatus = () => {
     const [scholarship, setScholarship] = useState(null);
     const [loading, setLoading] = useState(true);
     const [viewDoc, setViewDoc] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+
+    useEffect(() => {
+        if (viewDoc) {
+            setLoading(true);
+            api.get(`/applications/documents/${viewDoc.id}/preview`, { responseType: 'blob' })
+                .then(response => {
+                    const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
+                    setPreviewUrl(url);
+                })
+                .catch(err => {
+                    console.error("Preview failed", err);
+                    setPreviewUrl(null);
+                })
+                .finally(() => setLoading(false));
+        } else {
+            setPreviewUrl(null);
+        }
+    }, [viewDoc]);
 
     useEffect(() => {
         const fetchApp = async () => {
@@ -222,12 +241,16 @@ const ApplicationStatus = () => {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
-                        <div className="flex-1 bg-slate-100 p-1 relative">
-                            <iframe
-                                src={`${api.defaults.baseURL}/applications/documents/${viewDoc.id}/preview`}
-                                className="w-full h-full rounded-lg border border-slate-200 bg-white"
-                                title="Document Preview"
-                            />
+                        <div className="flex-1 bg-slate-100 p-1 relative flex items-center justify-center">
+                            {previewUrl ? (
+                                <iframe
+                                    src={previewUrl}
+                                    className="w-full h-full rounded-lg border border-slate-200 bg-white"
+                                    title="Document Preview"
+                                />
+                            ) : (
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                            )}
                         </div>
                     </div>
                 </div>
