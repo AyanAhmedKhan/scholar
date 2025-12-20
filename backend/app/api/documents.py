@@ -218,3 +218,52 @@ def get_my_documents(
         StudentDocument.student_id == current_user.id,
         StudentDocument.is_active == True
     ).all()
+
+@router.get("/{document_id}/preview")
+def preview_student_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    """
+    Securely preview a student document (Vault)
+    """
+    doc = db.query(StudentDocument).filter(
+        StudentDocument.id == document_id,
+        StudentDocument.student_id == current_user.id
+    ).first()
+
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    # Path Resolution Logic (Same as applications.py)
+    import os
+    file_path = doc.file_path
+    if not file_path:
+        raise HTTPException(status_code=404, detail="File path missing in database")
+
+    # 1. Strip leading slash
+    if file_path.startswith("/"):
+        file_path = file_path.lstrip("/")
+
+    # 2. Resolve absolute path (Assuming CWD is backend root)
+    abs_file_path = os.path.abspath(file_path)
+
+    if not os.path.exists(abs_file_path):
+        # logging would be good here but print is okay for quick dev/debug
+        print(f"File not found: {abs_file_path} (Original: {doc.file_path})")
+        raise HTTPException(status_code=404, detail="File content not found on server")
+
+    # Determine Media Type
+    import mimetypes
+    media_type, _ = mimetypes.guess_type(abs_file_path)
+    if not media_type:
+        media_type = "application/octet-stream"
+
+    from fastapi.responses import FileResponse
+    return FileResponse(
+        abs_file_path,
+        media_type=media_type,
+        filename=f"vault_doc_{document_id}_{doc.document_format_id or 'misc'}.{media_type.split('/')[-1]}",
+        content_disposition_type="inline"
+    )

@@ -275,6 +275,29 @@ const Apply = () => {
         fetchData(); // Refresh to see new vault docs
     };
 
+    const handlePreview = async (doc) => {
+        try {
+            // Show loading or toast
+            showToast('Loading document...', 'info');
+            const response = await api.get(`/documents/${doc.id}/preview`, { responseType: 'blob' });
+            const blobVerifier = response.data;
+            if (blobVerifier.size === 0) {
+                throw new Error("Empty file received");
+            }
+            const mimeType = response.headers['content-type'] || doc.mime_type || 'application/pdf';
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: mimeType }));
+
+            setPreviewFile({
+                url: url,
+                name: doc.document_type || 'Document',
+                type: mimeType.includes('image') ? 'image' : 'pdf'
+            });
+        } catch (error) {
+            console.error("Preview failed", error);
+            showToast("Failed to load document preview.", "error");
+        }
+    };
+
     const handleProfileChange = useCallback((key, value) => {
         console.log('🔄 Profile Change:', { key, value });
         setProfileDraft(prev => {
@@ -1084,29 +1107,7 @@ const Apply = () => {
                                     key={doc.id}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        // robust URL construction
-                                        let apiBase = '';
-                                        if (import.meta.env.VITE_API_BASE_URL) {
-                                            apiBase = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/v1\/?$/, '');
-                                            // Ensure apiBase doesn't end with slash
-                                            apiBase = apiBase.replace(/\/$/, '');
-                                        }
-
-                                        // Ensure fileUrl starts with /media
-                                        let fileUrl = doc.file_path;
-                                        if (!fileUrl.startsWith('/media')) {
-                                            if (fileUrl.startsWith('/')) {
-                                                fileUrl = `/media${fileUrl}`;
-                                            } else {
-                                                fileUrl = `/media/${fileUrl}`;
-                                            }
-                                        }
-
-                                        setPreviewFile({
-                                            url: apiBase ? `${apiBase}${fileUrl}` : fileUrl,
-                                            name: doc.document_type || 'Document',
-                                            type: doc.mime_type?.includes('image') ? 'image' : 'pdf'
-                                        });
+                                        handlePreview(doc);
                                     }}
                                     className="p-4 rounded-xl border border-slate-200 hover:border-primary-200 hover:bg-primary-50/40 transition flex items-center justify-between text-left group w-full"
                                 >
@@ -1241,7 +1242,11 @@ const Apply = () => {
                     fileUrl={previewFile.url}
                     fileName={previewFile.name}
                     fileType={previewFile.type}
-                    onClose={() => setPreviewFile(null)}
+                    onClose={() => {
+                        // Cleanup object URL
+                        if (previewFile?.url) window.URL.revokeObjectURL(previewFile.url);
+                        setPreviewFile(null);
+                    }}
                 />
             )}
         </div>
