@@ -88,6 +88,14 @@ def delete_user(
     user_role = user.role.value
     
     try:
+        # Unlink AuditLogs
+        from app.models.audit import AuditLog
+        db.query(AuditLog).filter(AuditLog.user_id == user_id).update({AuditLog.user_id: None})
+        
+        # Unlink Notices
+        from app.models.notice import Notice
+        db.query(Notice).filter(Notice.created_by == user_id).update({Notice.created_by: None})
+
         # Delete related StudentProfile if exists
         profile = db.query(StudentProfile).filter(StudentProfile.user_id == user_id).first()
         if profile:
