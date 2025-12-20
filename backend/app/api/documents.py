@@ -242,17 +242,26 @@ def preview_student_document(
     if not file_path:
         raise HTTPException(status_code=404, detail="File path missing in database")
 
-    # 1. Strip leading slash
-    if file_path.startswith("/"):
-        file_path = file_path.lstrip("/")
+    # 1. Strip leading slashes (both / and \) to avoid absolute path issues on Windows
+    file_path = file_path.lstrip("/\\")
 
     # 2. Resolve absolute path (Assuming CWD is backend root)
+    # Using join with getcwd() is safer than abspath() on a string that might still look absolute to some OS
     abs_file_path = os.path.abspath(file_path)
 
     if not os.path.exists(abs_file_path):
         # logging would be good here but print is okay for quick dev/debug
         print(f"File not found: {abs_file_path} (Original: {doc.file_path})")
-        raise HTTPException(status_code=404, detail="File content not found on server")
+        # Try checking relative to MEDIA_DIR if defined, just in case
+        if hasattr(settings, 'MEDIA_DIR'):
+             alt_path = os.path.abspath(os.path.join(settings.MEDIA_DIR, file_path.replace('media/', '', 1)))
+             if os.path.exists(alt_path):
+                 abs_file_path = alt_path
+             else:
+                 print(f"Also checked alt path: {alt_path}")
+        
+        if not os.path.exists(abs_file_path):
+             raise HTTPException(status_code=404, detail="File content not found on server")
 
     # Determine Media Type
     import mimetypes
