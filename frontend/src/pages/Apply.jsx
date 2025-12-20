@@ -452,8 +452,16 @@ const Apply = () => {
     const requirements = scholarship.required_documents || [];
     const missingMandatory = requirements.filter(req => {
         if (!req.is_mandatory) return false;
-        const hasDoc = myDocs.some(d => d.document_format_id === req.document_format_id);
-        return !hasDoc;
+
+        const decision = docDecisions[req.document_format_id];
+        const uploadedDoc = myDocs.find(d => d.document_format_id === req.document_format_id);
+
+        // If doc exists, it is ONLY valid if explicitly confirmed
+        if (uploadedDoc) {
+            return decision !== 'confirmed';
+        }
+
+        return true;
     });
 
     const profileReady = profile && profileMissing.length === 0;
@@ -992,7 +1000,9 @@ const Apply = () => {
                                                 </span>
                                             ) : !uploadedDoc ? (
                                                 <span className="text-xs bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full font-medium border border-slate-200">Missing</span>
-                                            ) : null}
+                                            ) : (
+                                                <span className="text-xs bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full font-medium border border-amber-200">Action Needed</span>
+                                            )}
                                         </div>
 
                                         {/* Logic for Existing Document */}
