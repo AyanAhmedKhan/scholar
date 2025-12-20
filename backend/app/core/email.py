@@ -168,5 +168,6 @@ def get_email_template(notification_type: str, data: Dict[str, Any]) -> str:
     except KeyError as e:
         rendered_content = content_html.format(**data, **{k: "N/A" for k in [str(e).strip("'")]}) # Fallback for missing keys
         
-    final_html = base_html.format(content=rendered_content)
+    # Use replace instead of format to avoid issues with CSS curly braces in base_html
+    final_html = base_html.replace("{content}", rendered_content)
     return final_html
