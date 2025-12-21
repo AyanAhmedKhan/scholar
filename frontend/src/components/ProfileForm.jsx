@@ -154,6 +154,15 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
         if (!readOnly) onSubmit(formData);
     };
 
+    const isFieldLocked = (fieldName) => {
+        if (!initialData) return false;
+        const value = initialData[fieldName];
+        // Check if value exists and is not "empty"
+        if (value === null || value === undefined || value === '') return false;
+        if (typeof value === 'number' && value === 0) return false;
+        return true;
+    };
+
     const cardClasses = "bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 mb-8";
     const gridClasses = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
 
@@ -166,11 +175,11 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>}
                 />
                 <div className={gridClasses}>
-                    <InputGroup label="Enrollment No" name="enrollment_no" value={formData.enrollment_no} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Enrollment No" name="enrollment_no" value={formData.enrollment_no} onChange={handleChange} readOnly={readOnly || isFieldLocked('enrollment_no')} required />
                     <SelectGroup
                         label="Department"
                         name="department"
-                        value={formData.department} onChange={handleChange} readOnly={readOnly}
+                        value={formData.department} onChange={handleChange} readOnly={readOnly || isFieldLocked('department')}
                         required
                         options={
                             <>
@@ -181,12 +190,12 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                             </>
                         }
                     />
-                    <InputGroup label="Mobile Number" name="mobile_number" value={formData.mobile_number} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="Date of Birth" name="date_of_birth" type="date" value={formData.date_of_birth} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Mobile Number" name="mobile_number" value={formData.mobile_number} onChange={handleChange} readOnly={readOnly || isFieldLocked('mobile_number')} required />
+                    <InputGroup label="Date of Birth" name="date_of_birth" type="date" value={formData.date_of_birth} onChange={handleChange} readOnly={readOnly || isFieldLocked('date_of_birth')} required />
                     <SelectGroup
                         label="Gender"
                         name="gender"
-                        value={formData.gender} onChange={handleChange} readOnly={readOnly}
+                        value={formData.gender} onChange={handleChange} readOnly={readOnly || isFieldLocked('gender')}
                         options={
                             <>
                                 <option value="Male">Male</option>
@@ -194,8 +203,8 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                             </>
                         }
                     />
-                    <InputGroup label="Father's Name" name="father_name" value={formData.father_name} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="Mother's Name" name="mother_name" value={formData.mother_name} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Father's Name" name="father_name" value={formData.father_name} onChange={handleChange} readOnly={readOnly || isFieldLocked('father_name')} required />
+                    <InputGroup label="Mother's Name" name="mother_name" value={formData.mother_name} onChange={handleChange} readOnly={readOnly || isFieldLocked('mother_name')} required />
                 </div>
             </div>
 
@@ -209,7 +218,7 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     <SelectGroup
                         label="Category"
                         name="category"
-                        value={formData.category} onChange={handleChange} readOnly={readOnly}
+                        value={formData.category} onChange={handleChange} readOnly={readOnly || isFieldLocked('category')}
                         options={
                             <>
                                 <option value="General">General</option>
@@ -304,7 +313,7 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                                     name="parents_govt_job"
                                     checked={formData.parents_govt_job || false}
                                     onChange={handleChange}
-                                    disabled={readOnly}
+                                    disabled={readOnly || isFieldLocked('parents_govt_job')}
                                     className="w-5 h-5 cursor-pointer accent-primary-600 rounded focus:ring-2 focus:ring-primary-500/20"
                                 />
                             </div>
@@ -321,7 +330,7 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                 />
                 <div className={gridClasses}>
-                    <InputGroup label="Annual Family Income" name="annual_family_income" type="number" value={formData.annual_family_income} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="Annual Family Income" name="annual_family_income" type="number" value={formData.annual_family_income} onChange={handleChange} readOnly={readOnly || isFieldLocked('annual_family_income')} required />
                     <InputGroup label="Income Cert. No" name="income_certificate_number" value={formData.income_certificate_number} onChange={handleChange} readOnly={readOnly} required />
                     <InputGroup label="Issuing Authority" name="issuing_authority" value={formData.issuing_authority} onChange={handleChange} readOnly={readOnly} required />
                     <InputGroup label="Validity Date" name="income_certificate_validity_date" type="date" value={formData.income_certificate_validity_date} onChange={handleChange} readOnly={readOnly} required />
@@ -338,7 +347,7 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                     <SelectGroup
                         label="Current Year/Semester"
                         name="current_year_or_semester"
-                        value={formData.current_year_or_semester} onChange={handleChange} readOnly={readOnly}
+                        value={formData.current_year_or_semester} onChange={handleChange} readOnly={readOnly || isFieldLocked('current_year_or_semester')}
                         required
                         options={
                             <>
@@ -350,7 +359,7 @@ const ProfileForm = ({ initialData, onSubmit, readOnly = false }) => {
                         }
                     />
                     <InputGroup label="Prev Exam %" name="previous_exam_percentage" type="number" value={formData.previous_exam_percentage} onChange={handleChange} readOnly={readOnly} required />
-                    <InputGroup label="12th Percentage" name="percentage_12th" type="number" step="0.01" value={formData.percentage_12th} onChange={handleChange} readOnly={readOnly} required />
+                    <InputGroup label="12th Percentage" name="percentage_12th" type="number" step="0.01" value={formData.percentage_12th} onChange={handleChange} readOnly={readOnly || isFieldLocked('percentage_12th')} required />
                     <InputGroup label="Backlogs" name="backlogs" type="number" value={formData.backlogs} onChange={handleChange} readOnly={readOnly} />
                     <SelectGroup
                         label="Residential Status"
