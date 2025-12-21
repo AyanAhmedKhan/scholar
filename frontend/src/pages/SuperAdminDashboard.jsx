@@ -56,9 +56,9 @@ const SuperAdminDashboard = () => {
         } else if (activeTab === 'branches') {
             fetchDepartments(); // Need departments for dropdown
             fetchBranches();
-        } else if (activeTab === 'logs') {
-            if (logTab === 'audit') fetchAuditLogs();
-            if (logTab === 'server') fetchServerLogs();
+        } else if (activeTab === 'communications') {
+            fetchDepartments();
+            fetchBranches();
         }
     }, [activeTab, logTab]);
 
@@ -994,6 +994,7 @@ const SuperAdminDashboard = () => {
                                                 >
                                                     <option value="all">All Students</option>
                                                     <option value="department">Specific Department</option>
+                                                    <option value="branch">Specific Branch</option>
                                                     <option value="scholarship">Specific Scholarship Applicants</option>
                                                     <option value="custom">Custom Email List</option>
                                                 </select>
@@ -1002,14 +1003,34 @@ const SuperAdminDashboard = () => {
                                             {emailForm.target_group === 'department' && (
                                                 <div>
                                                     <label className="block text-sm font-semibold text-slate-700 mb-1.5">Department Name</label>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="e.g., Computer Science"
+                                                    <select
                                                         value={emailForm.target_id}
                                                         onChange={(e) => setEmailForm({ ...emailForm, target_id: e.target.value })}
-                                                        className="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                                        className="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white"
                                                         required
-                                                    />
+                                                    >
+                                                        <option value="">Select Department</option>
+                                                        {departments.map((dept) => (
+                                                            <option key={dept.id} value={dept.name}>{dept.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+
+                                            {emailForm.target_group === 'branch' && (
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Branch Name</label>
+                                                    <select
+                                                        value={emailForm.target_id}
+                                                        onChange={(e) => setEmailForm({ ...emailForm, target_id: e.target.value })}
+                                                        className="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white"
+                                                        required
+                                                    >
+                                                        <option value="">Select Branch</option>
+                                                        {branches.map((branch) => (
+                                                            <option key={branch.id} value={branch.name}>{branch.name}</option>
+                                                        ))}
+                                                    </select>
                                                 </div>
                                             )}
 
@@ -1091,6 +1112,10 @@ const SuperAdminDashboard = () => {
                                         <li className="flex gap-2">
                                             <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span>
                                             <span>Target <strong>Specific Departments</strong> for department-specific news.</span>
+                                        </li>
+                                        <li className="flex gap-2">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span>
+                                            <span>Use <strong>Specific Branch</strong> to target students of a specific branch.</span>
                                         </li>
                                         <li className="flex gap-2">
                                             <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span>

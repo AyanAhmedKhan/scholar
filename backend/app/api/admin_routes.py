@@ -520,6 +520,15 @@ def send_custom_email(
             users = db.query(User).filter(User.id.in_(user_ids)).all()
             recipients = [u.email for u in users]
             
+        elif email_req.target_group == "branch":
+            if not email_req.target_id:
+                 raise HTTPException(status_code=400, detail="Branch name required")
+            profiles = db.query(StudentProfile).filter(StudentProfile.branch == email_req.target_id).all()
+            # Get emails from User table
+            user_ids = [p.user_id for p in profiles]
+            users = db.query(User).filter(User.id.in_(user_ids)).all()
+            recipients = [u.email for u in users]
+            
         elif email_req.target_group == "scholarship":
             if not email_req.target_id:
                  raise HTTPException(status_code=400, detail="Scholarship ID required")
