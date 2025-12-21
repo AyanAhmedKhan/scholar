@@ -142,7 +142,7 @@ const Login = () => {
             </motion.div>
 
             {/* Right Side - Login Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-slate-50 lg:bg-slate-50 bg-[url('/mobile%20login-bg.jpeg')] bg-cover bg-center relative h-full min-h-screen lg:h-auto lg:min-h-0">
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-slate-50 lg:bg-slate-50 bg-[url('/mobileloginbg.png')] bg-cover bg-center relative h-full min-h-screen lg:h-auto lg:min-h-0">
                 <div className="hidden lg:block absolute inset-0 bg-white/50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
                 <div className="lg:hidden absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
