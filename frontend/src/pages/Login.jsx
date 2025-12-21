@@ -142,14 +142,15 @@ const Login = () => {
             </motion.div>
 
             {/* Right Side - Login Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-slate-50 relative">
-                <div className="absolute inset-0 bg-white/50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-slate-50 lg:bg-slate-50 bg-[url('/mobile%20login-bg.jpeg')] bg-cover bg-center relative h-full min-h-screen lg:h-auto lg:min-h-0">
+                <div className="hidden lg:block absolute inset-0 bg-white/50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+                <div className="lg:hidden absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
                 <motion.div
                     variants={staggerContainer}
                     initial="hidden"
                     animate="visible"
-                    className="w-full max-w-md space-y-8 bg-white p-6 md:p-10 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 relative z-10"
+                    className="w-full max-w-md space-y-8 bg-white/95 backdrop-blur-sm lg:bg-white p-6 md:p-10 rounded-3xl shadow-xl shadow-slate-900/10 border border-white/20 lg:border-slate-100 relative z-10"
                 >
                     <motion.div variants={fadeInUp} className="text-center lg:text-left">
                         <h2 className="text-3xl font-bold text-slate-900 font-display mb-2">Welcome Back</h2>
@@ -230,8 +231,8 @@ const Login = () => {
                         </div>
                     </motion.div>
 
-                    <motion.div variants={fadeInUp} className="flex justify-center">
-                        <div className="w-full transition-transform hover:scale-[1.02] duration-200">
+                    <motion.div variants={fadeInUp} className="flex justify-center w-full">
+                        <div className="w-full transition-transform hover:scale-[1.02] duration-200 flex justify-center">
                             <GoogleLogin
                                 onSuccess={handleGoogleSuccess}
                                 onError={() => setError('Google Login Failed')}
@@ -240,7 +241,7 @@ const Login = () => {
                                 shape="pill"
                                 size="large"
                                 width="100%"
-                                containerProps={{ style: { width: '100%' } }}
+                                containerProps={{ style: { width: '100%', display: 'flex', justifyContent: 'center' } }}
                             />
                         </div>
                     </motion.div>
