@@ -41,14 +41,14 @@ const DeptHeadDashboard = () => {
                     <h1 className="text-2xl font-bold text-slate-800 font-display">Department Dashboard</h1>
                     <p className="text-slate-500">Overview of department students and applications.</p>
                 </div>
-                <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm overflow-x-auto max-w-full">
                     {['overview', 'students', 'applications'].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-all capitalize ${activeTab === tab
-                                    ? 'bg-primary-50 text-primary-700 shadow-sm'
-                                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                ? 'bg-primary-50 text-primary-700 shadow-sm'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                                 }`}
                         >
                             {tab}

@@ -651,32 +651,14 @@ const Apply = () => {
                                                             type="date"
                                                             value={inputValue}
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
-                                                            style={{
-                                                                width: '100%',
-                                                                padding: '10px 12px',
-                                                                border: '2px solid #cbd5e1',
-                                                                borderRadius: '8px',
-                                                                fontSize: '14px',
-                                                                color: '#0f172a',
-                                                                backgroundColor: '#ffffff',
-                                                                fontFamily: 'Inter, sans-serif'
-                                                            }}
+                                                            className="w-full px-3 py-2.5 border-2 border-slate-300 rounded-lg text-sm text-slate-900 bg-white font-sans focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all duration-300"
                                                         />
                                                     ) : key === 'gender' ? (
                                                         <select
                                                             id={`create-field-${key}`}
                                                             value={inputValue}
                                                             onChange={(e) => handleProfileChange(key, e.target.value)}
-                                                            style={{
-                                                                width: '100%',
-                                                                padding: '10px 12px',
-                                                                border: '2px solid #cbd5e1',
-                                                                borderRadius: '8px',
-                                                                fontSize: '14px',
-                                                                color: '#0f172a',
-                                                                backgroundColor: '#ffffff',
-                                                                fontFamily: 'Inter, sans-serif'
-                                                            }}
+                                                            className="w-full px-3 py-2.5 border-2 border-slate-300 rounded-lg text-sm text-slate-900 bg-white font-sans focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all duration-300"
                                                         >
                                                             <option value="">Select Gender</option>
                                                             <option value="Male">Male</option>
@@ -1134,7 +1116,7 @@ const Apply = () => {
                         </div>
                     </div>
 
-                    <div className="flex justify-between">
+                    <div className="flex items-center justify-between gap-4">
                         <button
                             onClick={() => setStep(1)}
                             className="bg-white border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors"
@@ -1218,7 +1200,7 @@ const Apply = () => {
                         </div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                         <button
                             onClick={() => setStep(2)}
                             className="flex-1 bg-white border border-slate-300 text-slate-700 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors"

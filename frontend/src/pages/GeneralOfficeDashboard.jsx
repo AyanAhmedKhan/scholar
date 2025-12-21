@@ -405,12 +405,12 @@ const GeneralOfficeDashboard = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 py-2">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-2">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 font-display">General Office Dashboard</h1>
                     <p className="text-sm text-slate-500">Manage scholarship applications and verification</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                     <button
                         onClick={handleExport}
                         className="bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors shadow-sm"
@@ -485,8 +485,8 @@ const GeneralOfficeDashboard = () => {
 
             {/* Tabs */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                <div className="border-b border-slate-200 flex items-center justify-between px-4 py-2 bg-slate-50/50">
-                    <nav className="flex space-x-1">
+                <div className="border-b border-slate-200 overflow-x-auto px-4 py-2 bg-slate-50/50">
+                    <nav className="flex space-x-1 min-w-max">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}

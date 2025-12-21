@@ -268,7 +268,7 @@ const ScholarshipManagement = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-800 font-display">Scholarship Management</h1>
                     <p className="text-slate-500 mt-1">Create and manage scholarship schemes</p>
@@ -279,7 +279,7 @@ const ScholarshipManagement = () => {
                         resetForm();
                         setActiveTab('form');
                     }}
-                    className="bg-primary-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-sm flex items-center gap-2"
+                    className="w-full md:w-auto bg-primary-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-sm flex items-center justify-center gap-2"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -307,8 +307,8 @@ const ScholarshipManagement = () => {
 
             {/* Tabs */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="border-b border-slate-200">
-                    <nav className="flex -mb-px">
+                <div className="border-b border-slate-200 overflow-x-auto">
+                    <nav className="flex -mb-px min-w-max">
                         <button
                             onClick={() => setActiveTab('list')}
                             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'list'
@@ -683,9 +683,9 @@ const ScholarshipManagement = () => {
                                 <h3 className="text-lg font-bold text-slate-800 mb-4">Required Documents (In Order)</h3>
                                 {formData.required_documents.map((doc, idx) => (
                                     <div key={idx} className="bg-white p-4 rounded-lg border border-slate-200 mb-3">
-                                        <div className="flex gap-4 items-center mb-3">
+                                        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-3">
                                             <span className="text-slate-500 font-medium w-6">{idx + 1}.</span>
-                                            <div className="flex-1 flex gap-2">
+                                            <div className="flex-1 flex gap-2 w-full sm:w-auto">
                                                 <select
                                                     value={doc.document_format_id}
                                                     onChange={e => handleDocChange(idx, 'document_format_id', parseInt(e.target.value))}
@@ -703,30 +703,32 @@ const ScholarshipManagement = () => {
                                                 </button>
                                             </div>
 
-                                            <label className="relative inline-flex items-center cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={doc.is_mandatory}
-                                                    onChange={e => handleDocChange(idx, 'is_mandatory', e.target.checked)}
-                                                    className="sr-only peer"
-                                                />
-                                                <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-600"></div>
-                                                <span className="ml-2 text-sm font-medium text-slate-700">Mandatory</span>
-                                            </label>
+                                            <div className="flex justify-between w-full sm:w-auto gap-4">
+                                                <label className="relative inline-flex items-center cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={doc.is_mandatory}
+                                                        onChange={e => handleDocChange(idx, 'is_mandatory', e.target.checked)}
+                                                        className="sr-only peer"
+                                                    />
+                                                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-600"></div>
+                                                    <span className="ml-2 text-sm font-medium text-slate-700">Mandatory</span>
+                                                </label>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => setFormData(prev => ({ ...prev, required_documents: prev.required_documents.filter((_, i) => i !== idx) }))}
-                                                className="text-red-500 hover:text-red-700 p-1 hover:bg-red-50 rounded"
-                                            >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData(prev => ({ ...prev, required_documents: prev.required_documents.filter((_, i) => i !== idx) }))}
+                                                    className="text-red-500 hover:text-red-700 p-1 hover:bg-red-50 rounded"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         {/* Renewal Options */}
-                                        <div className="flex flex-wrap items-center gap-4 ml-10 mt-3">
+                                        <div className="flex flex-wrap items-center gap-4 ml-0 sm:ml-10 mt-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                                             <div className="flex items-center gap-2">
                                                 <input
                                                     type="checkbox"
@@ -741,13 +743,13 @@ const ScholarshipManagement = () => {
                                                     placeholder="Renewal Instructions"
                                                     value={doc.renewal_instruction || ''}
                                                     onChange={e => handleDocChange(idx, 'renewal_instruction', e.target.value)}
-                                                    className="flex-1 min-w-[200px] px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                                                    className="flex-1 min-w-[200px] w-full sm:w-auto px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                                                 />
                                             )}
                                         </div>
 
                                         {/* Document Restrictions */}
-                                        <div className="ml-10 mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                                        <div className="ml-0 sm:ml-10 mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                                             <div className="flex flex-wrap gap-6 items-start">
                                                 {/* Allowed File Types */}
                                                 <label className="block text-xs font-semibold text-slate-700 mb-1">Allowed File Types</label>
@@ -797,7 +799,7 @@ const ScholarshipManagement = () => {
                                         </div>
 
                                         {/* Instructions Field */}
-                                        <div className="mt-3 ml-10">
+                                        <div className="mt-3 ml-0 sm:ml-10">
                                             <input
                                                 placeholder="Instructions for students (e.g. 'Must be attested', 'Upload original scan')"
                                                 value={doc.instructions || ''}

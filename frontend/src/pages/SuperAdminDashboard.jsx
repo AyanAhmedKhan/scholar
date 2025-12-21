@@ -320,12 +320,12 @@ const SuperAdminDashboard = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-800 font-display">Super Admin Dashboard</h1>
                     <p className="text-slate-500 mt-1">Manage system configuration, users, and analytics</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                     <button
                         onClick={() => handleExport('applicants')}
                         className="bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
@@ -369,8 +369,8 @@ const SuperAdminDashboard = () => {
 
             {/* Tabs */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="border-b border-slate-200">
-                    <nav className="flex -mb-px">
+                <div className="border-b border-slate-200 overflow-x-auto">
+                    <nav className="flex -mb-px min-w-max">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
@@ -491,7 +491,7 @@ const SuperAdminDashboard = () => {
                     {/* Users Tab */}
                     {activeTab === 'users' && (
                         <div className="space-y-6">
-                            <div className="flex justify-between items-center">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <h2 className="text-xl font-bold text-slate-800">User Management</h2>
                                 <button onClick={fetchUsers} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
                                     Refresh
@@ -560,7 +560,7 @@ const SuperAdminDashboard = () => {
                     {/* Departments Tab */}
                     {activeTab === 'departments' && (
                         <div className="space-y-6">
-                            <div className="flex justify-between items-center">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <h2 className="text-xl font-bold text-slate-800">Department Management</h2>
                                 <button onClick={fetchDepartments} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
                                     Refresh
