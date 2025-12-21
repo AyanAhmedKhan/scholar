@@ -1,5 +1,5 @@
 from typing import Any, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, BackgroundTasks
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.db.database import get_db
@@ -13,6 +13,8 @@ from pydantic import BaseModel
 import logging
 
 logger = logging.getLogger(__name__)
+
+from app.core.email import send_email_async, get_email_template
 
 router = APIRouter()
 
@@ -187,6 +189,7 @@ class ApplicationStatusUpdate(BaseModel):
 def update_application_status(
     application_id: int,
     status_update: ApplicationStatusUpdate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(deps.RoleChecker([UserRole.ADMIN, UserRole.GOFFICE])),
 ) -> Any:
@@ -213,36 +216,46 @@ def update_application_status(
         details={"new_status": status_update.status, "remarks": status_update.remarks}
     )
     
-    # Email Notification
+    
     # Email Notification
     try:
-        from app.tasks.email_tasks import send_notification_task
-        student_profile = db.query(StudentProfile).filter(StudentProfile.user_id == application.student_id).first()
-        student_user = db.query(User).filter(User.id == application.student_id).first()
-        
-        if student_user:
-            scholarship = db.query(Application).filter(Application.id == application_id).first().scholarship
+        # Determine notification type
+        notification_type = None
+        if status_update.status == ApplicationStatus.APPROVED:
+            notification_type = "application_approved"
+        elif status_update.status == ApplicationStatus.REJECTED:
+            notification_type = "application_rejected"
+        elif status_update.status == ApplicationStatus.DOCS_REQUIRED:
+            notification_type = "docs_required"
             
-            notification_type = None
-            if status_update.status == ApplicationStatus.APPROVED:
-                notification_type = "application_approved"
-            elif status_update.status == ApplicationStatus.REJECTED:
-                notification_type = "application_rejected"
-            elif status_update.status == ApplicationStatus.DOCS_REQUIRED:
-                notification_type = "docs_required"
+        if notification_type:
+            student_user = db.query(User).filter(User.id == application.student_id).first()
+            if student_user:
+                scholarship = application.scholarship # Accessed via relationship
                 
-            if notification_type:
-                send_notification_task.delay(
-                    notification_type=notification_type,
-                    recipients=[student_user.email],
-                    data={
-                        "student_name": student_user.full_name,
-                        "scholarship_name": scholarship.name,
-                        "remarks": status_update.remarks
-                    }
-                )
+                email_data = {
+                    "student_name": student_user.full_name,
+                    "scholarship_name": scholarship.name,
+                    "remarks": status_update.remarks,
+                    "application_id": application.id
+                }
+                
+                # Get Subject
+                subject_map = {
+                    "application_approved": "Scholarship Application Approved",
+                    "application_rejected": "Scholarship Application Status Update",
+                    "docs_required": "Action Required: Documents Needed"
+                }
+                subject = subject_map.get(notification_type, "Application Update")
+                
+                # Render Body
+                body = get_email_template(notification_type, email_data)
+                
+                # Send in Background
+                background_tasks.add_task(send_email_async, subject, [student_user.email], body)
+                
     except Exception as e:
-        logger.error(f"Failed to send email notification: {e}")
+        logger.error(f"Failed to queue email notification: {e}")
     
     return application
 
@@ -254,6 +267,7 @@ class DocumentVerificationUpdate(BaseModel):
 def verify_document(
     doc_id: int,
     verification: DocumentVerificationUpdate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(deps.RoleChecker([UserRole.ADMIN, UserRole.GOFFICE])),
 ):
@@ -285,21 +299,19 @@ def verify_document(
     # If document is rejected, we might want to notify student.
     if not verification.is_verified and verification.remarks:
          try:
-             from app.tasks.email_tasks import send_notification_task
              app = doc.application
              student_user = db.query(User).filter(User.id == app.student_id).first()
              if student_user:
-                 send_notification_task.delay(
-                    notification_type="docs_required", # Reusing docs_required template
-                    recipients=[student_user.email],
-                    data={
-                        "student_name": student_user.full_name,
-                        "scholarship_name": "Application Document Update",
-                        "remarks": f"Document '{doc.document_format.name}' issue: {verification.remarks}"
-                    }
-                )
+                 email_data = {
+                    "student_name": student_user.full_name,
+                    "scholarship_name": "Application Document Update",
+                    "remarks": f"Document '{doc.document_format.name}' issue: {verification.remarks}"
+                 }
+                 body = get_email_template("docs_required", email_data)
+                 background_tasks.add_task(send_email_async, "Action Required: Document Issue", [student_user.email], body)
+                 
          except Exception as e:
-             print(f"Failed to send email notification: {e}")
+             logger.error(f"Failed to queue email notification: {e}")
     
     return {"message": "Document updated", "is_verified": doc.is_verified}
 
@@ -496,6 +508,7 @@ class EmailRequest(BaseModel):
 @router.post("/communications/email/send")
 def send_custom_email(
     email_req: EmailRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(deps.RoleChecker([UserRole.ADMIN, UserRole.GOFFICE])),
 ):
@@ -503,8 +516,6 @@ def send_custom_email(
     Send custom email to students
     """
     try:
-        from app.tasks.email_tasks import send_notification_task
-        
         recipients = []
         
         if email_req.target_group == "all":
@@ -544,17 +555,19 @@ def send_custom_email(
         if not recipients:
             return {"message": "No recipients found", "count": 0}
             
-        # Send in batches? Celery handles it.
-        send_notification_task.delay(
-            notification_type="custom_message",
-            recipients=recipients,
-            data={
-                "subject": email_req.subject,
-                "body": email_req.body
-            }
-        )
+        # Render Template
+        body = get_email_template("custom_message", {"body": email_req.body})
+        
+        # Send in Background
+        # We send as a single batch since send_email_async handles list of recipients
+        background_tasks.add_task(send_email_async, email_req.subject, recipients, body)
+
     except Exception as e:
-        logger.error(f"Failed to send email notification: {e}")
+        logger.error(f"Failed to queue email notification: {e}")
+        # We don't return error to client if queuing fails logic-wise, but here strict failure is ok
+        # However, we want to know if it failed.
+        # But for background tasks, the request should return success if task was added.
+        # If logic *before* task addition fails, we return error.
         return {"message": "Failed to queue email", "error": str(e)}
     
     return {"message": "Email queued", "count": len(recipients)}
