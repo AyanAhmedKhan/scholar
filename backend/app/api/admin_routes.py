@@ -64,6 +64,49 @@ def update_user_role(
     
     return user
 
+@router.put("/users/{user_id}/profile", response_model=schemas.StudentProfileResponse)
+def update_user_profile(
+    user_id: int,
+    profile_in: schemas.StudentProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.RoleChecker([UserRole.ADMIN])),
+) -> Any:
+    """
+    Update user profile (Super Admin only)
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == user_id).first()
+    if not profile:
+        # Create if not exists (handle case where profile wasn't created yet)
+        profile_data = profile_in.dict(exclude_unset=True)
+        profile = StudentProfile(user_id=user_id, **profile_data)
+        db.add(profile)
+    else:
+        # Update existing
+        profile_data = profile_in.dict(exclude_unset=True)
+        for field, value in profile_data.items():
+            setattr(profile, field, value)
+            
+    db.commit()
+    db.refresh(profile)
+    
+    try:
+        log_action(
+            db, 
+            action="UPDATE_USER_PROFILE", 
+            user_id=current_user.id, 
+            target_type="StudentProfile", 
+            target_id=str(profile.id), 
+            details=profile_in.dict(exclude_unset=True)
+        )
+    except Exception as e:
+        logger.error(f"Failed to log profile update: {e}")
+    
+    return profile
+
 @router.delete("/users/{user_id}")
 def delete_user(
     user_id: int,

@@ -42,6 +42,11 @@ const SuperAdminDashboard = () => {
         body: ''
     });
 
+    // User View/Edit Modal State
+    const [viewUserModal, setViewUserModal] = useState({ open: false, user: null });
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [profileForm, setProfileForm] = useState({});
+
     useEffect(() => {
         if (activeTab === 'overview') {
             fetchStats();
@@ -49,6 +54,8 @@ const SuperAdminDashboard = () => {
             fetchAuditLogs();
         } else if (activeTab === 'users') {
             fetchUsers();
+            fetchDepartments();
+            fetchBranches();
         } else if (activeTab === 'departments') {
             fetchDepartments();
         } else if (activeTab === 'sessions') {
@@ -274,6 +281,37 @@ const SuperAdminDashboard = () => {
             fetchUsers();
         } catch (err) {
             showError(err.response?.data?.detail || 'Failed to delete user');
+        }
+    };
+
+    const handleViewUser = (user) => {
+        setViewUserModal({ open: true, user });
+        setProfileForm(user.profile || {});
+        setIsEditingProfile(false);
+    };
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        if (!viewUserModal.user) return;
+
+        setLoading(true);
+        try {
+            const res = await api.put(`/admin/users/${viewUserModal.user.id}/profile`, profileForm);
+            showSuccess('User profile updated successfully');
+            setIsEditingProfile(false);
+
+            // Update local state
+            const updatedUser = { ...viewUserModal.user, profile: res.data };
+            setViewUserModal({ open: true, user: updatedUser });
+
+            // Update in users list
+            setUsers(prevUsers => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
+
+        } catch (err) {
+            console.error(err);
+            showError(err.response?.data?.detail || 'Failed to update user profile');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -537,16 +575,26 @@ const SuperAdminDashboard = () => {
                                                         </select>
                                                     </td>
                                                     <td className="px-6 py-3">
-                                                        <button
-                                                            onClick={() => handleDeleteUser(user.id, user.email)}
-                                                            className="text-red-600 hover:text-red-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
-                                                            title="Permanently delete this user"
-                                                        >
-                                                            <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                            Delete
-                                                        </button>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => handleViewUser(user)}
+                                                                className="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1"
+                                                                title="View Details"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                                                View
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteUser(user.id, user.email)}
+                                                                className="text-red-600 hover:text-red-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                                                                title="Permanently delete this user"
+                                                            >
+                                                                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                </svg>
+                                                                Delete
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -1128,6 +1176,223 @@ const SuperAdminDashboard = () => {
                     )}
                 </div>
             </div>
+            {/* User Details Modal */}
+            {viewUserModal.open && viewUserModal.user && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+                        {/* Header */}
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                            <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xl uppercase">
+                                    {viewUserModal.user.full_name?.charAt(0) || viewUserModal.user.email?.charAt(0)}
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-slate-800">{viewUserModal.user.full_name || 'No Name'}</h2>
+                                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                                        <span>{viewUserModal.user.email}</span>
+                                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                        <span className="capitalize px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">{viewUserModal.user.role}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setIsEditingProfile(!isEditingProfile)}
+                                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2
+                                        ${isEditingProfile
+                                            ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                                            : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+                                >
+                                    {isEditingProfile ? (
+                                        <>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                            Cancel Edit
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            Edit Profile
+                                        </>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => setViewUserModal({ open: false, user: null })}
+                                    className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50">
+                            {!viewUserModal.user.profile && !isEditingProfile ? (
+                                <div className="text-center py-12 text-slate-500 border-2 border-dashed border-slate-200 rounded-xl bg-white">
+                                    <p className="mb-2">No profile data found for this user.</p>
+                                    <button
+                                        onClick={() => {
+                                            setProfileForm({}); // Initialize empty
+                                            setIsEditingProfile(true);
+                                        }}
+                                        className="text-primary-600 font-semibold hover:underline"
+                                    >
+                                        Create Profile
+                                    </button>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleUpdateProfile} className="space-y-8">
+                                    {/* Personal Info */}
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                        <h3 className="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+                                            <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">👤</span>
+                                            Personal Information
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {[
+                                                { key: 'enrollment_no', label: 'Enrollment No' },
+                                                { key: 'father_name', label: 'Father Name' },
+                                                { key: 'mother_name', label: 'Mother Name' },
+                                                { key: 'date_of_birth', label: 'DOB', type: 'date' },
+                                                { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'] },
+                                                { key: 'category', label: 'Category', type: 'select', options: ['General', 'OBC', 'SC', 'ST'] },
+                                                { key: 'mobile_number', label: 'Mobile' },
+                                                { key: 'adhar_number', label: 'Adhar No' }, // Assuming adhar is in UserProfile in backend model, might need check
+                                            ].map(field => (
+                                                <div key={field.key}>
+                                                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">{field.label}</label>
+                                                    {isEditingProfile ? (
+                                                        field.type === 'select' ? (
+                                                            <select
+                                                                value={profileForm[field.key] || ''}
+                                                                onChange={(e) => setProfileForm({ ...profileForm, [field.key]: e.target.value })}
+                                                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
+                                                            >
+                                                                <option value="">Select {field.label}</option>
+                                                                {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                                            </select>
+                                                        ) : (
+                                                            <input
+                                                                type={field.type || 'text'}
+                                                                value={profileForm[field.key] || ''}
+                                                                onChange={(e) => setProfileForm({ ...profileForm, [field.key]: e.target.value })}
+                                                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
+                                                            />
+                                                        )
+                                                    ) : (
+                                                        <div className="font-medium text-slate-800 min-h-[1.5rem]">{profileForm[field.key] || viewUserModal.user.profile?.[field.key] || '-'}</div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Academic Info */}
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                        <h3 className="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+                                            <span className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-sm">🎓</span>
+                                            Academic Information
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {[
+                                                { key: 'department', label: 'Department', type: 'select', options: departments?.map(d => d.name) || [] },
+                                                { key: 'branch', label: 'Branch', type: 'select', options: branches?.map(b => b.name) || [] },
+                                                { key: 'current_year_or_semester', label: 'Current Sem/Year' },
+                                                { key: 'percentage_12th', label: '12th %', type: 'number' },
+                                                { key: 'previous_exam_percentage', label: 'Prev Exam %', type: 'number' },
+                                                { key: 'gap_year', label: 'Gap Year', type: 'select', options: ['Yes', 'No'] }, // needs bool conversion logic if saving
+                                            ].map(field => (
+                                                <div key={field.key}>
+                                                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">{field.label}</label>
+                                                    {isEditingProfile ? (
+                                                        field.type === 'select' ? (
+                                                            <select
+                                                                value={profileForm[field.key] === true ? 'Yes' : profileForm[field.key] === false ? 'No' : (profileForm[field.key] || '')}
+                                                                onChange={(e) => {
+                                                                    let val = e.target.value;
+                                                                    if (field.key === 'gap_year') val = val === 'Yes';
+                                                                    setProfileForm({ ...profileForm, [field.key]: val })
+                                                                }}
+                                                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
+                                                            >
+                                                                <option value="">Select {field.label}</option>
+                                                                {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                                            </select>
+                                                        ) : (
+                                                            <input
+                                                                type={field.type || 'text'}
+                                                                value={profileForm[field.key] || ''}
+                                                                onChange={(e) => setProfileForm({ ...profileForm, [field.key]: e.target.value })}
+                                                                className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
+                                                            />
+                                                        )
+                                                    ) : (
+                                                        <div className="font-medium text-slate-800 min-h-[1.5rem]">
+                                                            {field.key === 'gap_year' ? (profileForm[field.key] ? 'Yes' : 'No') : (profileForm[field.key] || viewUserModal.user.profile?.[field.key] || '-')}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Bank Info */}
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                        <h3 className="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+                                            <span className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-sm">🏦</span>
+                                            Bank Details
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {[
+                                                { key: 'bank_name', label: 'Bank Name' },
+                                                { key: 'account_number', label: 'Account No' },
+                                                { key: 'ifsc_code', label: 'IFSC Code' },
+                                                { key: 'account_holder_name', label: 'Holder Name' },
+                                                { key: 'annual_family_income', label: 'Annual Income', type: 'number' },
+                                            ].map(field => (
+                                                <div key={field.key}>
+                                                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">{field.label}</label>
+                                                    {isEditingProfile ? (
+                                                        <input
+                                                            type={field.type || 'text'}
+                                                            value={profileForm[field.key] || ''}
+                                                            onChange={(e) => setProfileForm({ ...profileForm, [field.key]: e.target.value })}
+                                                            className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
+                                                        />
+                                                    ) : (
+                                                        <div className="font-medium text-slate-800 min-h-[1.5rem]">{profileForm[field.key] || viewUserModal.user.profile?.[field.key] || '-'}</div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {isEditingProfile && (
+                                        <div className="flex justify-end gap-3 pt-6 border-t border-slate-200">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsEditingProfile(false);
+                                                    setProfileForm(viewUserModal.user.profile || {});
+                                                }}
+                                                className="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-semibold hover:bg-slate-50 transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={loading}
+                                                className="px-6 py-2.5 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 shadow-lg shadow-primary-900/20 transition-all disabled:opacity-50"
+                                            >
+                                                {loading ? 'Saving...' : 'Save Profile Changes'}
+                                            </button>
+                                        </div>
+                                    )}
+                                </form>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
